@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libimg.a CMakeFiles/img.dir/src/Load.cpp.o CMakeFiles/img.dir/src/Save.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libimg.a

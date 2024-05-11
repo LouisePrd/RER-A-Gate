@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/Users/louiseperidy/Desktop/Tower-Defense/build/_deps/img-subbuild/CMakeFiles/img-populate"
+		},
+		{
+			"file" : "/Users/louiseperidy/Desktop/Tower-Defense/build/_deps/img-subbuild/CMakeFiles/img-populate.rule"
+		},
+		{
+			"file" : "/Users/louiseperidy/Desktop/Tower-Defense/build/_deps/img-subbuild/CMakeFiles/img-populate-complete.rule"
+		},
+		{
+			"file" : "/Users/louiseperidy/Desktop/Tower-Defense/build/_deps/img-subbuild/img-populate-prefix/src/img-populate-stamp/img-populate-build.rule"
+		},
+		{
+			"file" : "/Users/louiseperidy/Desktop/Tower-Defense/build/_deps/img-subbuild/img-populate-prefix/src/img-populate-stamp/img-populate-configure.rule"
+		},
+		{
+			"file" : "/Users/louiseperidy/Desktop/Tower-Defense/build/_deps/img-subbuild/img-populate-prefix/src/img-populate-stamp/img-populate-download.rule"
+		},
+		{
+			"file" : "/Users/louiseperidy/Desktop/Tower-Defense/build/_deps/img-subbuild/img-populate-prefix/src/img-populate-stamp/img-populate-install.rule"
+		},
+		{
+			"file" : "/Users/louiseperidy/Desktop/Tower-Defense/build/_deps/img-subbuild/img-populate-prefix/src/img-populate-stamp/img-populate-mkdir.rule"
+		},
+		{
+			"file" : "/Users/louiseperidy/Desktop/Tower-Defense/build/_deps/img-subbuild/img-populate-prefix/src/img-populate-stamp/img-populate-patch.rule"
+		},
+		{
+			"file" : "/Users/louiseperidy/Desktop/Tower-Defense/build/_deps/img-subbuild/img-populate-prefix/src/img-populate-stamp/img-populate-test.rule"
+		},
+		{
+			"file" : "/Users/louiseperidy/Desktop/Tower-Defense/build/_deps/img-subbuild/img-populate-prefix/src/img-populate-stamp/img-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"img-populate"
+		],
+		"name" : "img-populate"
+	}
+}
