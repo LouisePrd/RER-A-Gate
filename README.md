@@ -4,3 +4,8 @@ The RER A is a Parisian public transport network that we all love, of course, an
 
 Build your own stations and defend them against the evil ticket inspectors and sneaky grannies who want to expose you to them!
 Don't let them take over our beloved line!
+
+<p align="center">
+  <i>visuel non contractuel</i><br><br>
+  <img src="https://github.com/LouisePrd/Tower-Defense/assets/77757761/d04b93ee-5a81-4c49-8ccb-a931040bed6b"/>
+</p>
