@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "App.hpp"
+#include "itdReader.hpp"
 
 namespace {
     App& window_as_app(GLFWwindow* window)
@@ -73,7 +74,7 @@ int main() {
         app.size_callback(width, height);
     }
 
-    app.checkMap();
+    checkMap();
     app.setup();
 
     // Loop until the user closes the window

@@ -21,66 +21,6 @@ App::App() : _previousTime(0.0), _viewSize(2.0)
     _texture = loadTexture(test);
 }
 
-void App::checkMap()
-{
-    std::ifstream mapItd(make_absolute_path("data/.itd", true));
-    std::vector<std::string> keyWords = {"ITD", "map", "path", "in", "out", "graph", "node"};
-    std::vector<std::string> lines;
-    std::string line;
-
-    while (std::getline(mapItd, line)) // Sans les commentaires
-    {
-        if (line[0] != '#')
-            lines.push_back(line);
-    }
-
-    std::vector<std::string> values;
-    for (size_t i = 0; i < keyWords.size(); i++) // Vérifie fichier
-    {
-        if (lines[i].find(keyWords[i]) == std::string::npos) // Vérifie mots clés
-        {
-            std::cerr << "Erreur fichier pour : " << keyWords[i] << std::endl;
-            exit(1);
-        }
-
-        if (keyWords[i] == "in" || keyWords[i] == "out" || keyWords[i] == "path")
-        {
-            std::string s = lines[i];
-            std::string delimiter = " ";
-            size_t pos = 0;
-            while ((pos = s.find(" ")) != std::string::npos)
-            {
-                std::string token = s.substr(0, pos);
-                s.erase(0, pos + delimiter.length());
-                if (std::all_of(token.begin(), token.end(), ::isdigit))
-                    values.push_back(token);
-            }
-            if (std::all_of(s.begin(), s.end(), ::isdigit))
-                values.push_back(s);
-        }
-    }
-
-    size_t nbValues = values.size();
-    for (size_t i = 0; i < nbValues; i++) // Vérifie valeurs RGB
-    {
-        if (nbValues != 9 || std::stoi(values[i]) < 0 || std::stoi(values[i]) > 255)
-        {
-            std::cerr << "Erreur fichier pour : " << keyWords[i] << std::endl;
-            exit(1);
-        }
-    }
-    
-    // Vérifie fichier image
-    try {
-        img::Image test{img::load(make_absolute_path("images/level.png", true))};
-    } catch (const std::exception& e) {
-        std::cerr << "Erreur fichier image" << std::endl;
-        exit(1);
-    }
-
-    exit(0);
-}
-
 void App::setup()
 {
     // Set the clear color to a nice blue
