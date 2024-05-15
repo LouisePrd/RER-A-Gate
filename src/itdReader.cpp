@@ -4,8 +4,10 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+
 #include "utils.hpp"
 #include "img/img.hpp"
+#include <glm/glm.hpp>
 
 std::vector<Node> getNodes(std::vector<std::vector<int>> nodes)
 {
@@ -90,4 +92,27 @@ void checkMap()
         std::cerr << "Erreur fichier image" << std::endl;
         exit(1);
     }
+
+}
+
+std::vector<glm::vec3> loadMap(std::string path){
+    img::Image baseMap{img::load(make_absolute_path(path, true))};
+
+    int width = baseMap.size().width();
+    int height = baseMap.size().height();
+    int channels = baseMap.channels_count();
+
+    std::vector<glm::vec3> colors;
+    for (int i = 0; i < width; i++){
+        for (int j = 0; j < height; j++){
+            uint8_t* pixel = baseMap.data() + (i + j * width) * channels;
+            glm::vec3 color = {pixel[0], pixel[1], pixel[2]};
+            colors.push_back(color);
+        }
+    }
+    return colors;
+}
+
+void transformMap(std::vector<glm::vec3> &map, std::vector<Node> nodes){
+
 }

@@ -74,7 +74,8 @@ int main() {
         app.size_callback(width, height);
     }
 
-    checkMap();
+    //checkMap();
+    loadMap("images/map2.png");
     app.setup();
 
     // Loop until the user closes the window
