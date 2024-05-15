@@ -7,6 +7,28 @@
 #include "utils.hpp"
 #include "img/img.hpp"
 
+std::vector<Node> getNodes(std::vector<std::vector<int>> nodes)
+{
+    std::vector<Node> nodesStruct;
+    for (std::vector<int> node : nodes)
+    {
+        if (node.size() < 3 || node.size() > 4 || node[0] < 0 || node[1] < 0 || node[2] < 0)
+        {
+            std::cerr << "Erreur nombre d'arguments pour un noeud" << std::endl;
+            exit(1);
+        }
+        Node n;
+        n.id = node[0];
+        n.x = node[1];
+        n.y = node[2];
+        for (unsigned long i = 3; i < node.size(); i++)
+        {
+            n.noeudsConnectes.push_back(node[i]);
+        }
+        nodesStruct.push_back(n);
+    }
+}
+
 void checkMap()
 {
     std::ifstream mapItd(make_absolute_path("data/.itd", true));
@@ -14,7 +36,6 @@ void checkMap()
     std::vector<std::vector<int>> nodes;
     std::vector<std::string> lines;
     std::string line;
-    std::vector<Node> nodesStruct;
 
     while (std::getline(mapItd, line))
     {
@@ -59,24 +80,6 @@ void checkMap()
         }
     }
 
-    for (std::vector<int> node : nodes)
-    {
-        if (node.size() < 3 || node.size() > 4 || node[0] < 0 || node[1] < 0 || node[2] < 0)
-        {
-            std::cerr << "Erreur nombre d'arguments pour un noeud" << std::endl;
-            exit(1);
-        }
-        Node n;
-        n.id = node[0];
-        n.x = node[1];
-        n.y = node[2];
-        for (unsigned long i = 3; i < node.size(); i++)
-        {
-            n.noeudsConnectes.push_back(node[i]);
-        }
-        nodesStruct.push_back(n);
-    }
-
     // Vérifie fichier image
     try
     {
@@ -87,6 +90,4 @@ void checkMap()
         std::cerr << "Erreur fichier image" << std::endl;
         exit(1);
     }
-
-    exit(0);
 }
