@@ -7,6 +7,7 @@ class App {
 public:
     App();
 
+    void checkMap();
     void setup();
     void update();
     

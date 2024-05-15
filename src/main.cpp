@@ -28,15 +28,6 @@ int main() {
         return -1;
     }
 
-// Not working on apple with those hint for unknown reason
-// #ifdef __APPLE__
-//     // We need to explicitly ask for a 3.3 context on Mac
-//     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-//     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-//     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-//     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-// #endif
-
     // Create window
     GLFWwindow* window { glfwCreateWindow(1280, 720, "Window", nullptr, nullptr) };
     if (!window) {
@@ -82,6 +73,7 @@ int main() {
         app.size_callback(width, height);
     }
 
+    app.checkMap();
     app.setup();
 
     // Loop until the user closes the window
