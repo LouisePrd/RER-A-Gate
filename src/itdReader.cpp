@@ -13,51 +13,68 @@ void checkMap()
     std::vector<std::string> keyWords = {"ITD", "map", "path", "in", "out", "graph", "node"};
     std::vector<std::vector<int>> nodes;
     std::vector<std::string> lines;
-
     std::string line;
-    std::string lineNodes;
-    int nbLinesTotal = 0;
-    int nbLinesNodes = 0;
+    std::vector<Node> nodesStruct;
 
-    while (std::getline(mapItd, line)) // Sans les commentaires
+    while (std::getline(mapItd, line))
     {
         if (line[0] != '#')
         {
             lines.push_back(line);
         }
-        nbLinesTotal++;
     }
 
-    std::vector<std::string> values;
-    std::string delimiter = " ";
-    bool findKeyWords = false;
-    for (size_t i = 0; i < lines.size(); i++)
+    // On regarde le premier mot de chaque ligne
+    for (std::string line : lines)
     {
-        size_t pos = 0;
-        std::string token;
-        while ((pos = lines[i].find(delimiter)) != std::string::npos)
+        std::istringstream iss(line);
+        std::string word;
+        iss >> word;
+        if (word == "node")
         {
-            token = lines[i].substr(0, pos);
-            values.push_back(token);
-            lines[i].erase(0, pos + delimiter.length());
+            std::vector<int> node;
+            while (iss >> word)
+            {
+                node.push_back(std::stoi(word));
+            }
+            nodes.push_back(node);
         }
-        values.push_back(lines[i]);
     }
 
-    for (size_t i = 0; i < values.size(); i++)
+    for (std::string keyWord : keyWords)
     {
-        std::cout << values[i] << ' ';
-        
-    }
-
-    size_t nbValues = values.size();
-    for (size_t i = 0; i < nbValues; i++) // Vérifie valeurs RGB
-    {
-        if (nbValues != 9 || std::stoi(values[i]) < 0 || std::stoi(values[i]) > 255)
+        bool found = false;
+        for (std::string line : lines)
         {
-            std::cerr << "Erreur fichier pour : " << keyWords[i] << std::endl;
+            if (line.find(keyWord) != std::string::npos)
+            {
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+        {
+            std::cerr << "Erreur mot clé " << keyWord << " non trouvé" << std::endl;
             exit(1);
         }
+    }
+
+    for (std::vector<int> node : nodes)
+    {
+        if (node.size() < 3 || node.size() > 4 || node[0] < 0 || node[1] < 0 || node[2] < 0)
+        {
+            std::cerr << "Erreur nombre d'arguments pour un noeud" << std::endl;
+            exit(1);
+        }
+        Node n;
+        n.id = node[0];
+        n.x = node[1];
+        n.y = node[2];
+        for (unsigned long i = 3; i < node.size(); i++)
+        {
+            n.noeudsConnectes.push_back(node[i]);
+        }
+        nodesStruct.push_back(n);
     }
 
     // Vérifie fichier image
