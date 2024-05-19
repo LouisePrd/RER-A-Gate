@@ -7,6 +7,8 @@
 
 #include "App.hpp"
 #include "itdReader.hpp"
+#include "map.hpp"
+#include "utils.hpp"
 
 namespace {
     App& window_as_app(GLFWwindow* window)
@@ -74,9 +76,9 @@ int main() {
         app.size_callback(width, height);
     }
 
-    //checkMap();
-    loadMap("images/map2.png");
+    checkMap();
     app.setup();
+    img::Image baseMap{img::load(make_absolute_path("images/map2.png", true), 3, true)};
 
     // Loop until the user closes the window
     while (!glfwWindowShouldClose(window)) {
