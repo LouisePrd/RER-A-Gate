@@ -11,14 +11,13 @@
 #include "simpletext.h"
 #include "utils.hpp"
 #include "GLHelpers.hpp"
+#include "itdReader.hpp"
 
 App::App() : _previousTime(0.0), _viewSize(2.0)
 {
     // load what needs to be loaded here (for example textures)
-
-    img::Image test{img::load(make_absolute_path("images/level.png", true), 3, true)};
-
-    _texture = loadTexture(test);
+    //img::Image baseMap{img::load(make_absolute_path("images/map2.png", true), 3, true)};
+    //_texture = loadTexture(baseMap);
 }
 
 void App::setup()
@@ -40,7 +39,7 @@ void App::update()
     const double elapsedTime{currentTime - _previousTime};
     _previousTime = currentTime;
 
-    _angle += 10.0f * elapsedTime;
+    //_angle += 10.0f * elapsedTime;
     // _angle = std::fmod(_angle, 360.0f);
 
     render();
