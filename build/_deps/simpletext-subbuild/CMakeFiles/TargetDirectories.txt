@@ -1,3 +1,0 @@
-/Users/louiseperidy/Desktop/Tower-Defense/build/_deps/simpletext-subbuild/CMakeFiles/simpletext-populate.dir
-/Users/louiseperidy/Desktop/Tower-Defense/build/_deps/simpletext-subbuild/CMakeFiles/edit_cache.dir
-/Users/louiseperidy/Desktop/Tower-Defense/build/_deps/simpletext-subbuild/CMakeFiles/rebuild_cache.dir
