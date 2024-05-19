@@ -1,6 +1,7 @@
 #pragma once
 
 #include "img/img.hpp"
+#include "itdReader.hpp"
 #include <vector>
 
 struct Map {
