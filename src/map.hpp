@@ -5,25 +5,20 @@
 #include <vector>
 #include <array>
 
-enum typeCase {
-    START,
-    END,
-    PATH,
-};
-
 struct caseMap {
     int x;
     int y;
     std::array<float, 3> color;
-    Node node = {};
     typeCase type;
+    Node node = {};
 };
-
 
 struct Map {
     int height;
     int width;
     std::vector<std::vector<caseMap>> listCases;
+
+    void setCaseType(int x, int y, typeCase type);
 };
 
 Map checkImage(img::Image &baseMap);
