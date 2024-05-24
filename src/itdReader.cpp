@@ -30,9 +30,10 @@ std::vector<Node> getNodes(std::vector<std::vector<int>> nodes)
         }
         nodesStruct.push_back(n);
     }
+    return nodesStruct;
 }
 
-void checkMap()
+std::vector<std::vector<int>> checkMap()
 {
     std::ifstream mapItd(make_absolute_path("data/.itd", true));
     std::vector<std::string> keyWords = {"ITD", "map", "path", "in", "out", "graph", "node"};
@@ -93,6 +94,8 @@ void checkMap()
         std::cerr << "Erreur fichier image" << std::endl;
         exit(1);
     }
+
+    return nodes;
 
 }
 

@@ -13,4 +13,4 @@ struct Node
 };
 
 std::vector<Node> getNodes(std::vector<std::vector<int>> nodes);
-void checkMap();
+std::vector<std::vector<int>> checkMap();

@@ -76,10 +76,12 @@ int main() {
         app.size_callback(width, height);
     }
 
-    checkMap();
     app.setup();
     img::Image baseMap{img::load(make_absolute_path("images/map2.png", true), 3, true)};
+    std::vector<std::vector<int>> nodes = checkMap();
     checkImage(baseMap);
+    getNodes(nodes);
+    compareMapItd(getNodes(nodes), checkImage(baseMap));
 
     // Loop until the user closes the window
     while (!glfwWindowShouldClose(window)) {
