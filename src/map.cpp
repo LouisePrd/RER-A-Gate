@@ -36,24 +36,24 @@ Map checkImage(img::Image &baseMap)
     }
 
     // on affiche les cases
-    for (int i = 0; i < listCases.size(); i++)
+    /*for (unsigned long i = 0; i < listCases.size(); i++)
     {
         caseMap currentCase = listCases[i];
         std::cout << "Case " << i << " : " << currentCase.x << " " << currentCase.y << " ";
         std::cout << currentCase.color[0] << " " << currentCase.color[1] << " " << currentCase.color[2] << " ";
         displayEnum(currentCase.type);
-    }
+    }*/
 
     Map map{static_cast<int>(baseMap.height()), static_cast<int>(baseMap.width()), listCases};
     return map;
 }
 
-void compareMapItd(std::vector<Node> nodes, Map map)
+Map compareMapItd(std::vector<Node> nodes, Map map)
 {
-    for (int i = 0; i < nodes.size(); i++)
+    for (unsigned long i = 0; i < nodes.size(); i++)
     {
         Node node = nodes[i]; // on récupère le noeud
-        for (int j = 0; j < map.listCases.size(); j++)
+        for (unsigned long j = 0; j < map.listCases.size(); j++)
         {
             caseMap currentCase = map.listCases[j]; // on récupère la case
             if (node.x == currentCase.x && node.y == currentCase.y)
@@ -62,4 +62,5 @@ void compareMapItd(std::vector<Node> nodes, Map map)
             }
         }
     }
+    return map;
 }

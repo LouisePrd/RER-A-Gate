@@ -20,4 +20,4 @@ struct Map {
 };
 
 Map checkImage(img::Image &baseMap);
-void compareMapItd(std::vector<Node> nodes, Map map);
+Map compareMapItd(std::vector<Node> nodes, Map map);

@@ -77,12 +77,6 @@ int main() {
     }
 
     app.setup();
-    img::Image baseMap{img::load(make_absolute_path("images/mapRGB.png", true), 3, true)};
-    std::vector<std::vector<int>> nodes = checkMap();
-    checkImage(baseMap);
-    getNodes(nodes);
-    compareMapItd(getNodes(nodes), checkImage(baseMap));
-    std::array<typeByColor, 3> typesByColor = getItdAllTypes();
 
     // Loop until the user closes the window
     while (!glfwWindowShouldClose(window)) {

@@ -1,4 +1,6 @@
 #include "App.hpp"
+#include "itdReader.hpp"
+#include "map.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -12,19 +14,63 @@
 #include "utils.hpp"
 #include "GLHelpers.hpp"
 #include "itdReader.hpp"
+#include <stb_image/stb_image.h>
 
 App::App() : _previousTime(0.0), _viewSize(2.0)
 {
     // load what needs to be loaded here (for example textures)
-    //img::Image baseMap{img::load(make_absolute_path("images/map2.png", true), 3, true)};
+    // img::Image baseMap{img::load(make_absolute_path("images/map2.png", true), 3, true)};
     //_texture = loadTexture(baseMap);
+    img::Image grassTile1{img::load(make_absolute_path("images/grass-tiles/grass-tile-1.png", true), 3, true)};
+    // Création d'une texture
+    _texture = loadTexture(grassTile1);
 }
 
 void App::setup()
 {
+    std::cout << "Launching map" << std::endl;
+    img::Image baseMap{img::load(make_absolute_path("images/mapRGB.png", true), 3, true)};
+    std::vector<std::vector<int>> nodes = checkMap();
+    checkImage(baseMap);
+    getNodes(nodes);
+    Map map = compareMapItd(getNodes(nodes), checkImage(baseMap));
+
+    // Chargement d'une image
+    int x;
+    int y;
+    int n;
+    std::string path = make_absolute_path("images/grass-tiles/grass-tile-1.png", true);
+    unsigned char *image = stbi_load(path.c_str(), &x, &y, &n, 0);
+
+    if (image == NULL)
+    {
+        std::cout << "Image not loaded" << std::endl;
+        exit(1);
+    }
+    else
+    {
+        std::cout << "Image loaded" << std::endl;
+    }
+
+    // Texture
+    GLuint texture;
+    glGenTextures(1, &texture);
+    // On attache la texture
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    // On libère l'espace
+    stbi_image_free(image);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    // on créé un quad pour afficher la texture
+    // ici
+    glDisable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     // Set the clear color to a nice blue
     glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
-
     // Setup the text renderer with blending enabled and white text color
     TextRenderer.ResetFont();
     TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::WHITE);
@@ -52,20 +98,12 @@ void App::render()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // render exemple quad
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glBegin(GL_QUADS);
-    glVertex2f(-0.5f, -0.5f);
-    glVertex2f(0.5f, -0.5f);
-    glVertex2f(0.5f, 0.5f);
-    glVertex2f(-0.5f, 0.5f);
-    glEnd();
-
     glPushMatrix();
     glScalef(0.8f, 0.8f, 0.8f);
     glRotatef(_angle, 0.0f, 0.0f, 1.0f);
     draw_quad_with_texture(_texture);
     glPopMatrix();
+
 
     TextRenderer.Label("Example of using SimpleText library", _width / 2, 20, SimpleText::CENTER);
 
