@@ -9,9 +9,15 @@
 
 #include "tower.hpp"
 
-unsigned chebyshev(int x1, int y1, int x2, int y2) {
-    std::max(std::abs(y2 - y1), std::abs(x2 - x1));
+int chebyshev(int x1, int y1, int x2, int y2) {
+    return std::max(std::abs(y2 - y1), std::abs(x2 - x1));
 }
 
-
-
+// ---- Instances des tours
+// Valeurs temporaires arbitraires en score sur 10
+// ==== équilibrée
+Tower typeA { "TypeA", 7, 7, 7, 10 };
+// ==== + puissante - cadence
+Tower typeB { "TypeB", 10, 7, 3, 8 };
+// ==== - puissante + cadence
+Tower typeC { "TypeC", 5, 5, 10, 8 };
