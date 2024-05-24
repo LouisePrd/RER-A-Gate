@@ -82,6 +82,7 @@ int main() {
     checkImage(baseMap);
     getNodes(nodes);
     compareMapItd(getNodes(nodes), checkImage(baseMap));
+    std::array<typeByColor, 3> typesByColor = getItdAllTypes();
 
     // Loop until the user closes the window
     while (!glfwWindowShouldClose(window)) {
