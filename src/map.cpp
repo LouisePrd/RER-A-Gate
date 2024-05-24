@@ -4,14 +4,9 @@
 #include <glm/glm.hpp>
 #include "itdReader.hpp"
 
-void Map::setCaseType(int x, int y, typeCase type)
-{
-    listCases[y][x].type = type;
-}
-
 Map checkImage(img::Image &baseMap)
 {
-    std::vector<std::vector<caseMap>> listCases;
+    std::vector<caseMap> listCases;
     int size = baseMap.width() * baseMap.height();
     for (int i = 0; i < size; i++)
     {
@@ -29,11 +24,24 @@ Map checkImage(img::Image &baseMap)
             {
                 caseMap currentcaseMap{x, y, colorTab, getItdAllTypes()[j].type};
                 listCases.push_back({currentcaseMap});
-            } else {
+                break;
+            }
+            else
+            {
                 caseMap currentcaseMap{x, y, colorTab, typeCase::none};
                 listCases.push_back({currentcaseMap});
+                break;
             }
         }
+    }
+
+    // on affiche les cases
+    for (int i = 0; i < listCases.size(); i++)
+    {
+        caseMap currentCase = listCases[i];
+        std::cout << "Case " << i << " : " << currentCase.x << " " << currentCase.y << " ";
+        std::cout << currentCase.color[0] << " " << currentCase.color[1] << " " << currentCase.color[2] << " ";
+        displayEnum(currentCase.type);
     }
 
     Map map{static_cast<int>(baseMap.height()), static_cast<int>(baseMap.width()), listCases};
@@ -47,24 +55,11 @@ void compareMapItd(std::vector<Node> nodes, Map map)
         Node node = nodes[i]; // on récupère le noeud
         for (int j = 0; j < map.listCases.size(); j++)
         {
-            for (int k = 0; k < map.listCases[j].size(); k++)
+            caseMap currentCase = map.listCases[j]; // on récupère la case
+            if (node.x == currentCase.x && node.y == currentCase.y)
             {
-                if (node.x == map.listCases[j][k].x && node.y == map.listCases[j][k].y)
-                {
-                    map.listCases[j][k].node = node;
-                }
+                node.id = j;
             }
-        }
-    }
-
-    // on affiche les cases
-    for (int i = 0; i < map.listCases.size(); i++)
-    {
-        for (int j = 0; j < map.listCases[i].size(); j++)
-        {
-            std::cout << "Case " << map.listCases[i][j].x << " " << map.listCases[i][j].y << " type ";
-            displayEnum(map.listCases[i][j].type);
-            
         }
     }
 }

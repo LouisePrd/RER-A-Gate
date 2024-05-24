@@ -16,9 +16,7 @@ struct caseMap {
 struct Map {
     int height;
     int width;
-    std::vector<std::vector<caseMap>> listCases;
-
-    void setCaseType(int x, int y, typeCase type);
+    std::vector<caseMap> listCases;
 };
 
 Map checkImage(img::Image &baseMap);
