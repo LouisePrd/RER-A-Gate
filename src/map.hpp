@@ -3,12 +3,18 @@
 #include "img/img.hpp"
 #include "itdReader.hpp"
 #include <vector>
+#include <array>
+
+struct pixel {
+    int x;
+    int y;
+    std::array<float, 3> color;
+};
 
 struct Map {
     int height;
     int width;
-    std::vector<Node> nodes;
-    std::vector<std::vector<int>> map;
+    std::vector<std::vector<pixel>> listPixels;
 };
 
-void drawMap(img::Image &baseMap);
+Map checkImage(img::Image &baseMap);

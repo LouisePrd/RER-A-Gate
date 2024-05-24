@@ -79,6 +79,7 @@ int main() {
     checkMap();
     app.setup();
     img::Image baseMap{img::load(make_absolute_path("images/map2.png", true), 3, true)};
+    checkImage(baseMap);
 
     // Loop until the user closes the window
     while (!glfwWindowShouldClose(window)) {
