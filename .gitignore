@@ -3,6 +3,9 @@
 
 # Production
 /build
+build/
+build
+*/build
 
 # Generated files
 .docusaurus
@@ -21,7 +24,6 @@ yarn-error.log*
 
 # embedded C++ project
 */bin
-*/build
 
 */.vscode
 */src/CMakeFiles.txt
