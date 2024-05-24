@@ -77,7 +77,7 @@ int main() {
     }
 
     app.setup();
-    img::Image baseMap{img::load(make_absolute_path("images/map2.png", true), 3, true)};
+    img::Image baseMap{img::load(make_absolute_path("images/mapRGB.png", true), 3, true)};
     std::vector<std::vector<int>> nodes = checkMap();
     checkImage(baseMap);
     getNodes(nodes);

@@ -21,8 +21,19 @@ Map checkImage(img::Image &baseMap)
         color.r = baseMap.data()[i * 3];
         color.g = baseMap.data()[i * 3 + 1];
         color.b = baseMap.data()[i * 3 + 2];
-        caseMap currentcaseMap{x, y, {color.r, color.g, color.b}};
-        listCases.push_back({currentcaseMap});
+        // on vérifie si la couleur correspond à un type de case
+        std::array<float, 3> colorTab = {color.r, color.g, color.b};
+        for (int j = 0; j < 3; j++)
+        {
+            if (colorTab == getItdAllTypes()[j].color && getItdAllTypes()[j].type != typeCase::none)
+            {
+                caseMap currentcaseMap{x, y, colorTab, getItdAllTypes()[j].type};
+                listCases.push_back({currentcaseMap});
+            } else {
+                caseMap currentcaseMap{x, y, colorTab, typeCase::none};
+                listCases.push_back({currentcaseMap});
+            }
+        }
     }
 
     Map map{static_cast<int>(baseMap.height()), static_cast<int>(baseMap.width()), listCases};
@@ -43,6 +54,17 @@ void compareMapItd(std::vector<Node> nodes, Map map)
                     map.listCases[j][k].node = node;
                 }
             }
+        }
+    }
+
+    // on affiche les cases
+    for (int i = 0; i < map.listCases.size(); i++)
+    {
+        for (int j = 0; j < map.listCases[i].size(); j++)
+        {
+            std::cout << "Case " << map.listCases[i][j].x << " " << map.listCases[i][j].y << " type ";
+            displayEnum(map.listCases[i][j].type);
+            
         }
     }
 }

@@ -3,11 +3,13 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include <img/img.hpp>
+#include <array>
 
 enum typeCase {
     path,
     in,
     out,
+    none
 };
 
 struct Node

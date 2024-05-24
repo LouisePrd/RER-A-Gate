@@ -26,6 +26,9 @@ void displayEnum(typeCase type)
     case typeCase::out:
         std::cout << "out" << std::endl;
         break;
+    case typeCase::none:
+        std::cout << "none" << std::endl;
+        break;
     default:
         std::cout << "Error" << std::endl;
         break;
@@ -137,7 +140,8 @@ std::array<typeByColor, 3> getItdAllTypes()
                 std::istringstream iss(line);
                 std::string word;
                 iss >> word;
-                tbc.type = word == "path" ? typeCase::path : word == "in" ? typeCase::in: typeCase::out;
+                tbc.type = word == "path" ? typeCase::path : word == "in" ? typeCase::in
+                                                                          : typeCase::out;
                 for (int i = 0; i < 3; i++)
                 {
                     iss >> word;
