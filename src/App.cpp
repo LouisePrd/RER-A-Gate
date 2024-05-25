@@ -1,6 +1,7 @@
 #include "App.hpp"
 #include "itdReader.hpp"
 #include "map.hpp"
+#include <random>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -16,14 +17,22 @@
 #include "itdReader.hpp"
 #include <stb_image/stb_image.h>
 
+Map map;
+
 App::App() : _previousTime(0.0), _viewSize(2.0)
 {
-    // load what needs to be loaded here (for example textures)
-    // img::Image baseMap{img::load(make_absolute_path("images/map2.png", true), 3, true)};
-    //_texture = loadTexture(baseMap);
     img::Image grassTile1{img::load(make_absolute_path("images/grass-tiles/grass-tile-1.png", true), 3, true)};
-    // Création d'une texture
-    _texture = loadTexture(grassTile1);
+    img::Image grassTile2{img::load(make_absolute_path("images/grass-tiles/grass-tile-2.png", true), 3, true)};
+    img::Image grassTile3{img::load(make_absolute_path("images/grass-tiles/grass-tile-3.png", true), 3, true)};
+    img::Image railsDroits1{img::load(make_absolute_path("images/rails-tiles/rails-droit-1.png", true), 3, true)};
+    img::Image in{img::load(make_absolute_path("images/in-out/in.png", true), 3, true)};
+    img::Image out{img::load(make_absolute_path("images/in-out/out.png", true), 3, true)};
+    _textures.push_back(loadTexture(grassTile1));
+    _textures.push_back(loadTexture(grassTile2));
+    _textures.push_back(loadTexture(grassTile3));
+    _textures.push_back(loadTexture(railsDroits1));
+    _textures.push_back(loadTexture(in));
+    _textures.push_back(loadTexture(out));
 }
 
 void App::setup()
@@ -33,41 +42,7 @@ void App::setup()
     std::vector<std::vector<int>> nodes = checkMap();
     checkImage(baseMap);
     getNodes(nodes);
-    Map map = compareMapItd(getNodes(nodes), checkImage(baseMap));
-
-    // Chargement d'une image
-    int x;
-    int y;
-    int n;
-    std::string path = make_absolute_path("images/grass-tiles/grass-tile-1.png", true);
-    unsigned char *image = stbi_load(path.c_str(), &x, &y, &n, 0);
-
-    if (image == NULL)
-    {
-        std::cout << "Image not loaded" << std::endl;
-        exit(1);
-    }
-    else
-    {
-        std::cout << "Image loaded" << std::endl;
-    }
-
-    // Texture
-    GLuint texture;
-    glGenTextures(1, &texture);
-    // On attache la texture
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    // On libère l'espace
-    stbi_image_free(image);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    // on créé un quad pour afficher la texture
-    // ici
-    glDisable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    map = compareMapItd(getNodes(nodes), checkImage(baseMap));
 
     // Set the clear color to a nice blue
     glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
@@ -84,7 +59,6 @@ void App::update()
     const double currentTime{glfwGetTime()};
     const double elapsedTime{currentTime - _previousTime};
     _previousTime = currentTime;
-
     //_angle += 10.0f * elapsedTime;
     // _angle = std::fmod(_angle, 360.0f);
 
@@ -104,6 +78,46 @@ void App::render()
     draw_quad_with_texture(_texture);
     glPopMatrix();
 
+    // on met la texture sur chaque case
+    for (int i = 0; i < 64; i++)
+    {
+        glEnable(GL_TEXTURE_2D);
+        switch (map.listCases[i].type)
+        {
+        case typeCase::none:
+            _texture = _textures[i % 3];
+            break;
+        case typeCase::path:
+            _texture = _textures[3];
+            break;
+        case typeCase::in:
+            _texture = _textures[4];
+            break;
+        case typeCase::out:
+            _texture = _textures[5];
+            break;
+        default:
+            break;
+        }
+        glBindTexture(GL_TEXTURE_2D, _texture);
+
+        glColor3ub(255, 255, 255);
+        glBegin(GL_QUADS);
+        glTexCoord2d(0, 0);
+        glVertex2f(-0.5f + (i % 8) * 0.125f, -0.5f + (i / 8) * 0.125f);
+
+        glTexCoord2d(1, 0);
+        glVertex2f(-0.5f + (i % 8 + 1) * 0.125f, -0.5f + (i / 8) * 0.125f);
+
+        glTexCoord2d(1, 1);
+        glVertex2f(-0.5f + (i % 8 + 1) * 0.125f, -0.5f + (i / 8 + 1) * 0.125f);
+
+        glTexCoord2d(0, 1);
+        glVertex2f(-0.5f + (i % 8) * 0.125f, -0.5f + (i / 8 + 1) * 0.125f);
+        glEnd();
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDisable(GL_TEXTURE_2D);
+    }
 
     TextRenderer.Label("Example of using SimpleText library", _width / 2, 20, SimpleText::CENTER);
 

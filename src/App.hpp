@@ -2,6 +2,8 @@
 
 #include <glad/glad.h>
 #include <simpletext.h>
+#include <GLFW/glfw3.h>
+#include <vector>
 
 class App {
 public:
@@ -28,6 +30,6 @@ private:
     // Add your variables here
     GLuint _texture {};
     float _angle {};
-
+    std::vector<GLuint> _textures;
     SimpleText TextRenderer {};
 };
