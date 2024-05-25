@@ -20,13 +20,13 @@ Map checkImage(img::Image &baseMap)
         std::array<float, 3> colorTab = {color.r, color.g, color.b};
         for (int j = 0; j < 3; j++)
         {
-            if (colorTab == getItdAllTypes()[j].color && getItdAllTypes()[j].type != typeCase::none)
+            if (colorTab == getItdAllTypes()[j].color) // si la couleur correspond à un type de case
             {
                 caseMap currentcaseMap{x, y, colorTab, getItdAllTypes()[j].type};
                 listCases.push_back({currentcaseMap});
                 break;
             }
-            else
+            else if (j == 2) // si la couleur ne correspond à aucun type de case
             {
                 caseMap currentcaseMap{x, y, colorTab, typeCase::none};
                 listCases.push_back({currentcaseMap});
@@ -36,13 +36,11 @@ Map checkImage(img::Image &baseMap)
     }
 
     // on affiche les cases
-    /*for (unsigned long i = 0; i < listCases.size(); i++)
+    for (unsigned long i = 0; i < listCases.size(); i++)
     {
-        caseMap currentCase = listCases[i];
-        std::cout << "Case " << i << " : " << currentCase.x << " " << currentCase.y << " ";
-        std::cout << currentCase.color[0] << " " << currentCase.color[1] << " " << currentCase.color[2] << " ";
-        displayEnum(currentCase.type);
-    }*/
+        //caseMap currentCase = listCases[i];
+        //displayEnum(currentCase.type);
+    }
 
     Map map{static_cast<int>(baseMap.height()), static_cast<int>(baseMap.width()), listCases};
     return map;

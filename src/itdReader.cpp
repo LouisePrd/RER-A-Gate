@@ -141,14 +141,14 @@ std::array<typeByColor, 3> getItdAllTypes()
                 std::string word;
                 iss >> word;
                 tbc.type = word == "path" ? typeCase::path : word == "in" ? typeCase::in
-                                                                          : typeCase::out;
+                                                                          : typeCase::out; // on récupère le type
                 for (int i = 0; i < 3; i++)
                 {
                     iss >> word;
                     tbc.color[i] = std::stof(word);
                 }
-                typesByColor[tbc.type] = tbc;
-            }
+                    typesByColor[tbc.type] = tbc;
+            } 
         }
     }
 
