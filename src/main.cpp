@@ -9,6 +9,8 @@
 #include "itdReader.hpp"
 #include "map.hpp"
 #include "utils.hpp"
+#include "tower.cpp"
+#include "glad/glad.h"
 
 namespace {
     App& window_as_app(GLFWwindow* window)
@@ -19,6 +21,14 @@ namespace {
 
 // Optional: limit the frame rate
 constexpr double TARGET_TIME_FOR_FRAME { 1.0 / 60.0 };
+
+void mouseButtonCallback(GLFWwindow* window, int button, int action) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+        std::cout << "Cursor position: (" << xpos << ", " << ypos << ")" << std::endl;
+    }
+}
 
 int main() {
     // Set an error callback to display glfw errors
@@ -38,6 +48,8 @@ int main() {
         glfwTerminate();
         return -1;
     }
+
+    // glfwSetMouseButtonCallback(window, mouseButtonCallback);
 
     // Make the window's context current
     glfwMakeContextCurrent(window);

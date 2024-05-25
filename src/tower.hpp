@@ -11,6 +11,7 @@ struct Tower
     int price;
 };
 
-// --- Méthode Chebyshev : portée en diagonale
+// --- Méthode Chebyshev : distance en diagonale
 int chebyshev(int x1, int y1, int x2, int y2);
 
+void mouseButtonCallback(GLFWwindow* window, int button, int action);
