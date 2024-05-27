@@ -9,7 +9,7 @@
 #include "itdReader.hpp"
 #include "map.hpp"
 #include "utils.hpp"
-#include "tower.cpp"
+#include "tower.hpp"
 #include "glad/glad.h"
 
 namespace {

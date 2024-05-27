@@ -8,3 +8,5 @@ struct Enemy
     int speed;
     int loot;
 };
+
+void moveOneEnemy(Enemy &enemies, int x, int y);

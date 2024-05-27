@@ -1,7 +1,7 @@
 #include "App.hpp"
 #include "itdReader.hpp"
 #include "map.hpp"
-#include <random>
+#include "enemy.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -18,6 +18,8 @@
 #include <stb_image/stb_image.h>
 
 Map map;
+int sizex = 8;
+int sizey = 8;
 
 App::App() : _previousTime(0.0), _viewSize(2.0)
 {
@@ -45,10 +47,10 @@ void App::setup()
     map = compareMapItd(getNodes(nodes), checkImage(baseMap));
 
     // Set the clear color to a nice blue
-    glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
+    glClearColor(0.0f, 0.745f, 0.682f, 1.0f);
     // Setup the text renderer with blending enabled and white text color
     TextRenderer.ResetFont();
-    TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::WHITE);
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
     TextRenderer.SetColorf(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
     TextRenderer.EnableBlending(true);
 }
@@ -78,8 +80,9 @@ void App::render()
     draw_quad_with_texture(_texture);
     glPopMatrix();
 
+    int sizeTotal = sizex * sizey;
     // on met la texture sur chaque case
-    for (int i = 0; i < 64; i++)
+    for (int i = 0; i < sizeTotal; i++)
     {
         glEnable(GL_TEXTURE_2D);
         switch (map.listCases[i].type)
@@ -104,22 +107,23 @@ void App::render()
         glColor3ub(255, 255, 255);
         glBegin(GL_QUADS);
         glTexCoord2d(0, 0);
-        glVertex2f(-0.5f + (i % 8) * 0.125f, -0.5f + (i / 8) * 0.125f);
+        glVertex2f(-0.5f + (i % sizex) * 0.125f, -0.5f + (i / sizey) * 0.125f);
 
         glTexCoord2d(1, 0);
-        glVertex2f(-0.5f + (i % 8 + 1) * 0.125f, -0.5f + (i / 8) * 0.125f);
+        glVertex2f(-0.5f + (i % sizex + 1) * 0.125f, -0.5f + (i / sizey) * 0.125f);
 
         glTexCoord2d(1, 1);
-        glVertex2f(-0.5f + (i % 8 + 1) * 0.125f, -0.5f + (i / 8 + 1) * 0.125f);
+        glVertex2f(-0.5f + (i % sizex + 1) * 0.125f, -0.5f + (i / sizey + 1) * 0.125f);
 
         glTexCoord2d(0, 1);
-        glVertex2f(-0.5f + (i % 8) * 0.125f, -0.5f + (i / 8 + 1) * 0.125f);
+        glVertex2f(-0.5f + (i % sizex) * 0.125f, -0.5f + (i / sizey + 1) * 0.125f);
         glEnd();
         glBindTexture(GL_TEXTURE_2D, 0);
         glDisable(GL_TEXTURE_2D);
     }
 
-    TextRenderer.Label("Example of using SimpleText library", _width / 2, 20, SimpleText::CENTER);
+    TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_64);
+    TextRenderer.Label("RER A GATE", _width / 2, 60, SimpleText::CENTER);
 
     // Without set precision
     // const std::string angle_label_text { "Angle: " + std::to_string(_angle) };
@@ -127,12 +131,12 @@ void App::render()
     // const std::string angle_label_text { std::format("Angle: {:.2f}", _angle) };
 
     // Using stringstream to format the string with fixed precision
-    std::string angle_label_text{};
+    /*std::string angle_label_text{};
     std::stringstream stream{};
     stream << std::fixed << "Angle: " << std::setprecision(2) << _angle;
     angle_label_text = stream.str();
 
-    TextRenderer.Label(angle_label_text.c_str(), _width / 2, _height - 4, SimpleText::CENTER);
+    TextRenderer.Label(angle_label_text.c_str(), _width / 2, _height - 4, SimpleText::CENTER);*/
 
     TextRenderer.Render();
 }
@@ -141,8 +145,25 @@ void App::key_callback(int /*key*/, int /*scancode*/, int /*action*/, int /*mods
 {
 }
 
-void App::mouse_button_callback(int /*button*/, int /*action*/, int /*mods*/)
+void App::mouse_button_callback(int button, int action, int mods)
 {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+    {
+        double xpos, ypos;
+        int width, height;
+        glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
+        glfwGetCursorPos(glfwGetCurrentContext(), &xpos, &ypos);
+        const float aspectRatio{width / (float)height};
+        float posMapX = (xpos / width - 0.5f) * _viewSize * aspectRatio;
+        float posMapY = (0.5f - ypos / height) * _viewSize;
+        if ((posMapX >= -0.5f && posMapX <= 0.5f) && (posMapY >= -0.5f && posMapY <= 0.5f))
+        {
+            std::cout << "Dans la map" << std::endl;
+        } else {
+            std::cout << "Hors de la map" << std::endl;
+        }
+
+    }
 }
 
 void App::scroll_callback(double /*xoffset*/, double /*yoffset*/)
