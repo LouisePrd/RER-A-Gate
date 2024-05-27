@@ -139,9 +139,6 @@ void App::render()
     TextRenderer.Label(angle_label_text.c_str(), _width / 2, _height - 4, SimpleText::CENTER);*/
 
     TextRenderer.Render();
-
-    // Swap the front and back buffers to display the rendered image
-    glfwSwapBuffers(glfwGetCurrentContext());
 }
 
 void App::key_callback(int /*key*/, int /*scancode*/, int /*action*/, int /*mods*/)
