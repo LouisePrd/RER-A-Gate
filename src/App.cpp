@@ -16,6 +16,7 @@
 #include "GLHelpers.hpp"
 #include "itdReader.hpp"
 #include <stb_image/stb_image.h>
+#include <map>
 
 Map map;
 int sizex = 8;
@@ -46,8 +47,7 @@ void App::setup()
     getNodes(nodes);
     map = compareMapItd(getNodes(nodes), checkImage(baseMap));
 
-    // Set the clear color to a nice blue
-    glClearColor(0.0f, 0.745f, 0.682f, 1.0f);
+    glClearColor(0.0f, 0.745f, 0.682f, 1.0f); // #00BEBF
     // Setup the text renderer with blending enabled and white text color
     TextRenderer.ResetFont();
     TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
@@ -57,12 +57,13 @@ void App::setup()
 
 void App::update()
 {
-
-    const double currentTime{glfwGetTime()};
-    const double elapsedTime{currentTime - _previousTime};
-    _previousTime = currentTime;
+    // const double currentTime{glfwGetTime()};
+    // const double elapsedTime{currentTime - _previousTime};
+    //_previousTime = currentTime;
     //_angle += 10.0f * elapsedTime;
-    // _angle = std::fmod(_angle, 360.0f);
+    //  _angle = std::fmod(_angle, 360.0f);
+    // Enemy enemy {7, 0, 0, 0, 0};
+    // enemy.move(sizex, sizey, map);
 
     render();
 }
@@ -80,9 +81,8 @@ void App::render()
     draw_quad_with_texture(_texture);
     glPopMatrix();
 
-    int sizeTotal = sizex * sizey;
-    // on met la texture sur chaque case
-    for (int i = 0; i < sizeTotal; i++)
+    // texture sur chaque case
+    for (int i = 0; i < sizex * sizey; i++)
     {
         glEnable(GL_TEXTURE_2D);
         switch (map.listCases[i].type)
@@ -139,6 +139,9 @@ void App::render()
     TextRenderer.Label(angle_label_text.c_str(), _width / 2, _height - 4, SimpleText::CENTER);*/
 
     TextRenderer.Render();
+
+    // Swap the front and back buffers to display the rendered image
+    glfwSwapBuffers(glfwGetCurrentContext());
 }
 
 void App::key_callback(int /*key*/, int /*scancode*/, int /*action*/, int /*mods*/)
@@ -159,10 +162,8 @@ void App::mouse_button_callback(int button, int action, int mods)
         if ((posMapX >= -0.5f && posMapX <= 0.5f) && (posMapY >= -0.5f && posMapY <= 0.5f))
         {
             std::cout << "Dans la map" << std::endl;
-        } else {
-            std::cout << "Hors de la map" << std::endl;
+            // code pour ajouter une tour
         }
-
     }
 }
 
@@ -195,4 +196,18 @@ void App::size_callback(int width, int height)
     {
         glOrtho(-_viewSize / 2.0f, _viewSize / 2.0f, -_viewSize / 2.0f / aspectRatio, _viewSize / 2.0f / aspectRatio, -1.0f, 1.0f);
     }
+}
+
+// fonction pour mapper texture et type de case
+// pas implémentée : opti ?
+std::map<GLuint, typeCase> App::mappingTexture()
+{
+    std::map<GLuint, typeCase> textureMap;
+    textureMap[loadTexture(img::Image{img::load(make_absolute_path("images/grass-tiles/grass-tile-1.png", true), 3, true)})] = typeCase::none;
+    textureMap[loadTexture(img::Image{img::load(make_absolute_path("images/grass-tiles/grass-tile-2.png", true), 3, true)})] = typeCase::none;
+    textureMap[loadTexture(img::Image{img::load(make_absolute_path("images/grass-tiles/grass-tile-3.png", true), 3, true)})] = typeCase::none;
+    textureMap[loadTexture(img::Image{img::load(make_absolute_path("images/rails-tiles/rails-droit-1.png", true), 3, true)})] = typeCase::path;
+    textureMap[loadTexture(img::Image{img::load(make_absolute_path("images/in-out/in.png", true), 3, true)})] = typeCase::in;
+    textureMap[loadTexture(img::Image{img::load(make_absolute_path("images/in-out/out.png", true), 3, true)})] = typeCase::out;
+    return textureMap;
 }

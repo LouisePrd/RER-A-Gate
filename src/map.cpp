@@ -35,7 +35,7 @@ Map checkImage(img::Image &baseMap)
         }
     }
 
-    // on affiche les cases
+    // pour test affichage des types de cases
     for (unsigned long i = 0; i < listCases.size(); i++)
     {
         //caseMap currentCase = listCases[i];

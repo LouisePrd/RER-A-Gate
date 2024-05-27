@@ -4,6 +4,9 @@
 #include <simpletext.h>
 #include <GLFW/glfw3.h>
 #include <vector>
+#include <map>
+#include "utils.hpp"
+#include "itdReader.hpp"
 
 class App {
 public:
@@ -11,6 +14,7 @@ public:
 
     void setup();
     void update();
+    std::map<GLuint, typeCase> mappingTexture();
     
     // GLFW callbacks binding
     void key_callback(int key, int scancode, int action, int mods);
