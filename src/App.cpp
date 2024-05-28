@@ -238,13 +238,13 @@ void App::displayEnemy(int idTexture, float x1, float y1, float x2, float y2, fl
     glColor3ub(255, 255, 255);
     glBegin(GL_QUADS);
     glTexCoord2d(0, 0);
-    glVertex2f(x1, -y4);
+    glVertex2f(x1, y1);
     glTexCoord2d(1, 0);
-    glVertex2f(x2, -y3);
+    glVertex2f(x2, y2);
     glTexCoord2d(1, 1);
-    glVertex2f(x3, -y2);
+    glVertex2f(x3, y3);
     glTexCoord2d(0, 1);
-    glVertex2f(x4, -y1);
+    glVertex2f(x4, y4);
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
