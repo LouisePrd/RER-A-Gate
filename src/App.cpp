@@ -54,18 +54,14 @@ void App::update()
 
     static double startTime = -1.0;
     if (startTime < 0.0)
-    {
         startTime = currentTime;
-    }
 
-    if (currentTime - startTime > 1.0)
-    {
+    typeCase type = map.listCases[enemy.x + enemy.y * sizex].type;
+    if (currentTime - startTime > 1.0 && type != typeCase::out)
         enemy.move(sizex, sizey, map, elapsedTime);
-    }
 
     render();
 }
-
 
 void App::render()
 {
