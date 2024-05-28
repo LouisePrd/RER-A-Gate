@@ -19,8 +19,9 @@
 #include <map>
 
 Map map;
-int sizex = 8;
-int sizey = 8;
+int sizex = 0;
+int sizey = 0;
+Enemy enemy{0, 0, 10, 1, 1};
 
 App::App() : _previousTime(0.0), _viewSize(2.0)
 {
@@ -50,10 +51,21 @@ void App::update()
     const double currentTime{glfwGetTime()};
     const double elapsedTime{currentTime - _previousTime};
     _previousTime = currentTime;
-    //_angle += 10.0f * elapsedTime;
-    //  _angle = std::fmod(_angle, 360.0f);
+
+    static double startTime = -1.0;
+    if (startTime < 0.0)
+    {
+        startTime = currentTime;
+    }
+
+    if (currentTime - startTime > 1.0)
+    {
+        enemy.move(sizex, sizey, map, elapsedTime);
+    }
+
     render();
 }
+
 
 void App::render()
 {
@@ -71,6 +83,7 @@ void App::render()
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_64);
     TextRenderer.Label("RER A GATE", _width / 2, 60, SimpleText::CENTER);
     displayMap(map);
+    displayElement(7, -0.5f + enemy.x * 0.125f, -0.5f + enemy.y * 0.125f, -0.5f + (enemy.x + 1) * 0.125f, -0.5f + enemy.y * 0.125f, -0.5f + (enemy.x + 1) * 0.125f, -0.5f + (enemy.y + 1) * 0.125f, -0.5f + enemy.x * 0.125f, -0.5f + (enemy.y + 1) * 0.125f);
 
     // Without set precision
     // const std::string angle_label_text { "Angle: " + std::to_string(_angle) };
@@ -92,7 +105,6 @@ void App::key_callback(int /*key*/, int /*scancode*/, int /*action*/, int /*mods
 {
 }
 
-Enemy enemy{0, 0, 10, 1, 1};
 void App::mouse_button_callback(int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
@@ -109,9 +121,6 @@ void App::mouse_button_callback(int button, int action, int mods)
             std::cout << "Dans la map" << std::endl;
             // code pour ajouter une tour
         }
-        Enemy enemy{0, 0, 10, 1, 1};
-        displayElement(7, -0.5f + enemy.x * 0.125f, -0.5f + enemy.y * 0.125f, -0.5f + (enemy.x + 1) * 0.125f, -0.5f + enemy.y * 0.125f, -0.5f + (enemy.x + 1) * 0.125f, -0.5f + (enemy.y + 1) * 0.125f, -0.5f + enemy.x * 0.125f, -0.5f + (enemy.y + 1) * 0.125f);
-
     }
 }
 
@@ -166,7 +175,11 @@ void App::mappingTexture()
     _texturesMap.push_back(loadTexture(out));
     _texturesMap.push_back(loadTexture(path));
     _texturesMap.push_back(loadTexture(enemy));
-    std::cout << "Textures loaded" << std::endl;
+
+    if (_texturesMap.size() == 0)
+        std::cerr << "Error: no textures loaded" << std::endl;
+    else
+        std::cout << "Textures loaded (" << _texturesMap.size() << ")" << std::endl;
 }
 
 void App::displayMap(Map map)
@@ -219,4 +232,3 @@ void App::displayElement(int idTexture, float x1, float y1, float x2, float y2, 
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
 }
-

@@ -5,8 +5,14 @@
 #include "map.hpp"
 #include "itdReader.hpp"
 
-void Enemy::move(int sizex, int sizey, Map map)
+void Enemy::move(int sizex, int sizey, Map map, double elapsedTime)
 {
+    timeAccumulator += elapsedTime;
+    const double movementInterval = 0.5;
+    if (timeAccumulator < movementInterval)
+        return;
+    timeAccumulator = 0;
+
     int id = this->x + this->y * sizex;
     caseMap currentCase = map.listCases[id];
     int xCase = currentCase.x;
@@ -25,12 +31,6 @@ void Enemy::move(int sizex, int sizey, Map map)
 
     for (caseMap c : adjacentCases)
     {
-        std::cout << "Case adjacente : ";
-        displayEnum(c.type);
-    }
-
-    for (caseMap c : adjacentCases)
-    {
         if (c.type == path && c.x != this->x - 1 && c.y != this->y - 1)
         {
             this->x = c.x;
@@ -40,8 +40,10 @@ void Enemy::move(int sizex, int sizey, Map map)
         }
         else if (c.type == out)
         {
+            this->x = c.x;
+            this->y = c.y;
             std::cout << "L'ennemi est arrivé à destination" << std::endl;
-            break;
+            return;
         }
     }
 }

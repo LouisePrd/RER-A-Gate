@@ -11,6 +11,7 @@ struct Enemy
     int loot;
     int x;
     int y;
+    double timeAccumulator = 0.0;
 
-    void move(int sizex, int sizey, Map map);
+    void move(int sizex, int sizey, Map map, double elapsedTime);
 };
