@@ -7,15 +7,19 @@
 #include <map>
 #include "utils.hpp"
 #include "itdReader.hpp"
+#include "map.hpp"
 
-class App {
+class App
+{
 public:
     App();
 
     void setup();
     void update();
     void mappingTexture();
-    
+    void displayMap(Map map);
+    void displayElement(int idTexture, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
+
     // GLFW callbacks binding
     void key_callback(int key, int scancode, int action, int mods);
     void mouse_button_callback(int button, int action, int mods);
@@ -26,15 +30,15 @@ public:
 private:
     void render();
 
-    int _width {};
-    int _height {};
-    double _previousTime {};
-    float _viewSize {};
+    int _width{};
+    int _height{};
+    double _previousTime{};
+    float _viewSize{};
 
     // Add your variables here
-    GLuint _texture {};
-    float _angle {};
+    GLuint _texture{};
+    float _angle{};
     std::vector<GLuint> _texturesMap;
 
-    SimpleText TextRenderer {};
+    SimpleText TextRenderer{};
 };

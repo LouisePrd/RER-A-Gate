@@ -31,13 +31,14 @@ void App::setup()
 {
     std::cout << "Launching map" << std::endl;
     img::Image baseMap{img::load(make_absolute_path("images/mapRGB.png", true), 3, true)};
+    sizex = baseMap.width();
+    sizey = baseMap.height();
     std::vector<std::vector<int>> nodes = checkMap();
     checkImage(baseMap);
     getNodes(nodes);
     map = compareMapItd(getNodes(nodes), checkImage(baseMap));
 
     glClearColor(0.0f, 0.745f, 0.682f, 1.0f); // #00BEBF
-    // Setup the text renderer with blending enabled and white text color
     TextRenderer.ResetFont();
     TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
     TextRenderer.SetColorf(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
@@ -67,49 +68,9 @@ void App::render()
     draw_quad_with_texture(_texture);
     glPopMatrix();
 
-    // texture sur chaque case
-    for (int i = 0; i < sizex * sizey; i++)
-    {
-        glEnable(GL_TEXTURE_2D);
-        switch (map.listCases[i].type)
-        {
-        case typeCase::none:
-            _texture = _texturesMap[i % 3];
-            break;
-        case typeCase::path:
-            _texture = _texturesMap[3];
-            break;
-        case typeCase::in:
-            _texture = _texturesMap[4];
-            break;
-        case typeCase::out:
-            _texture = _texturesMap[5];
-            break;
-        default:
-            break;
-        }
-        glBindTexture(GL_TEXTURE_2D, _texture);
-
-        glColor3ub(255, 255, 255);
-        glBegin(GL_QUADS);
-        glTexCoord2d(0, 0);
-        glVertex2f(-0.5f + (i % sizex) * 0.125f, -0.5f + (i / sizey) * 0.125f);
-
-        glTexCoord2d(1, 0);
-        glVertex2f(-0.5f + (i % sizex + 1) * 0.125f, -0.5f + (i / sizey) * 0.125f);
-
-        glTexCoord2d(1, 1);
-        glVertex2f(-0.5f + (i % sizex + 1) * 0.125f, -0.5f + (i / sizey + 1) * 0.125f);
-
-        glTexCoord2d(0, 1);
-        glVertex2f(-0.5f + (i % sizex) * 0.125f, -0.5f + (i / sizey + 1) * 0.125f);
-        glEnd();
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glDisable(GL_TEXTURE_2D);
-    }
-
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_64);
     TextRenderer.Label("RER A GATE", _width / 2, 60, SimpleText::CENTER);
+    displayMap(map);
 
     // Without set precision
     // const std::string angle_label_text { "Angle: " + std::to_string(_angle) };
@@ -131,7 +92,7 @@ void App::key_callback(int /*key*/, int /*scancode*/, int /*action*/, int /*mods
 {
 }
 
-Enemy enemy {0, 0, 10, 1, 1};
+Enemy enemy{0, 0, 10, 1, 1};
 void App::mouse_button_callback(int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
@@ -148,7 +109,9 @@ void App::mouse_button_callback(int button, int action, int mods)
             std::cout << "Dans la map" << std::endl;
             // code pour ajouter une tour
         }
-        enemy.move(sizex, sizey, map);
+        Enemy enemy{0, 0, 10, 1, 1};
+        displayElement(7, -0.5f + enemy.x * 0.125f, -0.5f + enemy.y * 0.125f, -0.5f + (enemy.x + 1) * 0.125f, -0.5f + enemy.y * 0.125f, -0.5f + (enemy.x + 1) * 0.125f, -0.5f + (enemy.y + 1) * 0.125f, -0.5f + enemy.x * 0.125f, -0.5f + (enemy.y + 1) * 0.125f);
+
     }
 }
 
@@ -193,10 +156,67 @@ void App::mappingTexture()
     img::Image railsDroits1{img::load(make_absolute_path("images/rails-tiles/rails-droit-1.png", true), 3, true)};
     img::Image in{img::load(make_absolute_path("images/in-out/in.png", true), 3, true)};
     img::Image out{img::load(make_absolute_path("images/in-out/out.png", true), 3, true)};
+    img::Image path{img::load(make_absolute_path("images/enemy.png", true), 3, true)};
+    img::Image enemy{img::load(make_absolute_path("images/enemy.png", true), 3, true)};
     _texturesMap.push_back(loadTexture(grassTile1));
     _texturesMap.push_back(loadTexture(grassTile2));
     _texturesMap.push_back(loadTexture(grassTile3));
     _texturesMap.push_back(loadTexture(railsDroits1));
     _texturesMap.push_back(loadTexture(in));
     _texturesMap.push_back(loadTexture(out));
+    _texturesMap.push_back(loadTexture(path));
+    _texturesMap.push_back(loadTexture(enemy));
+    std::cout << "Textures loaded" << std::endl;
 }
+
+void App::displayMap(Map map)
+{
+    int textureId = 0;
+    for (int i = 0; i < sizex * sizey; i++)
+    {
+        glEnable(GL_TEXTURE_2D);
+        switch (map.listCases[i].type)
+        {
+        case typeCase::none:
+            textureId = i % 3;
+            _texture = _texturesMap[textureId];
+            break;
+        case typeCase::path:
+            _texture = _texturesMap[3];
+            textureId = 3;
+            break;
+        case typeCase::in:
+            _texture = _texturesMap[4];
+            textureId = 4;
+            break;
+        case typeCase::out:
+            _texture = _texturesMap[5];
+            textureId = 5;
+            break;
+        default:
+            break;
+        }
+
+        displayElement(textureId, -0.5f + (i % sizex) * 0.125f, -0.5f + (i / sizey) * 0.125f, -0.5f + (i % sizex + 1) * 0.125f, -0.5f + (i / sizey) * 0.125f, -0.5f + (i % sizex + 1) * 0.125f, -0.5f + (i / sizey + 1) * 0.125f, -0.5f + (i % sizex) * 0.125f, -0.5f + (i / sizey + 1) * 0.125f);
+    }
+}
+
+void App::displayElement(int idTexture, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
+{
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, _texturesMap[idTexture]);
+    glColor3ub(255, 255, 255);
+    glBegin(GL_QUADS);
+    glTexCoord2d(0, 0);
+    glVertex2f(x1, y1);
+    glTexCoord2d(1, 0);
+    glVertex2f(x2, y2);
+    glTexCoord2d(1, 1);
+    glVertex2f(x3, y3);
+    glTexCoord2d(0, 1);
+    glVertex2f(x4, y4);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
+}
+

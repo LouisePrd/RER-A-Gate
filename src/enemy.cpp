@@ -5,20 +5,14 @@
 #include "map.hpp"
 #include "itdReader.hpp"
 
-// ---- Instance des ennemis
-// Valeurs temporaires arbitraires en score sur 10
-
 void Enemy::move(int sizex, int sizey, Map map)
 {
-    std::cout << "L'ennemi est en position (" << x << ", " << y << ")" << std::endl;
     int id = this->x + this->y * sizex;
     caseMap currentCase = map.listCases[id];
     int xCase = currentCase.x;
     int yCase = currentCase.y;
     std::cout << "L'ennemi est en position (" << xCase << ", " << yCase << ")" << std::endl;
-    displayEnum(currentCase.type);
 
-    // On regarde les cases adjacentes
     std::vector<caseMap> adjacentCases;
     if (xCase > 0)
         adjacentCases.push_back(map.listCases[id - 1]);
@@ -35,4 +29,19 @@ void Enemy::move(int sizex, int sizey, Map map)
         displayEnum(c.type);
     }
 
+    for (caseMap c : adjacentCases)
+    {
+        if (c.type == path && c.x != this->x - 1 && c.y != this->y - 1)
+        {
+            this->x = c.x;
+            this->y = c.y;
+            std::cout << "L'ennemi se déplace en position (" << c.x << ", " << c.y << ")" << std::endl;
+            break;
+        }
+        else if (c.type == out)
+        {
+            std::cout << "L'ennemi est arrivé à destination" << std::endl;
+            break;
+        }
+    }
 }
