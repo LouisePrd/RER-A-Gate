@@ -24,18 +24,7 @@ int sizey = 8;
 
 App::App() : _previousTime(0.0), _viewSize(2.0)
 {
-    img::Image grassTile1{img::load(make_absolute_path("images/grass-tiles/grass-tile-1.png", true), 3, true)};
-    img::Image grassTile2{img::load(make_absolute_path("images/grass-tiles/grass-tile-2.png", true), 3, true)};
-    img::Image grassTile3{img::load(make_absolute_path("images/grass-tiles/grass-tile-3.png", true), 3, true)};
-    img::Image railsDroits1{img::load(make_absolute_path("images/rails-tiles/rails-droit-1.png", true), 3, true)};
-    img::Image in{img::load(make_absolute_path("images/in-out/in.png", true), 3, true)};
-    img::Image out{img::load(make_absolute_path("images/in-out/out.png", true), 3, true)};
-    _textures.push_back(loadTexture(grassTile1));
-    _textures.push_back(loadTexture(grassTile2));
-    _textures.push_back(loadTexture(grassTile3));
-    _textures.push_back(loadTexture(railsDroits1));
-    _textures.push_back(loadTexture(in));
-    _textures.push_back(loadTexture(out));
+    mappingTexture();
 }
 
 void App::setup()
@@ -57,14 +46,11 @@ void App::setup()
 
 void App::update()
 {
-    // const double currentTime{glfwGetTime()};
-    // const double elapsedTime{currentTime - _previousTime};
-    //_previousTime = currentTime;
+    const double currentTime{glfwGetTime()};
+    const double elapsedTime{currentTime - _previousTime};
+    _previousTime = currentTime;
     //_angle += 10.0f * elapsedTime;
     //  _angle = std::fmod(_angle, 360.0f);
-    // Enemy enemy {7, 0, 0, 0, 0};
-    // enemy.move(sizex, sizey, map);
-
     render();
 }
 
@@ -88,16 +74,16 @@ void App::render()
         switch (map.listCases[i].type)
         {
         case typeCase::none:
-            _texture = _textures[i % 3];
+            _texture = _texturesMap[i % 3];
             break;
         case typeCase::path:
-            _texture = _textures[3];
+            _texture = _texturesMap[3];
             break;
         case typeCase::in:
-            _texture = _textures[4];
+            _texture = _texturesMap[4];
             break;
         case typeCase::out:
-            _texture = _textures[5];
+            _texture = _texturesMap[5];
             break;
         default:
             break;
@@ -145,6 +131,7 @@ void App::key_callback(int /*key*/, int /*scancode*/, int /*action*/, int /*mods
 {
 }
 
+Enemy enemy {0, 0, 10, 1, 1};
 void App::mouse_button_callback(int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
@@ -161,6 +148,7 @@ void App::mouse_button_callback(int button, int action, int mods)
             std::cout << "Dans la map" << std::endl;
             // code pour ajouter une tour
         }
+        enemy.move(sizex, sizey, map);
     }
 }
 
@@ -197,14 +185,18 @@ void App::size_callback(int width, int height)
 
 // fonction pour mapper texture et type de case
 // pas implémentée : opti ?
-std::map<GLuint, typeCase> App::mappingTexture()
+void App::mappingTexture()
 {
-    std::map<GLuint, typeCase> textureMap;
-    textureMap[loadTexture(img::Image{img::load(make_absolute_path("images/grass-tiles/grass-tile-1.png", true), 3, true)})] = typeCase::none;
-    textureMap[loadTexture(img::Image{img::load(make_absolute_path("images/grass-tiles/grass-tile-2.png", true), 3, true)})] = typeCase::none;
-    textureMap[loadTexture(img::Image{img::load(make_absolute_path("images/grass-tiles/grass-tile-3.png", true), 3, true)})] = typeCase::none;
-    textureMap[loadTexture(img::Image{img::load(make_absolute_path("images/rails-tiles/rails-droit-1.png", true), 3, true)})] = typeCase::path;
-    textureMap[loadTexture(img::Image{img::load(make_absolute_path("images/in-out/in.png", true), 3, true)})] = typeCase::in;
-    textureMap[loadTexture(img::Image{img::load(make_absolute_path("images/in-out/out.png", true), 3, true)})] = typeCase::out;
-    return textureMap;
+    img::Image grassTile1{img::load(make_absolute_path("images/grass-tiles/grass-tile-1.png", true), 3, true)};
+    img::Image grassTile2{img::load(make_absolute_path("images/grass-tiles/grass-tile-2.png", true), 3, true)};
+    img::Image grassTile3{img::load(make_absolute_path("images/grass-tiles/grass-tile-3.png", true), 3, true)};
+    img::Image railsDroits1{img::load(make_absolute_path("images/rails-tiles/rails-droit-1.png", true), 3, true)};
+    img::Image in{img::load(make_absolute_path("images/in-out/in.png", true), 3, true)};
+    img::Image out{img::load(make_absolute_path("images/in-out/out.png", true), 3, true)};
+    _texturesMap.push_back(loadTexture(grassTile1));
+    _texturesMap.push_back(loadTexture(grassTile2));
+    _texturesMap.push_back(loadTexture(grassTile3));
+    _texturesMap.push_back(loadTexture(railsDroits1));
+    _texturesMap.push_back(loadTexture(in));
+    _texturesMap.push_back(loadTexture(out));
 }

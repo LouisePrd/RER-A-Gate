@@ -14,7 +14,7 @@ public:
 
     void setup();
     void update();
-    std::map<GLuint, typeCase> mappingTexture();
+    void mappingTexture();
     
     // GLFW callbacks binding
     void key_callback(int key, int scancode, int action, int mods);
@@ -34,6 +34,7 @@ private:
     // Add your variables here
     GLuint _texture {};
     float _angle {};
-    std::vector<GLuint> _textures;
+    std::vector<GLuint> _texturesMap;
+
     SimpleText TextRenderer {};
 };
