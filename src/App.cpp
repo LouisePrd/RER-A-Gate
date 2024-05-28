@@ -21,7 +21,8 @@
 Map map;
 int sizex = 0;
 int sizey = 0;
-Enemy enemy{0, 0, 10, 1, 1};
+Enemy enemy{0, 0, 10, 1, 1}; // faire une génération d'ennemmis plus tard
+
 
 App::App() : _previousTime(0.0), _viewSize(2.0)
 {
@@ -79,7 +80,7 @@ void App::render()
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_64);
     TextRenderer.Label("RER A GATE", _width / 2, 60, SimpleText::CENTER);
     displayMap(map);
-    displayElement(7, -0.5f + enemy.x * 0.125f, -0.5f + enemy.y * 0.125f, -0.5f + (enemy.x + 1) * 0.125f, -0.5f + enemy.y * 0.125f, -0.5f + (enemy.x + 1) * 0.125f, -0.5f + (enemy.y + 1) * 0.125f, -0.5f + enemy.x * 0.125f, -0.5f + (enemy.y + 1) * 0.125f);
+    displayEnemy(0, -0.5f + enemy.x * 0.125f, -0.5f + enemy.y * 0.125f, -0.5f + (enemy.x + 1) * 0.125f, -0.5f + enemy.y * 0.125f, -0.5f + (enemy.x + 1) * 0.125f, -0.5f + (enemy.y + 1) * 0.125f, -0.5f + enemy.x * 0.125f, -0.5f + (enemy.y + 1) * 0.125f);
 
     // Without set precision
     // const std::string angle_label_text { "Angle: " + std::to_string(_angle) };
@@ -170,7 +171,7 @@ void App::mappingTexture()
     _texturesMap.push_back(loadTexture(in));
     _texturesMap.push_back(loadTexture(out));
     _texturesMap.push_back(loadTexture(path));
-    _texturesMap.push_back(loadTexture(enemy));
+    _texturesEnemy.push_back(loadTexture(enemy));
 
     if (_texturesMap.size() == 0)
         std::cerr << "Error: no textures loaded" << std::endl;
@@ -224,6 +225,26 @@ void App::displayElement(int idTexture, float x1, float y1, float x2, float y2, 
     glVertex2f(x3, y3);
     glTexCoord2d(0, 1);
     glVertex2f(x4, y4);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
+}
+
+void App::displayEnemy(int idTexture, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
+{
+    // on inverse les coordonnées pour que l'ennemi soit bien orienté
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, _texturesEnemy[idTexture]);
+    glColor3ub(255, 255, 255);
+    glBegin(GL_QUADS);
+    glTexCoord2d(0, 0);
+    glVertex2f(x1, -y4);
+    glTexCoord2d(1, 0);
+    glVertex2f(x2, -y3);
+    glTexCoord2d(1, 1);
+    glVertex2f(x3, -y2);
+    glTexCoord2d(0, 1);
+    glVertex2f(x4, -y1);
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);

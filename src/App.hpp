@@ -19,6 +19,7 @@ public:
     void mappingTexture();
     void displayMap(Map map);
     void displayElement(int idTexture, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
+    void displayEnemy(int idTexture, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
 
     // GLFW callbacks binding
     void key_callback(int key, int scancode, int action, int mods);
@@ -39,6 +40,7 @@ private:
     GLuint _texture{};
     float _angle{};
     std::vector<GLuint> _texturesMap;
+    std::vector<GLuint> _texturesEnemy;
 
     SimpleText TextRenderer{};
 };
