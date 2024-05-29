@@ -21,7 +21,9 @@
 Map map;
 int sizex = 0;
 int sizey = 0;
-Enemy enemy{0, 0, 10, 1, 1}; // faire une génération d'ennemmis plus tard
+float divCasesx = 0;
+float divCasesy = 0;
+Enemy enemyTest{0, 0, 10, 1, 1};
 
 
 App::App() : _previousTime(0.0), _viewSize(2.0)
@@ -35,6 +37,8 @@ void App::setup()
     img::Image baseMap{img::load(make_absolute_path("images/mapRGB.png", true), 3, true)};
     sizex = baseMap.width();
     sizey = baseMap.height();
+    divCasesx = 1/(float)sizex;
+    divCasesy = 1/(float)sizey;
     std::vector<std::vector<int>> nodes = checkMap();
     checkImage(baseMap);
     getNodes(nodes);
@@ -57,9 +61,9 @@ void App::update()
     if (startTime < 0.0)
         startTime = currentTime;
 
-    typeCase type = map.listCases[enemy.x + enemy.y * sizex].type;
+    typeCase type = map.listCases[enemyTest.x + enemyTest.y * sizex].type;
     if (currentTime - startTime > 1.0 && type != typeCase::out)
-        enemy.move(sizex, sizey, map, elapsedTime);
+        enemyTest.move(sizex, sizey, map, elapsedTime);
 
     render();
 }
@@ -80,20 +84,7 @@ void App::render()
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_64);
     TextRenderer.Label("RER A GATE", _width / 2, 60, SimpleText::CENTER);
     displayMap(map);
-    displayEnemy(0, -0.5f + enemy.x * 0.125f, -0.5f + enemy.y * 0.125f, -0.5f + (enemy.x + 1) * 0.125f, -0.5f + enemy.y * 0.125f, -0.5f + (enemy.x + 1) * 0.125f, -0.5f + (enemy.y + 1) * 0.125f, -0.5f + enemy.x * 0.125f, -0.5f + (enemy.y + 1) * 0.125f);
-
-    // Without set precision
-    // const std::string angle_label_text { "Angle: " + std::to_string(_angle) };
-    // With c++20 you can use std::format
-    // const std::string angle_label_text { std::format("Angle: {:.2f}", _angle) };
-
-    // Using stringstream to format the string with fixed precision
-    /*std::string angle_label_text{};
-    std::stringstream stream{};
-    stream << std::fixed << "Angle: " << std::setprecision(2) << _angle;
-    angle_label_text = stream.str();
-
-    TextRenderer.Label(angle_label_text.c_str(), _width / 2, _height - 4, SimpleText::CENTER);*/
+    displayEnemy(0, enemyTest);
 
     TextRenderer.Render();
 }
@@ -113,6 +104,7 @@ void App::mouse_button_callback(int button, int action, int mods)
         const float aspectRatio{width / (float)height};
         float posMapX = (xpos / width - 0.5f) * _viewSize * aspectRatio;
         float posMapY = (0.5f - ypos / height) * _viewSize;
+        std::cout << "Position de la souris : (" << posMapX << ", " << posMapY << ")" << std::endl;
         if ((posMapX >= -0.5f && posMapX <= 0.5f) && (posMapY >= -0.5f && posMapY <= 0.5f))
         {
             std::cout << "Dans la map" << std::endl;
@@ -129,13 +121,17 @@ void App::cursor_position_callback(double /*xpos*/, double /*ypos*/)
 {
 }
 
-void App::size_callback(int width, int height)
+void App::size_callback(GLFWwindow* window, int width, int height)
 {
     _width = width;
     _height = height;
 
+    int viewport_width {};
+    int viewport_height {};
+
     // make sure the viewport matches the new window dimensions
-    glViewport(0, 0, _width, _height);
+    glfwGetFramebufferSize(window, &_width, &_height);
+    glViewport(0, 0, viewport_width, viewport_height);
 
     const float aspectRatio{_width / (float)_height};
 
@@ -223,29 +219,35 @@ void App::displayElement(int idTexture, float x1, float y1, float x2, float y2, 
     glVertex2f(x2, y2);
     glTexCoord2d(1, 1);
     glVertex2f(x3, y3);
-    glTexCoord2d(0, 1);
+    glTexCoord2d(0, 1); 
     glVertex2f(x4, y4);
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
 }
 
-void App::displayEnemy(int idTexture, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
+void App::displayEnemy(int idTexture, Enemy enemy)
 {
-    // on inverse les coordonnées pour que l'ennemi soit bien orienté
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, _texturesEnemy[idTexture]);
     glColor3ub(255, 255, 255);
     glBegin(GL_QUADS);
     glTexCoord2d(0, 0);
-    glVertex2f(x1, y1);
+    glVertex2f(-0.5f + enemy.x * divCasesx, -0.5f + enemy.y * divCasesy);
     glTexCoord2d(1, 0);
-    glVertex2f(x2, y2);
+    glVertex2f(-0.5f + (enemy.x + 1) * divCasesx, -0.5f + enemy.y * divCasesy);
     glTexCoord2d(1, 1);
-    glVertex2f(x3, y3);
+    glVertex2f(-0.5f + (enemy.x + 1) * divCasesx, -0.5f + (enemy.y + 1) * divCasesy);
     glTexCoord2d(0, 1);
-    glVertex2f(x4, y4);
+    glVertex2f(-0.5f + enemy.x * divCasesx, -0.5f + (enemy.y + 1) * divCasesy);
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
+}
+
+std::__1::pair<float, float> App::glPosIntoMap(int x, int y, int sizex, int sizey)
+{
+    float xMap = -0.5f + x * divCasesx;
+    float yMap = -0.5f + y * divCasesy;
+    return std::make_pair(xMap, yMap);
 }
