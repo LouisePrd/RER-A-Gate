@@ -8,6 +8,7 @@ Map checkImage(img::Image &baseMap)
 {
     std::vector<caseMap> listCases;
     int size = baseMap.width() * baseMap.height();
+
     for (int i = 0; i < size; i++)
     {
         int x = i % baseMap.width();
@@ -62,3 +63,4 @@ Map compareMapItd(std::vector<Node> nodes, Map map)
     }
     return map;
 }
+

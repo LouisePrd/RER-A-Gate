@@ -17,7 +17,6 @@ void Enemy::move(int sizex, int sizey, Map map, double elapsedTime)
     caseMap currentCase = map.listCases[id];
     int xCase = currentCase.x;
     int yCase = currentCase.y;
-    std::cout << "L'ennemi est en position (" << xCase << ", " << yCase << ")" << std::endl;
 
     std::vector<caseMap> adjacentCases;
     if (xCase > 0)
@@ -29,21 +28,15 @@ void Enemy::move(int sizex, int sizey, Map map, double elapsedTime)
     if (yCase < sizey - 1)
         adjacentCases.push_back(map.listCases[id + sizex]);
 
-    for (caseMap c : adjacentCases)
+    // chemin le plus court entre les cases adjacentes et la sortie
+    caseMap nextCase = currentCase;
+    for (caseMap adjacentCase : adjacentCases)
     {
-        if (c.type == path && c.x != this->x - 1 && c.y != this->y - 1)
+        if (adjacentCase.type == typeCase::out)
         {
-            this->x = c.x;
-            this->y = c.y;
-            std::cout << "L'ennemi se déplace en position (" << c.x << ", " << c.y << ")" << std::endl;
+            nextCase = adjacentCase;
             break;
         }
-        else if (c.type == out)
-        {
-            this->x = c.x;
-            this->y = c.y;
-            std::cout << "L'ennemi est arrivé à destination" << std::endl;
-            return;
-        }
     }
+    
 }

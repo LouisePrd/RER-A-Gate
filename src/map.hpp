@@ -21,3 +21,4 @@ struct Map {
 
 Map checkImage(img::Image &baseMap);
 Map compareMapItd(std::vector<Node> nodes, Map map);
+void translateCoord(int x, int y, int &xOut, int &yOut, int sizex, int sizey);

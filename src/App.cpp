@@ -23,7 +23,7 @@ int sizex = 0;
 int sizey = 0;
 float divCasesx = 0;
 float divCasesy = 0;
-Enemy enemyTest{0, 0, 10, 1, 1};
+Enemy enemyTest{0, 0, 10, 1, 7};
 
 
 App::App() : _previousTime(0.0), _viewSize(2.0)
@@ -49,6 +49,8 @@ void App::setup()
     TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
     TextRenderer.SetColorf(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
     TextRenderer.EnableBlending(true);
+
+    translateCoord(1, 1, enemyTest.x, enemyTest.y, sizex, sizey);
 }
 
 void App::update()
@@ -62,8 +64,6 @@ void App::update()
         startTime = currentTime;
 
     typeCase type = map.listCases[enemyTest.x + enemyTest.y * sizex].type;
-    if (currentTime - startTime > 1.0 && type != typeCase::out)
-        enemyTest.move(sizex, sizey, map, elapsedTime);
 
     render();
 }
@@ -243,6 +243,8 @@ void App::displayEnemy(int idTexture, Enemy enemy)
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
+
+    //std::cout << "Position de l'ennemi : (" << enemy.x << ", " << enemy.y << ")" << std::endl;
 }
 
 std::__1::pair<float, float> App::glPosIntoMap(int x, int y, int sizex, int sizey)
