@@ -28,15 +28,13 @@ void Enemy::move(int sizex, int sizey, Map map, double elapsedTime)
     if (yCase < sizey - 1)
         adjacentCases.push_back(map.listCases[id + sizex]);
 
-    // chemin le plus court entre les cases adjacentes et la sortie
-    caseMap nextCase = currentCase;
-    for (caseMap adjacentCase : adjacentCases)
+    std::vector<caseMap> possibleCases;
+    for (caseMap c : adjacentCases)
     {
-        if (adjacentCase.type == typeCase::out)
-        {
-            nextCase = adjacentCase;
-            break;
-        }
+        if (c.type == typeCase::path)
+            possibleCases.push_back(c);
     }
-    
+
+    // plus court chemin
+
 }

@@ -23,7 +23,7 @@ int sizex = 0;
 int sizey = 0;
 float divCasesx = 0;
 float divCasesy = 0;
-Enemy enemyTest{0, 0, 10, 1, 7};
+//Enemy enemyTest{0, 0, 10, 1, 6};
 
 
 App::App() : _previousTime(0.0), _viewSize(2.0)
@@ -41,8 +41,14 @@ void App::setup()
     divCasesy = 1/(float)sizey;
     std::vector<std::vector<int>> nodes = checkMap();
     checkImage(baseMap);
-    getNodes(nodes);
-    map = compareMapItd(getNodes(nodes), checkImage(baseMap));
+    std::vector<Node> nodesStruct = getNodes(nodes);
+    map = compareMapItd(nodesStruct, checkImage(baseMap));
+
+    // noeuds en graph
+    std::vector<std::vector<float>> graph = nodeToGraph(map);
+    std::unordered_map<int, std::pair<float, int>> dist = dijkstra(graph, 10, 12);
+    std::cout << "Distance : " << dist[1].first << std::endl;
+
 
     glClearColor(0.0f, 0.745f, 0.682f, 1.0f); // #00BEBF
     TextRenderer.ResetFont();
@@ -50,7 +56,6 @@ void App::setup()
     TextRenderer.SetColorf(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
     TextRenderer.EnableBlending(true);
 
-    translateCoord(1, 1, enemyTest.x, enemyTest.y, sizex, sizey);
 }
 
 void App::update()
@@ -63,8 +68,8 @@ void App::update()
     if (startTime < 0.0)
         startTime = currentTime;
 
-    typeCase type = map.listCases[enemyTest.x + enemyTest.y * sizex].type;
-
+    //typeCase type = map.listCases[enemyTest.x + enemyTest.y * sizex].type;
+    //enemyTest.move(sizex, sizey, map, elapsedTime);
     render();
 }
 
@@ -84,7 +89,7 @@ void App::render()
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_64);
     TextRenderer.Label("RER A GATE", _width / 2, 60, SimpleText::CENTER);
     displayMap(map);
-    displayEnemy(0, enemyTest);
+    //displayEnemy(0, enemyTest);
 
     TextRenderer.Render();
 }

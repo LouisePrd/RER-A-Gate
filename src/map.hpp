@@ -22,3 +22,5 @@ struct Map {
 Map checkImage(img::Image &baseMap);
 Map compareMapItd(std::vector<Node> nodes, Map map);
 void translateCoord(int x, int y, int &xOut, int &yOut, int sizex, int sizey);
+std::vector<std::vector<float>> nodeToGraph(Map map);
+std::unordered_map<int, std::pair<float, int>> dijkstra(std::vector<std::vector<float>> &graph, int const &start, int const end);
