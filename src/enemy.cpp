@@ -35,6 +35,26 @@ void Enemy::move(int sizex, int sizey, Map map, double elapsedTime)
             possibleCases.push_back(c);
     }
 
-    // plus court chemin
+    std::cout << "Possible cases: " << possibleCases.size() << std::endl;
 
+}
+
+// on récupère le graphe
+void Enemy::moveIntoGraph(WeightedGraph graph, int start, int end)
+{
+    std::unordered_map<int, std::pair<float, int>> distances = dijkstra(graph, start, end);
+    std::vector<int> path;
+    int current = end;
+    while (current != start)
+    {
+        path.push_back(current);
+        current = distances[current].second;
+    }
+    path.push_back(start);
+    std::reverse(path.begin(), path.end());
+    for (int i : path)
+    {
+        std::cout << i << " ";
+    }
+    std::cout << std::endl;
 }

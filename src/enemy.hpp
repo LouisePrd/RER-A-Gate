@@ -14,4 +14,5 @@ struct Enemy
     double timeAccumulator = 0.0;
 
     void move(int sizex, int sizey, Map map, double elapsedTime);
+    void moveIntoGraph(WeightedGraph graph, int start, int end);
 };
