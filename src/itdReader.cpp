@@ -40,7 +40,7 @@ std::vector<Node> getNodes(std::vector<std::vector<int>> nodes)
     std::vector<Node> nodesStruct;
     for (std::vector<int> node : nodes)
     {
-        if (node.size() < 3 || node.size() > 4 || node[0] < 0 || node[1] < 0 || node[2] < 0)
+        if (node.size() < 3 || node[0] < 0 || node[1] < 0 || node[2] < 0)
         {
             std::cerr << "Erreur nombre d'arguments pour un noeud" << std::endl;
             exit(1);
@@ -55,6 +55,7 @@ std::vector<Node> getNodes(std::vector<std::vector<int>> nodes)
         }
         nodesStruct.push_back(n);
     }
+
     return nodesStruct;
 }
 
