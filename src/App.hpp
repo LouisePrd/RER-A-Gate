@@ -21,7 +21,6 @@ public:
     void displayMap(Map map);
     void displayElement(int idTexture, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
     void displayEnemy(int idTexture, Enemy enemy);
-    std::__1::pair<float, float> glPosIntoMap(int x, int y, int sizex, int sizey);
 
     // GLFW callbacks binding
     void key_callback(int key, int scancode, int action, int mods);

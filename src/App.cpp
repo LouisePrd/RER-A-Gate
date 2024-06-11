@@ -23,7 +23,7 @@ int sizex = 0;
 int sizey = 0;
 float divCasesx = 0;
 float divCasesy = 0;
-//Enemy enemyTest{0, 0, 10, 1, 6};
+Enemy enemyTest{0, 0, 10, 1, 1};
 
 
 App::App() : _previousTime(0.0), _viewSize(2.0)
@@ -33,6 +33,9 @@ App::App() : _previousTime(0.0), _viewSize(2.0)
 
 void App::setup()
 {
+    // Initialisation de la fenêtre
+    glViewport(0, 0, _width, _height);
+
     std::cout << "Launching map" << std::endl;
     img::Image baseMap{img::load(make_absolute_path("images/mapRGB.png", true), 3, true)};
     sizex = baseMap.width();
@@ -41,14 +44,13 @@ void App::setup()
     divCasesy = 1/(float)sizey;
     std::vector<std::vector<int>> nodes = checkMap();
     checkImage(baseMap);
-    std::vector<Node> nodesStruct = getNodes(nodes);
-    map = compareMapItd(nodesStruct, checkImage(baseMap));
+    map = compareMapItd(getNodes(nodes), checkImage(baseMap));
 
-    // noeuds en graph
+    // Création du graphe
     std::vector<std::vector<float>> graph = nodeToGraph(map);
-    std::unordered_map<int, std::pair<float, int>> dist = dijkstra(graph, 10, 12);
-    std::cout << "Distance : " << dist[1].first << std::endl;
-
+    WeightedGraph weightedGraph = build_from_adjacency_matrix(graph);
+    std::unordered_map<int, std::pair<float, int>> dijkstraMap = dijkstra(weightedGraph, 1, 6);
+    //std::cout << "Distance : " << dijkstraMap[6].first << std::endl;
 
     glClearColor(0.0f, 0.745f, 0.682f, 1.0f); // #00BEBF
     TextRenderer.ResetFont();
@@ -68,8 +70,6 @@ void App::update()
     if (startTime < 0.0)
         startTime = currentTime;
 
-    //typeCase type = map.listCases[enemyTest.x + enemyTest.y * sizex].type;
-    //enemyTest.move(sizex, sizey, map, elapsedTime);
     render();
 }
 
@@ -89,7 +89,7 @@ void App::render()
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_64);
     TextRenderer.Label("RER A GATE", _width / 2, 60, SimpleText::CENTER);
     displayMap(map);
-    //displayEnemy(0, enemyTest);
+    displayEnemy(0, enemyTest);
 
     TextRenderer.Render();
 }
@@ -233,28 +233,21 @@ void App::displayElement(int idTexture, float x1, float y1, float x2, float y2, 
 
 void App::displayEnemy(int idTexture, Enemy enemy)
 {
+    float adjustedY = sizey - enemy.y - 1;
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, _texturesEnemy[idTexture]);
     glColor3ub(255, 255, 255);
     glBegin(GL_QUADS);
     glTexCoord2d(0, 0);
-    glVertex2f(-0.5f + enemy.x * divCasesx, -0.5f + enemy.y * divCasesy);
+    glVertex2f(-0.5f + enemy.x * divCasesx, -0.5f + adjustedY * divCasesy);
     glTexCoord2d(1, 0);
-    glVertex2f(-0.5f + (enemy.x + 1) * divCasesx, -0.5f + enemy.y * divCasesy);
+    glVertex2f(-0.5f + (enemy.x + 1) * divCasesx, -0.5f + adjustedY * divCasesy);
     glTexCoord2d(1, 1);
-    glVertex2f(-0.5f + (enemy.x + 1) * divCasesx, -0.5f + (enemy.y + 1) * divCasesy);
+    glVertex2f(-0.5f + (enemy.x + 1) * divCasesx, -0.5f + (adjustedY + 1) * divCasesy);
     glTexCoord2d(0, 1);
-    glVertex2f(-0.5f + enemy.x * divCasesx, -0.5f + (enemy.y + 1) * divCasesy);
+    glVertex2f(-0.5f + enemy.x * divCasesx, -0.5f + (adjustedY + 1) * divCasesy);
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
-
     //std::cout << "Position de l'ennemi : (" << enemy.x << ", " << enemy.y << ")" << std::endl;
-}
-
-std::__1::pair<float, float> App::glPosIntoMap(int x, int y, int sizex, int sizey)
-{
-    float xMap = -0.5f + x * divCasesx;
-    float yMap = -0.5f + y * divCasesy;
-    return std::make_pair(xMap, yMap);
 }
