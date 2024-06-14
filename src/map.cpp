@@ -1,4 +1,5 @@
 #include "map.hpp"
+#include "node.hpp"
 #include <iostream>
 #include <vector>
 #include <glm/glm.hpp>
@@ -25,7 +26,7 @@ Map checkImage(img::Image &baseMap)
         // On vérifie si la couleur correspond à un type de case
         std::array<float, 3> colorTab = {color.r, color.g, color.b};
         bool found = false;
-        
+
         for (int j = 0; j < getItdAllTypes().size(); j++)
         {
             if (colorTab == getItdAllTypes()[j].color) // si la couleur correspond à un type de case
@@ -36,7 +37,7 @@ Map checkImage(img::Image &baseMap)
                 break;
             }
         }
-        
+
         if (!found) // si la couleur ne correspond à aucun type de case
         {
             caseMap currentcaseMap{x, y, colorTab, typeCase::none};
@@ -48,40 +49,29 @@ Map checkImage(img::Image &baseMap)
     return map;
 }
 
+Map compareMapItd(std::vector<Node> nodes, Map map)
+{
 
-Map compareMapItd(std::vector<Node> nodes, Map map) {
-    for (unsigned long i = 0; i < nodes.size(); i++) {
+    for (unsigned long i = 0; i < nodes.size(); i++)
+    {
         Node node = nodes[i]; // on récupère le noeud
-        if (node.x < 0 || node.y < 0 || node.x >= map.width || node.y >= map.height) {
+        if (node.x < 0 || node.y < 0 || node.x >= map.width || node.y >= map.height)
+        {
             std::cerr << "Erreur coordonnées du noeud" << std::endl;
             exit(1);
         }
 
-        for (unsigned long j = 0; j < map.listCases.size(); j++) { // on parcourt les cases de la map
+        for (unsigned long j = 0; j < map.listCases.size(); j++)
+        {
             caseMap currentCase = map.listCases[j];
-            if (currentCase.x == node.x && currentCase.y == node.y) { 
+            if (currentCase.x == node.x && currentCase.y == node.y)
+            {
                 currentCase.node = node;
                 map.listCases[j] = currentCase;
-                std::cout << "node en (" << node.x << ";" << node.y << ")";
-                std::cout << " correspond à la case (" << currentCase.x << ";" << currentCase.y << ")";
-                std::cout << " et contient les noeuds connectés : ";
-                for (unsigned long k = 0; k < node.noeudsConnectes.size(); k++) {
-                    std::cout << node.noeudsConnectes[k] << " ";
-                }
-                std::cout << std::endl;
             }
-            
         }
-
     }
     return map;
-}
-
-std::vector<std::vector<float>> nodeToGraph(Map map)
-{
-    std::vector<std::vector<float>> graph(map.height, std::vector<float>(map.width, 0));
-
-    return graph;
 }
 
 // Graphes
@@ -123,6 +113,7 @@ WeightedGraph build_from_adjacency_matrix(std::vector<std::vector<float>> const 
     }
     return graph;
 }
+
 std::unordered_map<int, std::pair<float, int>> dijkstra(WeightedGraph const &graph, int const &start, int const end)
 {
     std::unordered_map<int, std::pair<float, int>> distances{};
@@ -142,19 +133,16 @@ std::unordered_map<int, std::pair<float, int>> dijkstra(WeightedGraph const &gra
         for (WeightedGraphEdge edge : graph.adjacency_list.at(current_node))
         {
             auto find_node{
-                distances.find(edge.to)
-            };
+                distances.find(edge.to)};
 
             bool const visited{
-                find_node != distances.end()
-            };
+                find_node != distances.end()};
 
             if (!visited)
             {
                 int distance = current_distance + edge.weight;
                 distances[edge.to] = {distance, current_node};
                 to_visit.push({distance, edge.to});
-
             }
             else
             {
@@ -169,3 +157,71 @@ std::unordered_map<int, std::pair<float, int>> dijkstra(WeightedGraph const &gra
 
     return distances;
 }
+
+
+int calculDist(Node node1, Node node2)
+{
+    int x1 = node1.x;
+    int y1 = node1.y;
+    int x2 = node2.x;
+    int y2 = node2.y;
+    // on regarde si les cases sont sur la même ligne ou colonne
+    if (x1 == x2)
+    {
+        std::cout << "On compare les cases : (" << x1 << ", " << y1 << ") et (" << x2 << ", " << y2 << ")" << std::endl;
+        std::cout << "Case sur la même ligne :" << x1 << ", différence de y : " << abs(y1 - y2) << std::endl;
+        return abs(y1 - y2);
+    }
+    else if (y1 == y2)
+    {
+        std::cout << "On compare les cases : (" << x1 << ", " << y1 << ") et (" << x2 << ", " << y2 << ")" << std::endl;
+        std::cout << "Case sur la même colonne :" << y1 << ", différence de x : " << abs(x1 - x2) << std::endl;
+        return abs(x1 - x2);
+    }
+    else
+    {
+        std::cout << "On compare les cases : (" << x1 << ", " << y1 << ") et (" << x2 << ", " << y2 << ")" << std::endl;
+        std::cout << "Case pas sur la même ligne ni colonne, distance de Manhattan : " << abs(x1 - x2) + abs(y1 - y2) << std::endl;
+        return abs(x1 - x2) + abs(y1 - y2);
+    }
+}
+
+
+// création du graphe
+std::vector<std::vector<float>> createGraph(Map map)
+{
+    std::vector<std::vector<float>> graph;
+    // on créé la matrice d'adjacence
+    for (int i = 0; i < map.height; i++)
+    {
+        std::vector<float> row;
+        for (int j = 0; j < map.width; j++)
+        {
+            row.push_back(0);
+        }
+        graph.push_back(row);
+    }
+
+    // on remplit la matrice d'adjacence
+    for (int i = 0; i < map.height; i++)
+    {
+        for (int j = 0; j < map.width; j++)
+        {
+            caseMap currentCase = map.listCases[i * map.width + j];
+            if (currentCase.type != typeCase::none)
+            {
+                int idNode = currentCase.node.id;
+                for (unsigned long k = 0; k < currentCase.node.noeudsConnectes.size(); k++)
+                {
+                    int idNodeConnect = currentCase.node.noeudsConnectes[k];
+                    int distance = 1;
+                    calculDist(currentCase.node, map.listCases[idNodeConnect].node);
+                    graph[idNode][idNodeConnect] = distance;
+                }
+            }
+        }
+    }
+
+    return graph;
+}
+

@@ -2,6 +2,7 @@
 #include "itdReader.hpp"
 #include "map.hpp"
 #include "enemy.hpp"
+#include "node.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -46,11 +47,17 @@ void App::setup()
     checkImage(baseMap);
     map = compareMapItd(getNodes(nodes), checkImage(baseMap));
 
-    // Création du graphe
-    std::vector<std::vector<float>> graph = nodeToGraph(map);
-    WeightedGraph weightedGraph = build_from_adjacency_matrix(graph);
-    std::unordered_map<int, std::pair<float, int>> dijkstraMap = dijkstra(weightedGraph, 1, 6);
-    //std::cout << "Distance : " << dijkstraMap[6].first << std::endl;
+    // Transformation des chemins en graphe
+    //WeightedGraph weightedGraph = build_from_adjacency_matrix(createGraph(map));
+    std::vector<std::vector<float>> matrix = createGraph(map);
+    for (int i = 0; i < matrix.size(); i++)
+    {
+        for (int j = 0; j < matrix[i].size(); j++)
+        {
+            std::cout << matrix[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
 
     glClearColor(0.0f, 0.745f, 0.682f, 1.0f); // #00BEBF
     TextRenderer.ResetFont();
@@ -89,7 +96,6 @@ void App::render()
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_64);
     TextRenderer.Label("RER A GATE", _width / 2, 60, SimpleText::CENTER);
     displayMap(map);
-    displayEnemy(0, enemyTest);
 
     TextRenderer.Render();
 }

@@ -3,6 +3,11 @@
 #include <vector>
 #include "map.hpp"
 #include <glad/glad.h>
+#include "node.hpp"
+#include "img/img.hpp"
+#include <glm/glm.hpp>
+#include <array>
+#include <unordered_map>
 
 struct Enemy
 {

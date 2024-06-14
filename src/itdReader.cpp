@@ -1,5 +1,6 @@
 #include "itdReader.hpp"
 #include "App.hpp"
+#include "node.hpp"
 
 #include <sstream>
 #include <fstream>
@@ -33,30 +34,6 @@ void displayEnum(typeCase type)
         std::cout << "Error" << std::endl;
         break;
     }
-}
-
-std::vector<Node> getNodes(std::vector<std::vector<int>> nodes)
-{
-    std::vector<Node> nodesStruct;
-    for (std::vector<int> node : nodes)
-    {
-        if (node.size() < 3 || node[0] < 0 || node[1] < 0 || node[2] < 0)
-        {
-            std::cerr << "Erreur nombre d'arguments pour un noeud" << std::endl;
-            exit(1);
-        }
-        Node n;
-        n.id = node[0];
-        n.x = node[1];
-        n.y = node[2];
-        for (unsigned long i = 3; i < node.size(); i++)
-        {
-            n.noeudsConnectes.push_back(node[i]);
-        }
-        nodesStruct.push_back(n);
-    }
-
-    return nodesStruct;
 }
 
 std::vector<std::vector<int>> checkMap()
@@ -155,3 +132,5 @@ std::array<typeByColor, 3> getItdAllTypes()
 
     return typesByColor;
 }
+
+

@@ -1,9 +1,11 @@
 #pragma once
 
 #include "img/img.hpp"
+#include "node.hpp"
 #include "itdReader.hpp"
 #include <vector>
 #include <array>
+#include <unordered_map>
 
 struct caseMap
 {
@@ -48,3 +50,4 @@ std::vector<std::vector<float>> nodeToGraph(Map map);
 // Graphes
 WeightedGraph build_from_adjacency_matrix(std::vector<std::vector<float>> const &adjacency_matrix);
 std::unordered_map<int, std::pair<float, int>> dijkstra(WeightedGraph const &graph, int const &start, int const end);
+std::vector<std::vector<float>> createGraph(Map map);

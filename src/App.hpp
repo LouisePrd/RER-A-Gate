@@ -9,6 +9,7 @@
 #include "itdReader.hpp"
 #include "map.hpp"
 #include "enemy.hpp"
+#include "node.hpp"
 
 class App
 {
