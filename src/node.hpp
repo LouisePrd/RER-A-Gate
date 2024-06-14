@@ -20,9 +20,9 @@ struct Node
     int x;
     int y;
     std::vector<int> noeudsConnectes;
-    std::vector<Node> noeudsConnectesTest;
+    std::vector<Node> noeudsConnectesStruct;
 };
 
-std::vector<Node> getNodes(std::vector<std::vector<int>> nodes);
-void getNodeById(std::vector<Node> nodes, int id, Node &node);
+Node getNodeById(std::vector<Node>& nodes, int id);
+std::vector<Node> getNodes(std::vector<std::vector<int>>& nodes);
 

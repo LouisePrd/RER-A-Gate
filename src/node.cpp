@@ -14,46 +14,51 @@
 #include <utility>
 #include <iterator>
 
-std::vector<Node> getNodes(std::vector<std::vector<int>> nodes)
+Node getNodeById(std::vector<Node>& nodes, int id)
 {
-    std::vector<Node> nodesStruct;
-    std::vector<Node> noeudsListe;
+    for (Node& n : nodes)
+    {
+        if (n.id == id)
+        {
+            return n;
+        }
+    }
+    std::cerr << "Erreur : noeud non trouvé" << std::endl;
+    exit(1);
+}
 
-    for (std::vector<int> node : nodes)
+std::vector<Node> getNodes(std::vector<std::vector<int>>& nodes)
+{
+    std::vector<Node> allNodes;
+
+    // Création des noeuds sans connections
+    for (const std::vector<int>& node : nodes)
     {
         if (node.size() < 3 || node[0] < 0 || node[1] < 0 || node[2] < 0)
         {
             std::cerr << "Erreur nombre d'arguments pour un noeud" << std::endl;
             exit(1);
         }
+
         Node n;
         n.id = node[0];
         n.x = node[1];
         n.y = node[2];
-        for (unsigned long i = 3; i < node.size(); i++)
-        {
-            n.noeudsConnectes.push_back(node[i]);
-        }
 
-        nodesStruct.push_back(n);  
-
+        allNodes.push_back(n);
     }
 
-    return nodesStruct;
-}
-
-
-void getNodeById(std::vector<Node> nodes, int id, Node &node)
-{
-    for (Node n : nodes)
+    // Ajout des connections
+    for (int i = 0; i < nodes.size(); ++i)
     {
-        if (n.id == id)
+        for (int j = 3; j < nodes[i].size(); ++j)
         {
-            node = n;
-            return;
+            int connectedId = nodes[i][j];
+            allNodes[i].noeudsConnectes.push_back(connectedId);
+            Node connectedNode = getNodeById(allNodes, connectedId);
+            allNodes[i].noeudsConnectesStruct.push_back(connectedNode);
         }
     }
-    std::cerr << "Erreur noeud non trouvé" << std::endl;
-    exit(1);
-    
+
+    return allNodes;
 }
