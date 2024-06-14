@@ -49,6 +49,7 @@ Map checkImage(img::Image &baseMap)
     return map;
 }
 
+// Fonction pour comparer les noeuds + map et matcher les noeuds avec les cases correspondantes
 Map compareMapItd(std::vector<Node> nodes, Map map)
 {
 
@@ -60,15 +61,11 @@ Map compareMapItd(std::vector<Node> nodes, Map map)
             std::cerr << "Erreur coordonnées du noeud" << std::endl;
             exit(1);
         }
+        caseMap currentCase = map.listCases[node.y * map.width + node.x];
+        currentCase.node = node;
+        map.listCases[node.y * map.width + node.x] = currentCase;
     }
 
-    for (unsigned long i = 0; i < nodes.size(); i++)
-    {
-        Node node = nodes[i]; // on récupère le noeud
-        caseMap currentCase = map.listCases[node.y * map.width + node.x]; // on récupère la case correspondante
-        currentCase.node = node;                                         // on ajoute le noeud à la case
-        map.listCases[node.y * map.width + node.x] = currentCase;        // on met à jour la case
-    }
     return map;
 }
 
@@ -156,40 +153,11 @@ std::unordered_map<int, std::pair<float, int>> dijkstra(WeightedGraph const &gra
     return distances;
 }
 
-
-int calculDist(Node node1, Node node2)
-{
-    int x1 = node1.x;
-    int y1 = node1.y;
-    int x2 = node2.x;
-    int y2 = node2.y;
-    // on regarde si les cases sont sur la même ligne ou colonne
-    if (x1 == x2)
-    {
-        std::cout << "On compare les cases : (" << x1 << ", " << y1 << ") et (" << x2 << ", " << y2 << ")" << std::endl;
-        std::cout << "Case sur la même ligne :" << x1 << ", différence de y : " << abs(y1 - y2) << std::endl;
-        return abs(y1 - y2);
-    }
-    else if (y1 == y2)
-    {
-        std::cout << "On compare les cases : (" << x1 << ", " << y1 << ") et (" << x2 << ", " << y2 << ")" << std::endl;
-        std::cout << "Case sur la même colonne :" << y1 << ", différence de x : " << abs(x1 - x2) << std::endl;
-        return abs(x1 - x2);
-    }
-    else
-    {
-        std::cout << "On compare les cases : (" << x1 << ", " << y1 << ") et (" << x2 << ", " << y2 << ")" << std::endl;
-        std::cout << "Case pas sur la même ligne ni colonne, distance de Manhattan : " << abs(x1 - x2) + abs(y1 - y2) << std::endl;
-        return abs(x1 - x2) + abs(y1 - y2);
-    }
-}
-
-
 // création du graphe
 std::vector<std::vector<float>> createGraph(Map map)
 {
     std::vector<std::vector<float>> graph;
-    // on créé la matrice d'adjacence
+
     for (int i = 0; i < map.height; i++)
     {
         std::vector<float> row;
@@ -200,26 +168,31 @@ std::vector<std::vector<float>> createGraph(Map map)
         graph.push_back(row);
     }
 
-    // on remplit la matrice d'adjacence
     for (int i = 0; i < map.height; i++)
     {
         for (int j = 0; j < map.width; j++)
         {
             caseMap currentCase = map.listCases[i * map.width + j];
-            if (currentCase.type != typeCase::none)
+            if (currentCase.node.noeudsConnectes.size() !=0)
             {
-                int idNode = currentCase.node.id;
                 for (unsigned long k = 0; k < currentCase.node.noeudsConnectes.size(); k++)
                 {
-                    int idNodeConnect = currentCase.node.noeudsConnectes[k];
-                    std::cout << "On compare les noeuds : " << idNode << " de coordonnées (" << currentCase.x << ", " << currentCase.y << ") et " << idNodeConnect << " de coordonnées (" << map.listCases[idNodeConnect].x << ", " << map.listCases[idNodeConnect].y << ")" << std::endl;
-                    int distance = 1;
-                    graph[idNode][idNodeConnect] = distance;
+                    Node connectedNode = getNodeById(currentCase.node.noeudsConnectesStruct, currentCase.node.noeudsConnectes[k]);
+                    graph[currentCase.node.id][connectedNode.id] = glm::distance(glm::vec2(currentCase.node.x, currentCase.node.y), glm::vec2(connectedNode.x, connectedNode.y));
                 }
             }
         }
     }
 
+    // Affichage du graphe
+    for (int i = 0; i < graph.size(); i++)
+    {
+        for (int j = 0; j < graph[i].size(); j++)
+        {
+            std::cout << graph[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+
     return graph;
 }
-

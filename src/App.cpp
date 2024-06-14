@@ -48,16 +48,8 @@ void App::setup()
     map = compareMapItd(getNodes(nodes), checkImage(baseMap));
 
     // Transformation des chemins en graphe
-    //WeightedGraph weightedGraph = build_from_adjacency_matrix(createGraph(map));
-    std::vector<std::vector<float>> matrix = createGraph(map);
-    for (int i = 0; i < matrix.size(); i++)
-    {
-        for (int j = 0; j < matrix[i].size(); j++)
-        {
-            std::cout << matrix[i][j] << " ";
-        }
-        std::cout << std::endl;
-    }
+    WeightedGraph graph = build_from_adjacency_matrix(createGraph(map));
+    dijkstra(graph, 0, 7);
 
     glClearColor(0.0f, 0.745f, 0.682f, 1.0f); // #00BEBF
     TextRenderer.ResetFont();
@@ -96,6 +88,7 @@ void App::render()
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_64);
     TextRenderer.Label("RER A GATE", _width / 2, 60, SimpleText::CENTER);
     displayMap(map);
+    displayEnemy(0, enemyTest);
 
     TextRenderer.Render();
 }
