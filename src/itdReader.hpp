@@ -4,6 +4,9 @@
 #include <glm/glm.hpp>
 #include <img/img.hpp>
 #include <array>
+#include <unordered_map>
+
+#include "node.hpp"
 
 
 enum typeCase {

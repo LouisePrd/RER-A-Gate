@@ -49,25 +49,7 @@ Map checkImage(img::Image &baseMap)
     return map;
 }
 
-// Fonction pour comparer les noeuds + map et matcher les noeuds avec les cases correspondantes
-Map compareMapItd(std::vector<Node> nodes, Map map)
-{
 
-    for (unsigned long i = 0; i < nodes.size(); i++)
-    {
-        Node node = nodes[i]; // on récupère le noeud
-        if (node.x < 0 || node.y < 0 || node.x >= map.width || node.y >= map.height)
-        {
-            std::cerr << "Erreur coordonnées du noeud" << std::endl;
-            exit(1);
-        }
-        caseMap currentCase = map.listCases[node.y * map.width + node.x];
-        currentCase.node = node;
-        map.listCases[node.y * map.width + node.x] = currentCase;
-    }
-
-    return map;
-}
 
 // Graphes
 
