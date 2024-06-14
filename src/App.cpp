@@ -98,8 +98,8 @@ void App::render()
     draw_quad_with_texture(_texture);
     glPopMatrix();
 
-    TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_64);
-    TextRenderer.Label("RER A GATE", _width / 2, 60, SimpleText::CENTER);
+    TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
+    TextRenderer.Label("RER A GATE", _width / 2, 220, SimpleText::CENTER);
     displayMap(map);
     displayEnemy(0, enemyTest);
 
