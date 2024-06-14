@@ -184,15 +184,5 @@ std::vector<std::vector<float>> createGraph(Map map)
         }
     }
 
-    // Affichage du graphe
-    for (int i = 0; i < graph.size(); i++)
-    {
-        for (int j = 0; j < graph[i].size(); j++)
-        {
-            std::cout << graph[i][j] << " ";
-        }
-        std::cout << std::endl;
-    }
-
     return graph;
 }

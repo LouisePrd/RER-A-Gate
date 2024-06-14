@@ -47,10 +47,6 @@ void App::setup()
     checkImage(baseMap);
     map = compareMapItd(getNodes(nodes), checkImage(baseMap));
 
-    // Transformation des chemins en graphe
-    WeightedGraph graph = build_from_adjacency_matrix(createGraph(map));
-    dijkstra(graph, 0, 7);
-
     glClearColor(0.0f, 0.745f, 0.682f, 1.0f); // #00BEBF
     TextRenderer.ResetFont();
     TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
@@ -64,10 +60,27 @@ void App::update()
     const double currentTime{glfwGetTime()};
     const double elapsedTime{currentTime - _previousTime};
     _previousTime = currentTime;
-
     static double startTime = -1.0;
+    WeightedGraph graph = build_from_adjacency_matrix(createGraph(map));
+    caseMap end {getEndPos().first, getEndPos().second, {0, 0, 0}, typeCase::out};
+    std::vector<int> chemin;
+    for (auto const& [key, val] : dijkstra(graph, 0, end.x + end.y * sizex))
+    {
+        chemin.push_back(key);
+    }
+    std::reverse(chemin.begin(), chemin.end());
+
+    
+
+    // on récupère le node de chaque sommet du chemin
+
     if (startTime < 0.0)
         startTime = currentTime;
+    
+    if (currentTime - startTime > 1.0) {
+        // on récupère chaque sommet du chemin
+
+    }
 
     render();
 }
@@ -249,4 +262,19 @@ void App::displayEnemy(int idTexture, Enemy enemy)
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
     //std::cout << "Position de l'ennemi : (" << enemy.x << ", " << enemy.y << ")" << std::endl;
+}
+
+std::pair<int, int> App::getEndPos()
+{
+    caseMap start;
+    caseMap end;
+    for (int i = 0; i < sizex * sizey; i++)
+    {
+        if (map.listCases[i].type == typeCase::out)
+        {
+            end = map.listCases[i];
+        }
+    }
+
+    return std::make_pair(start.x, start.y), std::make_pair(end.x, end.y);
 }
