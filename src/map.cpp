@@ -60,21 +60,20 @@ Map compareMapItd(std::vector<Node> nodes, Map map)
             std::cerr << "Erreur coordonnées du noeud" << std::endl;
             exit(1);
         }
+    }
 
-        for (unsigned long j = 0; j < map.listCases.size(); j++)
-        {
-            caseMap currentCase = map.listCases[j];
-            if (currentCase.x == node.x && currentCase.y == node.y)
-            {
-                currentCase.node = node;
-                map.listCases[j] = currentCase;
-            }
-        }
+    for (unsigned long i = 0; i < nodes.size(); i++)
+    {
+        Node node = nodes[i]; // on récupère le noeud
+        caseMap currentCase = map.listCases[node.y * map.width + node.x]; // on récupère la case correspondante
+        currentCase.node = node;                                         // on ajoute le noeud à la case
+        map.listCases[node.y * map.width + node.x] = currentCase;        // on met à jour la case
     }
     return map;
 }
 
 // Graphes
+
 void WeightedGraph::add_vertex(int const id)
 {
     if (adjacency_list.find(id) == adjacency_list.end())
@@ -83,7 +82,6 @@ void WeightedGraph::add_vertex(int const id)
 
 void WeightedGraph::add_directed_edge(int const from, int const to, float const weight)
 {
-    // Vérifie que les sommets existent, sinon on les crée
     add_vertex(from);
     add_vertex(to);
     WeightedGraphEdge edge{to, weight};
@@ -214,8 +212,8 @@ std::vector<std::vector<float>> createGraph(Map map)
                 for (unsigned long k = 0; k < currentCase.node.noeudsConnectes.size(); k++)
                 {
                     int idNodeConnect = currentCase.node.noeudsConnectes[k];
+                    std::cout << "On compare les noeuds : " << idNode << " de coordonnées (" << currentCase.x << ", " << currentCase.y << ") et " << idNodeConnect << " de coordonnées (" << map.listCases[idNodeConnect].x << ", " << map.listCases[idNodeConnect].y << ")" << std::endl;
                     int distance = 1;
-                    calculDist(currentCase.node, map.listCases[idNodeConnect].node);
                     graph[idNode][idNodeConnect] = distance;
                 }
             }
