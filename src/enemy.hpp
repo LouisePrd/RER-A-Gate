@@ -1,9 +1,11 @@
 #pragma once
 
-#include <vector>
 #include "map.hpp"
-#include <glad/glad.h>
 #include "node.hpp"
+#include "itdReader.hpp"
+
+#include <glad/glad.h>
+#include <vector>
 #include "img/img.hpp"
 #include <glm/glm.hpp>
 #include <array>
@@ -18,6 +20,7 @@ struct Enemy
     int y;
     double timeAccumulator = 0.0;
 
-    void move(int sizex, int sizey, Map map, double elapsedTime);
-    void moveIntoGraph(WeightedGraph graph, int start, int end);
+    void moveIntoGraph(WeightedGraph graph, int start, int end, Map map, double elapsedTime);
+    void moveX(int &x, int xOut);
+    void moveY(int &y, int yOut);
 };

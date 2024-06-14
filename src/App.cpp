@@ -26,7 +26,6 @@ float divCasesx = 0;
 float divCasesy = 0;
 Enemy enemyTest{0, 0, 10, 1, 1};
 
-
 App::App() : _previousTime(0.0), _viewSize(2.0)
 {
     mappingTexture();
@@ -44,8 +43,8 @@ void App::setup()
     divCasesx = 1/(float)sizex;
     divCasesy = 1/(float)sizey;
     std::vector<std::vector<int>> nodes = checkMap();
-    checkImage(baseMap);
     map = compareMapItd(getNodes(nodes), checkImage(baseMap));
+
 
     glClearColor(0.0f, 0.745f, 0.682f, 1.0f); // #00BEBF
     TextRenderer.ResetFont();
@@ -63,16 +62,7 @@ void App::update()
     static double startTime = -1.0;
     WeightedGraph graph = build_from_adjacency_matrix(createGraph(map));
     caseMap end {getEndPos().first, getEndPos().second, {0, 0, 0}, typeCase::out};
-    std::vector<int> chemin;
-    for (auto const& [key, val] : dijkstra(graph, 0, end.x + end.y * sizex))
-    {
-        chemin.push_back(key);
-    }
-    std::reverse(chemin.begin(), chemin.end());
-
-    
-
-    // on récupère le node de chaque sommet du chemin
+    enemyTest.moveIntoGraph(graph, 0, end.x + end.y * sizex, map, elapsedTime);
 
     if (startTime < 0.0)
         startTime = currentTime;

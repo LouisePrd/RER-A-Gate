@@ -5,56 +5,62 @@
 #include "map.hpp"
 #include "itdReader.hpp"
 
-void Enemy::move(int sizex, int sizey, Map map, double elapsedTime)
+
+void Enemy::moveIntoGraph(WeightedGraph graph, int start, int end, Map map, double elapsedTime)
 {
+    static int currentIndex = 0;
     timeAccumulator += elapsedTime;
     const double movementInterval = 0.5;
     if (timeAccumulator < movementInterval)
         return;
     timeAccumulator = 0;
 
-    int id = this->x + this->y * sizex;
-    caseMap currentCase = map.listCases[id];
-    int xCase = currentCase.x;
-    int yCase = currentCase.y;
-
-    std::vector<caseMap> adjacentCases;
-    if (xCase > 0)
-        adjacentCases.push_back(map.listCases[id - 1]);
-    if (xCase < sizex - 1)
-        adjacentCases.push_back(map.listCases[id + 1]);
-    if (yCase > 0)
-        adjacentCases.push_back(map.listCases[id - sizex]);
-    if (yCase < sizey - 1)
-        adjacentCases.push_back(map.listCases[id + sizex]);
-
-    std::vector<caseMap> possibleCases;
-    for (caseMap c : adjacentCases)
+    std::vector<int> chemin;
+    for (auto const &[key, val] : dijkstra(graph, start, end))
     {
-        if (c.type == typeCase::path)
-            possibleCases.push_back(c);
+        chemin.push_back(key);
     }
 
-    std::cout << "Possible cases: " << possibleCases.size() << std::endl;
+    std::reverse(chemin.begin(), chemin.end());
+    chemin.push_back(end);
 
+    if (currentIndex >= chemin.size())
+        return;
+
+    int nextNode = chemin[currentIndex];
+    for (int i = 0; i < map.listCases.size(); i++)
+    {
+        if (map.listCases[i].node.id == nextNode)
+        {
+            if (this->x != map.listCases[i].node.x)
+            {
+                moveX(this->x, map.listCases[i].node.x);
+            }
+            else if (this->y != map.listCases[i].node.y)
+            {
+                moveY(this->y, map.listCases[i].node.y);
+            }
+
+            if (this->x == map.listCases[i].node.x && this->y == map.listCases[i].node.y)
+                currentIndex++;
+
+            break;
+        }
+    }
 }
 
-// on récupère le graphe
-void Enemy::moveIntoGraph(WeightedGraph graph, int start, int end)
+void Enemy::moveX(int &x, int xOut)
 {
-    std::unordered_map<int, std::pair<float, int>> distances = dijkstra(graph, start, end);
-    std::vector<int> path;
-    int current = end;
-    while (current != start)
-    {
-        path.push_back(current);
-        current = distances[current].second;
-    }
-    path.push_back(start);
-    std::reverse(path.begin(), path.end());
-    for (int i : path)
-    {
-        std::cout << i << " ";
-    }
-    std::cout << std::endl;
+    if (x < xOut)
+        x++;
+    else if (x > xOut)
+        x--;
+}
+
+void Enemy::moveY(int &y, int yOut)
+{
+    if (y < yOut)
+        y++;
+    else if (y > yOut)
+        y--;
 }
