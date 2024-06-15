@@ -38,6 +38,7 @@ private:
     int _height{};
     double _previousTime{};
     float _viewSize{};
+    Map map{};
 
     // Add your variables here
     GLuint _texture{};

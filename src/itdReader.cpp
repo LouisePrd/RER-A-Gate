@@ -40,7 +40,7 @@ void displayEnum(typeCase type)
 
 std::vector<std::vector<int>> checkMap()
 {
-    std::ifstream mapItd(make_absolute_path("data/.itd", true));
+    std::ifstream mapItd(make_absolute_path("data/.itd2", true));
     std::vector<std::string> keyWords = {"ITD", "map", "path", "in", "out", "graph", "node"};
     std::vector<std::vector<int>> nodes;
     std::vector<std::string> lines;
@@ -92,7 +92,7 @@ std::vector<std::vector<int>> checkMap()
     // Vérifie fichier image
     try
     {
-        img::Image test{img::load(make_absolute_path("images/level.png", true))};
+        img::Image test{img::load(make_absolute_path("images/mapRGB-V2.png", true))};
     }
     catch (const std::exception &e)
     {
@@ -105,7 +105,7 @@ std::vector<std::vector<int>> checkMap()
 
 std::array<typeByColor, 3> getItdAllTypes()
 {
-    std::ifstream mapItd(make_absolute_path("data/.itd", true));
+    std::ifstream mapItd(make_absolute_path("data/.itd2", true));
     std::vector<std::string> lines;
     std::string line;
     std::array<typeByColor, 3> typesByColor;

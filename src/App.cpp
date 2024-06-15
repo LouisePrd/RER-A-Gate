@@ -19,14 +19,14 @@
 #include <stb_image/stb_image.h>
 #include <map>
 
-Map map;
+
 int sizex = 0;
 int sizey = 0;
 float divCasesx = 0;
 float divCasesy = 0;
-Enemy enemyTest{0, 0, 10, 1, 1};
+Enemy enemyTest{0, 0, 10, 1, 1, 0.0};
 
-App::App() : _previousTime(0.0), _viewSize(2.0)
+App::App() : _previousTime(0.0), _viewSize(2.0), map()
 {
     mappingTexture();
 }
@@ -37,7 +37,7 @@ void App::setup()
     glViewport(0, 0, _width, _height);
 
     std::cout << "Launching map" << std::endl;
-    img::Image baseMap{img::load(make_absolute_path("images/mapRGB.png", true), 3, true)};
+    img::Image baseMap{img::load(make_absolute_path("images/mapRGB-V2.png", true), 3, true)};
     sizex = baseMap.width();
     sizey = baseMap.height();
     divCasesx = 1/(float)sizex;
@@ -60,17 +60,8 @@ void App::update()
     const double elapsedTime{currentTime - _previousTime};
     _previousTime = currentTime;
     static double startTime = -1.0;
-    WeightedGraph graph = build_from_adjacency_matrix(createGraph(map));
-    caseMap end {getEndPos().first, getEndPos().second, {0, 0, 0}, typeCase::out};
-    enemyTest.moveIntoGraph(graph, 0, end.x + end.y * sizex, map, elapsedTime);
-
-    if (startTime < 0.0)
-        startTime = currentTime;
-    
-    if (currentTime - startTime > 1.0) {
-        // on récupère chaque sommet du chemin
-
-    }
+    //WeightedGraph graph = build_from_adjacency_matrix(createGraph(map));
+    //enemyTest.moveIntoGraph(graph, 0, end.x + end.y * sizex, map, elapsedTime);
 
     render();
 }
@@ -250,17 +241,17 @@ void App::displayEnemy(int idTexture, Enemy enemy)
     glColor3ub(255, 255, 255);
     glBegin(GL_QUADS);
     glTexCoord2d(0, 0);
-    glVertex2f(-0.5f + enemy.x * divCasesx, -0.5f + adjustedY * divCasesy);
+    glVertex2f(-0.5f + enemy.x * 0.125f, -0.5f + adjustedY * 0.125f);
     glTexCoord2d(1, 0);
-    glVertex2f(-0.5f + (enemy.x + 1) * divCasesx, -0.5f + adjustedY * divCasesy);
+    glVertex2f(-0.5f + (enemy.x + 1) * 0.125f, -0.5f + adjustedY * 0.125f);
     glTexCoord2d(1, 1);
-    glVertex2f(-0.5f + (enemy.x + 1) * divCasesx, -0.5f + (adjustedY + 1) * divCasesy);
+    glVertex2f(-0.5f + (enemy.x + 1) * 0.125f, -0.5f + (adjustedY + 1) * 0.125f);
     glTexCoord2d(0, 1);
-    glVertex2f(-0.5f + enemy.x * divCasesx, -0.5f + (adjustedY + 1) * divCasesy);
+    glVertex2f(-0.5f + enemy.x * 0.125f, -0.5f + (adjustedY + 1) * 0.125f);
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
-    //std::cout << "Position de l'ennemi : (" << enemy.x << ", " << enemy.y << ")" << std::endl;
+    std::cout << "Position de l'ennemi : (" << enemy.x << ", " << enemy.y << ")" << std::endl;
 }
 
 std::pair<int, int> App::getEndPos()
