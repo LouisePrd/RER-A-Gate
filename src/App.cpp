@@ -3,6 +3,7 @@
 #include "map.hpp"
 #include "enemy.hpp"
 #include "node.hpp"
+#include "userInterface.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -83,7 +84,7 @@ void App::render()
     TextRenderer.Label("RER A GATE", _width / 2, 220, SimpleText::CENTER);
     displayMap(map);
     displayEnemy(0, enemyTest);
-    displayButton();
+    displayTowerButtons();
 
     TextRenderer.Render();
 }
@@ -103,12 +104,13 @@ void App::mouse_button_callback(int button, int action, int /*mods*/)
         const float aspectRatio{width / (float)height};
         float posMapX = (xpos / width - 0.5f) * _viewSize * aspectRatio;
         float posMapY = (0.5f - ypos / height) * _viewSize;
+        int clickedCase = map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type;
+        
         // ---- Si dans la map
         if ((posMapX >= -0.5f && posMapX <= 0.5f) && (posMapY >= -0.5f && posMapY <= 0.5f))
         {
-            int clickedCase = map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type;
             if (clickedCase != typeCase::path && clickedCase != typeCase::in && clickedCase != typeCase::out) {
-                map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type = typeCase::tower;
+                map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type = typeCase::towerB;
             }
         }
     }
@@ -160,8 +162,10 @@ void App::mappingTexture()
     img::Image in{img::load(make_absolute_path("images/in-out/in.png", true), 3, true)};
     img::Image out{img::load(make_absolute_path("images/in-out/out.png", true), 3, true)};
     img::Image path{img::load(make_absolute_path("images/enemy.png", true), 3, true)};
-    img::Image tower{img::load(make_absolute_path("images/tower-tiles/tower-A.png", true), 3, true)};
     img::Image enemy{img::load(make_absolute_path("images/enemy.png", true), 3, true)};
+    img::Image towerA{img::load(make_absolute_path("images/tower-tiles/tower-A.png", true), 3, true)};
+    img::Image towerB{img::load(make_absolute_path("images/tower-tiles/tower-B.png", true), 3, true)};
+    img::Image towerC{img::load(make_absolute_path("images/tower-tiles/tower-C.png", true), 3, true)};
     _texturesMap.push_back(loadTexture(grassTile1));
     _texturesMap.push_back(loadTexture(grassTile2));
     _texturesMap.push_back(loadTexture(grassTile3));
@@ -169,8 +173,10 @@ void App::mappingTexture()
     _texturesMap.push_back(loadTexture(in));
     _texturesMap.push_back(loadTexture(out));
     _texturesMap.push_back(loadTexture(path));
-    _texturesMap.push_back(loadTexture(tower));
     _texturesEnemy.push_back(loadTexture(enemy));
+    _texturesMap.push_back(loadTexture(towerA));
+    _texturesMap.push_back(loadTexture(towerB));
+    _texturesMap.push_back(loadTexture(towerC));
 
 
     if (_texturesMap.size() == 0)
@@ -203,9 +209,17 @@ void App::displayMap(Map map)
             _texture = _texturesMap[5];
             textureId = 5;
             break;
-        case typeCase::tower:
+        case typeCase::towerA:
             _texture = _texturesMap[7];
             textureId = 7;
+            break;
+        case typeCase::towerB:
+            _texture = _texturesMap[8];
+            textureId = 8;
+            break;
+        case typeCase::towerC:
+            _texture = _texturesMap[9];
+            textureId = 9;
             break;
         default:
             break;
@@ -252,40 +266,6 @@ void App::displayEnemy(int idTexture, Enemy enemy)
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
-}
-
-void App::displayButton() {
-    float buttonSize = 0.1f;
-    float buttonX = -0.5f;
-    float buttonY = -0.63f;
-
-    double xpos, ypos;
-    int width, height;
-    glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
-    glfwGetCursorPos(glfwGetCurrentContext(), &xpos, &ypos);
-    const float aspectRatio{width / (float)height};
-    float posMapX = (xpos / width - 0.5f) * _viewSize * aspectRatio;
-    float posMapY = (0.5f - ypos / height) * _viewSize;
-    bool isHovering = (posMapX >= buttonX && posMapX <= buttonX + 2 * buttonSize && posMapY >= buttonY && posMapY <= buttonY + buttonSize);
-
-    if (isHovering) {
-        glColor3ub(178, 178, 178);
-        glfwSetCursor(glfwGetCurrentContext(), glfwCreateStandardCursor(GLFW_HAND_CURSOR));
-    } else {
-        glfwSetCursor(glfwGetCurrentContext(), glfwCreateStandardCursor(GLFW_ARROW_CURSOR));
-        glColor3ub(128, 128, 128);
-
-    }
-    glBegin(GL_QUADS);
-    glVertex2f(buttonX, buttonY);
-    glVertex2f(buttonX + 2 * buttonSize, buttonY);
-    glVertex2f(buttonX +  2 * buttonSize, buttonY + buttonSize);
-    glVertex2f(buttonX, buttonY + buttonSize);
-    glEnd();
-    TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_96);
-    TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
-    TextRenderer.Label("Towers", buttonX + buttonSize, buttonY + buttonSize / 2, SimpleText::CENTER);
-    TextRenderer.Render();
 }
 
 std::pair<int, int> App::getEndPos()

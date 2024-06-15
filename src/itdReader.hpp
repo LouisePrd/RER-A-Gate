@@ -14,7 +14,9 @@ enum typeCase {
     in,
     out,
     none,
-    tower
+    towerA,
+    towerB,
+    towerC
 };
 
 struct typeByColor {

@@ -23,7 +23,6 @@ public:
     void displayElement(int idTexture, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
     void displayEnemy(int idTexture, Enemy enemy);
     std::pair<int, int> getEndPos();
-    void displayButton();
 
     // GLFW callbacks binding
     void key_callback(int key, int scancode, int action, int mods);
@@ -31,6 +30,13 @@ public:
     void scroll_callback(double xoffset, double yoffset);
     void cursor_position_callback(double xpos, double ypos);
     void size_callback(GLFWwindow* window, int width, int height);
+
+    // User Interface
+    bool isHovering(float x, float y, float width, float height);
+    void handleButtonInteraction(float buttonX, float buttonY, float buttonWidth, float buttonHeight);
+    void displayButton(float buttonX, float buttonY, int idTexture);
+    void displayTowerButtons();
+    void displayPopup();
 
 private:
     void render();
