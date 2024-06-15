@@ -44,6 +44,7 @@ private:
     float _angle{};
     std::vector<GLuint> _texturesMap;
     std::vector<GLuint> _texturesEnemy;
+    std::vector<GLuint> _texturesTower;
 
     SimpleText TextRenderer{};
 };

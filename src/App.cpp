@@ -112,10 +112,14 @@ void App::mouse_button_callback(int button, int action, int mods)
         float posMapX = (xpos / width - 0.5f) * _viewSize * aspectRatio;
         float posMapY = (0.5f - ypos / height) * _viewSize;
         std::cout << "Position de la souris : (" << posMapX << ", " << posMapY << ")" << std::endl;
+
         if ((posMapX >= -0.5f && posMapX <= 0.5f) && (posMapY >= -0.5f && posMapY <= 0.5f))
         {
             std::cout << "Dans la map" << std::endl;
-            // code pour ajouter une tour
+            int clickedCase = map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type;
+            if (clickedCase != typeCase::path && clickedCase != typeCase::in && clickedCase != typeCase::out) {
+                map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type = typeCase::tower;
+            }
         }
     }
 }
@@ -166,6 +170,7 @@ void App::mappingTexture()
     img::Image in{img::load(make_absolute_path("images/in-out/in.png", true), 3, true)};
     img::Image out{img::load(make_absolute_path("images/in-out/out.png", true), 3, true)};
     img::Image path{img::load(make_absolute_path("images/enemy.png", true), 3, true)};
+    img::Image tower{img::load(make_absolute_path("images/yuki.png", true), 3, true)};
     img::Image enemy{img::load(make_absolute_path("images/enemy.png", true), 3, true)};
     _texturesMap.push_back(loadTexture(grassTile1));
     _texturesMap.push_back(loadTexture(grassTile2));
@@ -174,7 +179,9 @@ void App::mappingTexture()
     _texturesMap.push_back(loadTexture(in));
     _texturesMap.push_back(loadTexture(out));
     _texturesMap.push_back(loadTexture(path));
+    _texturesMap.push_back(loadTexture(tower));
     _texturesEnemy.push_back(loadTexture(enemy));
+
 
     if (_texturesMap.size() == 0)
         std::cerr << "Error: no textures loaded" << std::endl;
@@ -205,6 +212,10 @@ void App::displayMap(Map map)
         case typeCase::out:
             _texture = _texturesMap[5];
             textureId = 5;
+            break;
+        case typeCase::tower:
+            _texture = _texturesMap[7];
+            textureId = 7;
             break;
         default:
             break;
