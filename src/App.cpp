@@ -210,7 +210,7 @@ void App::displayMap(Map map)
             break;
         }
 
-        displayElement(textureId, -0.5f + (i % sizex) * 0.125f, -0.5f + (i / sizey) * 0.125f, -0.5f + (i % sizex + 1) * 0.125f, -0.5f + (i / sizey) * 0.125f, -0.5f + (i % sizex + 1) * 0.125f, -0.5f + (i / sizey + 1) * 0.125f, -0.5f + (i % sizex) * 0.125f, -0.5f + (i / sizey + 1) * 0.125f);
+        displayElement(textureId, -0.5f + (i % sizex) * divCasesx, -0.5f + (i / sizey) * divCasesy, -0.5f + (i % sizex + 1) * divCasesx, -0.5f + (i / sizey) * divCasesy, -0.5f + (i % sizex + 1) * divCasesx, -0.5f + (i / sizey + 1) * divCasesy, -0.5f + (i % sizex) * divCasesx, -0.5f + (i / sizey + 1) * divCasesy);
     }
 }
 
@@ -241,17 +241,16 @@ void App::displayEnemy(int idTexture, Enemy enemy)
     glColor3ub(255, 255, 255);
     glBegin(GL_QUADS);
     glTexCoord2d(0, 0);
-    glVertex2f(-0.5f + enemy.x * 0.125f, -0.5f + adjustedY * 0.125f);
+    glVertex2f(-0.5f + enemy.x * divCasesx, -0.5f + adjustedY * divCasesy);
     glTexCoord2d(1, 0);
-    glVertex2f(-0.5f + (enemy.x + 1) * 0.125f, -0.5f + adjustedY * 0.125f);
+    glVertex2f(-0.5f + (enemy.x + 1) * divCasesx, -0.5f + adjustedY * divCasesy);
     glTexCoord2d(1, 1);
-    glVertex2f(-0.5f + (enemy.x + 1) * 0.125f, -0.5f + (adjustedY + 1) * 0.125f);
+    glVertex2f(-0.5f + (enemy.x + 1) * divCasesx, -0.5f + (adjustedY + 1) * divCasesy);
     glTexCoord2d(0, 1);
-    glVertex2f(-0.5f + enemy.x * 0.125f, -0.5f + (adjustedY + 1) * 0.125f);
+    glVertex2f(-0.5f + enemy.x * divCasesx, -0.5f + (adjustedY + 1) * divCasesy);
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
-    std::cout << "Position de l'ennemi : (" << enemy.x << ", " << enemy.y << ")" << std::endl;
 }
 
 std::pair<int, int> App::getEndPos()
