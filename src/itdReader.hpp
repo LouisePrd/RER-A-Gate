@@ -13,7 +13,8 @@ enum typeCase {
     path,
     in,
     out,
-    none
+    none,
+    tower
 };
 
 struct typeByColor {
