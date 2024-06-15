@@ -255,12 +255,10 @@ void App::displayEnemy(int idTexture, Enemy enemy)
 }
 
 void App::displayButton() {
-    // Define the button position and size
     float buttonSize = 0.1f;
     float buttonX = -0.5f;
-    float buttonY = -0.63f; // Move the button down by 0.1f
+    float buttonY = -0.63f;
 
-    // Check if the cursor is hovering over the button
     double xpos, ypos;
     int width, height;
     glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
@@ -270,17 +268,14 @@ void App::displayButton() {
     float posMapY = (0.5f - ypos / height) * _viewSize;
     bool isHovering = (posMapX >= buttonX && posMapX <= buttonX + 2 * buttonSize && posMapY >= buttonY && posMapY <= buttonY + buttonSize);
 
-    // Set the button color
     if (isHovering) {
         glColor3ub(178, 178, 178);
-        glfwSetCursor(glfwGetCurrentContext(), glfwCreateStandardCursor(GLFW_HAND_CURSOR)); // Change cursor to pointer
+        glfwSetCursor(glfwGetCurrentContext(), glfwCreateStandardCursor(GLFW_HAND_CURSOR));
     } else {
-        glfwSetCursor(glfwGetCurrentContext(), glfwCreateStandardCursor(GLFW_ARROW_CURSOR)); // Change cursor to default arrow
+        glfwSetCursor(glfwGetCurrentContext(), glfwCreateStandardCursor(GLFW_ARROW_CURSOR));
         glColor3ub(128, 128, 128);
 
     }
-
-    // Draw the button as a rectangle with "Towers" text
     glBegin(GL_QUADS);
     glVertex2f(buttonX, buttonY);
     glVertex2f(buttonX + 2 * buttonSize, buttonY);
