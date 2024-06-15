@@ -111,11 +111,9 @@ void App::mouse_button_callback(int button, int action, int mods)
         const float aspectRatio{width / (float)height};
         float posMapX = (xpos / width - 0.5f) * _viewSize * aspectRatio;
         float posMapY = (0.5f - ypos / height) * _viewSize;
-        std::cout << "Position de la souris : (" << posMapX << ", " << posMapY << ")" << std::endl;
-
+        // ---- Si dans la map
         if ((posMapX >= -0.5f && posMapX <= 0.5f) && (posMapY >= -0.5f && posMapY <= 0.5f))
         {
-            std::cout << "Dans la map" << std::endl;
             int clickedCase = map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type;
             if (clickedCase != typeCase::path && clickedCase != typeCase::in && clickedCase != typeCase::out) {
                 map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type = typeCase::tower;
@@ -170,7 +168,7 @@ void App::mappingTexture()
     img::Image in{img::load(make_absolute_path("images/in-out/in.png", true), 3, true)};
     img::Image out{img::load(make_absolute_path("images/in-out/out.png", true), 3, true)};
     img::Image path{img::load(make_absolute_path("images/enemy.png", true), 3, true)};
-    img::Image tower{img::load(make_absolute_path("images/yuki.png", true), 3, true)};
+    img::Image tower{img::load(make_absolute_path("images/tower-tiles/tower-A.png", true), 3, true)};
     img::Image enemy{img::load(make_absolute_path("images/enemy.png", true), 3, true)};
     _texturesMap.push_back(loadTexture(grassTile1));
     _texturesMap.push_back(loadTexture(grassTile2));
