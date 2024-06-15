@@ -9,20 +9,39 @@
 void Enemy::moveIntoGraph(WeightedGraph graph, int start, int end, Map map, double elapsedTime)
 {
     static int currentIndex = 0;
+    static std::vector<int> chemin;
+    static bool newPathNeeded = true;
+
     timeAccumulator += elapsedTime;
-    const double movementInterval = 0.5;
+    const double movementInterval = 3;
+
     if (timeAccumulator < movementInterval)
         return;
+
     timeAccumulator = 0;
 
-    std::vector<int> chemin;
-    for (auto const &[key, val] : dijkstra(graph, start, end))
+    if (newPathNeeded)
     {
-        chemin.push_back(key);
+        chemin.clear();
+        auto result = dijkstra(graph, start, end);
+
+        for (int at = end; at != -1; at = result[at].second)
+        {
+            chemin.push_back(at);
+        }
+        std::reverse(chemin.begin(), chemin.end());
+        chemin.erase(chemin.begin());
+
+        newPathNeeded = false;
+        currentIndex = 0;
     }
 
-    std::reverse(chemin.begin(), chemin.end());
-    chemin.push_back(end);
+    std::cout << "chemin: ";
+    for (int node : chemin)
+    {
+        std::cout << node << " ";
+    }
+    std::cout << std::endl;
 
     if (currentIndex >= chemin.size())
         return;
@@ -48,6 +67,7 @@ void Enemy::moveIntoGraph(WeightedGraph graph, int start, int end, Map map, doub
         }
     }
 }
+
 
 void Enemy::moveX(int &x, int xOut)
 {

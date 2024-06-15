@@ -93,41 +93,38 @@ WeightedGraph build_from_adjacency_matrix(std::vector<std::vector<float>> const 
 
 std::unordered_map<int, std::pair<float, int>> dijkstra(WeightedGraph const &graph, int const &start, int const end)
 {
-    std::unordered_map<int, std::pair<float, int>> distances{};
-    std::priority_queue<std::pair<float, int>, std::vector<std::pair<float, int>>, std::greater<std::pair<float, int>>> to_visit{};
+    std::unordered_map<int, std::pair<float, int>> distances;
+    std::priority_queue<std::pair<float, int>, std::vector<std::pair<float, int>>, std::greater<std::pair<float, int>>> to_visit;
+
+    // Initialisation des distances
+    for (const auto& node : graph.adjacency_list) {
+        distances[node.first] = {std::numeric_limits<float>::infinity(), -1};
+    }
+    distances[start] = {0, -1};
 
     to_visit.push({0, start});
+
     while (!to_visit.empty())
     {
-        auto [current_distance, current_node]{to_visit.top()};
+        auto [current_distance, current_node] = to_visit.top();
         to_visit.pop();
 
-        if (current_node == end)
-        {
-            return distances;
+        // Si le nœud a déjà été traité avec une distance plus courte, on l'ignore
+        if (current_distance > distances[current_node].first) {
+            continue;
+        }
+
+        // Vérification si on a atteint le nœud de destination
+        if (current_node == end) {
+            break; // Arrêtez la boucle dès que nous atteignons le nœud de destination
         }
 
         for (WeightedGraphEdge edge : graph.adjacency_list.at(current_node))
         {
-            auto find_node{
-                distances.find(edge.to)};
-
-            bool const visited{
-                find_node != distances.end()};
-
-            if (!visited)
-            {
-                int distance = current_distance + edge.weight;
-                distances[edge.to] = {distance, current_node};
-                to_visit.push({distance, edge.to});
-            }
-            else
-            {
-                if (distances[edge.to].first > current_distance + edge.weight)
-                {
-                    distances[edge.to] = {current_distance + edge.weight, current_node};
-                    to_visit.push({current_distance + edge.weight, edge.to});
-                }
+            float new_distance = current_distance + edge.weight;
+            if (new_distance < distances[edge.to].first) {
+                distances[edge.to] = {new_distance, current_node};
+                to_visit.push({new_distance, edge.to});
             }
         }
     }
@@ -139,11 +136,27 @@ std::unordered_map<int, std::pair<float, int>> dijkstra(WeightedGraph const &gra
 std::vector<std::vector<float>> createGraph(Map map)
 {
     std::vector<std::vector<float>> graph;
+    int nbNodes = 0;
 
     for (int i = 0; i < map.height; i++)
     {
-        std::vector<float> row;
         for (int j = 0; j < map.width; j++)
+        {
+            caseMap currentCase = map.listCases[i * map.width + j];
+            if (currentCase.node.noeudsConnectesStruct.size() !=0)
+            {
+                for (unsigned long k = 0; k < currentCase.node.noeudsConnectesStruct.size(); k++)
+                {
+                    nbNodes++;
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < nbNodes; i++)
+    {
+        std::vector<float> row;
+        for (int j = 0; j < nbNodes; j++)
         {
             row.push_back(0);
         }
@@ -155,12 +168,13 @@ std::vector<std::vector<float>> createGraph(Map map)
         for (int j = 0; j < map.width; j++)
         {
             caseMap currentCase = map.listCases[i * map.width + j];
-            if (currentCase.node.noeudsConnectes.size() !=0)
+            if (currentCase.node.noeudsConnectesStruct.size() !=0)
             {
-                for (unsigned long k = 0; k < currentCase.node.noeudsConnectes.size(); k++)
+                for (unsigned long k = 0; k < currentCase.node.noeudsConnectesStruct.size(); k++)
                 {
-                    Node connectedNode = getNodeById(currentCase.node.noeudsConnectesStruct, currentCase.node.noeudsConnectes[k]);
-                    graph[currentCase.node.id][connectedNode.id] = glm::distance(glm::vec2(currentCase.node.x, currentCase.node.y), glm::vec2(connectedNode.x, connectedNode.y));
+                    Node node = currentCase.node.noeudsConnectesStruct[k];
+                    int distance = abs(currentCase.node.x - node.x) + abs(currentCase.node.y - node.y);
+                    graph[currentCase.node.id][node.id] = distance;
                 }
             }
         }

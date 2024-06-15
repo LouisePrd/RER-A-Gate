@@ -64,6 +64,7 @@ void App::update()
     //WeightedGraph graph = build_from_adjacency_matrix(createGraph(map));
     //enemyTest.moveIntoGraph(graph, 0, end.x + end.y * sizex, map, elapsedTime);
 
+
     render();
 }
 
@@ -83,7 +84,11 @@ void App::render()
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
     TextRenderer.Label("RER A GATE", _width / 2, 220, SimpleText::CENTER);
     displayMap(map);
-    displayEnemy(0, enemyTest);
+    displayEnemy(0, enemyTest); 
+    std::vector<std::vector<float>> matrix = createGraph(map); 
+    WeightedGraph graph = build_from_adjacency_matrix(matrix);
+    enemyTest.moveIntoGraph(graph, 0, 10, map, 0.5);
+
     displayTowerButtons();
 
     TextRenderer.Render();
