@@ -48,7 +48,7 @@ void App::setup()
 
     glClearColor(0.0f, 0.745f, 0.682f, 1.0f); // #00BEBF
     TextRenderer.ResetFont();
-    TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::WHITE);
     TextRenderer.SetColorf(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
     TextRenderer.EnableBlending(true);
 
@@ -83,6 +83,7 @@ void App::render()
     TextRenderer.Label("RER A GATE", _width / 2, 220, SimpleText::CENTER);
     displayMap(map);
     displayEnemy(0, enemyTest);
+    displayButton();
 
     TextRenderer.Render();
 }
@@ -91,7 +92,7 @@ void App::key_callback(int /*key*/, int /*scancode*/, int /*action*/, int /*mods
 {
 }
 
-void App::mouse_button_callback(int button, int action, int mods)
+void App::mouse_button_callback(int button, int action, int /*mods*/)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
     {
@@ -251,6 +252,45 @@ void App::displayEnemy(int idTexture, Enemy enemy)
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
+}
+
+void App::displayButton() {
+    // Define the button position and size
+    float buttonSize = 0.1f;
+    float buttonX = -0.5f;
+    float buttonY = -0.63f; // Move the button down by 0.1f
+
+    // Check if the cursor is hovering over the button
+    double xpos, ypos;
+    int width, height;
+    glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
+    glfwGetCursorPos(glfwGetCurrentContext(), &xpos, &ypos);
+    const float aspectRatio{width / (float)height};
+    float posMapX = (xpos / width - 0.5f) * _viewSize * aspectRatio;
+    float posMapY = (0.5f - ypos / height) * _viewSize;
+    bool isHovering = (posMapX >= buttonX && posMapX <= buttonX + 2 * buttonSize && posMapY >= buttonY && posMapY <= buttonY + buttonSize);
+
+    // Set the button color
+    if (isHovering) {
+        glColor3ub(178, 178, 178);
+        glfwSetCursor(glfwGetCurrentContext(), glfwCreateStandardCursor(GLFW_HAND_CURSOR)); // Change cursor to pointer
+    } else {
+        glfwSetCursor(glfwGetCurrentContext(), glfwCreateStandardCursor(GLFW_ARROW_CURSOR)); // Change cursor to default arrow
+        glColor3ub(128, 128, 128);
+
+    }
+
+    // Draw the button as a rectangle with "Towers" text
+    glBegin(GL_QUADS);
+    glVertex2f(buttonX, buttonY);
+    glVertex2f(buttonX + 2 * buttonSize, buttonY);
+    glVertex2f(buttonX +  2 * buttonSize, buttonY + buttonSize);
+    glVertex2f(buttonX, buttonY + buttonSize);
+    glEnd();
+    TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_96);
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
+    TextRenderer.Label("Towers", buttonX + buttonSize, buttonY + buttonSize / 2, SimpleText::CENTER);
+    TextRenderer.Render();
 }
 
 std::pair<int, int> App::getEndPos()
