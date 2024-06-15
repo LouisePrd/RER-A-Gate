@@ -22,7 +22,6 @@ public:
     void displayMap(Map map);
     void displayElement(int idTexture, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
     void displayEnemy(int idTexture, Enemy enemy);
-    std::pair<int, int> getEndPos();
 
     // GLFW callbacks binding
     void key_callback(int key, int scancode, int action, int mods);
@@ -49,10 +48,20 @@ private:
 
     // Add your variables here
     GLuint _texture{};
-    float _angle{};
+
+    // Map
+    int sizex;
+    int sizey;
+    float divCasesx;
+    float divCasesy;
+
+    // Textures
     std::vector<GLuint> _texturesMap;
     std::vector<GLuint> _texturesEnemy;
     std::vector<GLuint> _texturesTower;
+
+    // Enemies
+    std::vector<Enemy> enemies;
 
     SimpleText TextRenderer{};
 };

@@ -21,10 +21,6 @@
 #include <map>
 
 
-int sizex = 0;
-int sizey = 0;
-float divCasesx = 0;
-float divCasesy = 0;
 Enemy enemyTest{0, 0, 10, 1, 1, 0.0};
 
 App::App() : _previousTime(0.0), _viewSize(2.0), map()
@@ -46,13 +42,11 @@ void App::setup()
     std::vector<std::vector<int>> nodes = checkMap();
     map = compareMapItd(getNodes(nodes), checkImage(baseMap));
 
-
     glClearColor(0.0f, 0.745f, 0.682f, 1.0f); // #00BEBF
     TextRenderer.ResetFont();
     TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::WHITE);
     TextRenderer.SetColorf(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
     TextRenderer.EnableBlending(true);
-
 }
 
 void App::update()
@@ -61,9 +55,6 @@ void App::update()
     const double elapsedTime{currentTime - _previousTime};
     _previousTime = currentTime;
     static double startTime = -1.0;
-    //WeightedGraph graph = build_from_adjacency_matrix(createGraph(map));
-    //enemyTest.moveIntoGraph(graph, 0, end.x + end.y * sizex, map, elapsedTime);
-
 
     render();
 }
@@ -77,13 +68,13 @@ void App::render()
 
     glPushMatrix();
     glScalef(0.8f, 0.8f, 0.8f);
-    glRotatef(_angle, 0.0f, 0.0f, 1.0f);
-    draw_quad_with_texture(_texture);
     glPopMatrix();
 
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
     TextRenderer.Label("RER A GATE", _width / 2, 220, SimpleText::CENTER);
     displayMap(map);
+
+
     displayEnemy(0, enemyTest); 
     std::vector<std::vector<float>> matrix = createGraph(map); 
     WeightedGraph graph = build_from_adjacency_matrix(matrix);
@@ -271,19 +262,4 @@ void App::displayEnemy(int idTexture, Enemy enemy)
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
-}
-
-std::pair<int, int> App::getEndPos()
-{
-    caseMap start;
-    caseMap end;
-    for (int i = 0; i < sizex * sizey; i++)
-    {
-        if (map.listCases[i].type == typeCase::out)
-        {
-            end = map.listCases[i];
-        }
-    }
-
-    return std::make_pair(start.x, start.y), std::make_pair(end.x, end.y);
 }

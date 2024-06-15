@@ -13,7 +13,7 @@ void Enemy::moveIntoGraph(WeightedGraph graph, int start, int end, Map map, doub
     static bool newPathNeeded = true;
 
     timeAccumulator += elapsedTime;
-    const double movementInterval = 3;
+    const double movementInterval = 8;
 
     if (timeAccumulator < movementInterval)
         return;
@@ -35,13 +35,6 @@ void Enemy::moveIntoGraph(WeightedGraph graph, int start, int end, Map map, doub
         newPathNeeded = false;
         currentIndex = 0;
     }
-
-    std::cout << "chemin: ";
-    for (int node : chemin)
-    {
-        std::cout << node << " ";
-    }
-    std::cout << std::endl;
 
     if (currentIndex >= chemin.size())
         return;
