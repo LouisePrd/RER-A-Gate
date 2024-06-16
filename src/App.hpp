@@ -5,13 +5,14 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 #include <map>
+#include <utility>
 #include "utils.hpp"
 #include "itdReader.hpp"
 #include "map.hpp"
 #include "enemy.hpp"
 #include "node.hpp"
 #include "waveEnemies.hpp"
-#include <utility>
+#include "tower.hpp"
 
 class App
 {
@@ -66,8 +67,9 @@ private:
     std::vector<GLuint> _texturesEnemy;
     std::vector<GLuint> _texturesTower;
 
-    // Enemies
+    // Enemies and Towers
     Wave waveEnemies;
+    std::vector<Tower> towersInMap;
 
     // User Interface
     bool started = false;

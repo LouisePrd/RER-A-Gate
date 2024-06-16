@@ -15,24 +15,16 @@ int chebyshev(int x1, int y1, int x2, int y2)
     return std::max(std::abs(y2 - y1), std::abs(x2 - x1));
 }
 
-// ---- Instances provisoire des tours
-// Valeurs temporaires arbitraires en score sur 10
-// ==== équilibrée
-// Tower typeA { "TypeA", 7, 7, 7, 10 };
-// ==== + puissante - cadence
-// Tower typeB { "TypeB", 10, 7, 3, 8 };
-// ==== - puissante + cadence
-// Tower typeC { "TypeC", 5, 5, 10, 8 };
+bool Tower::testRange(float x1, float y1, float x2, float y2)
+{
+    return chebyshev(x1, y1, x2, y2) <= scope;
+}
 
-Map newTower(float posMapX, float posMapY, int selectedTowerType, Map map, float sizeDisplay, int &totalMoney)
+Map newTower(float posMapX, float posMapY, int selectedTowerType, Map map, float sizeDisplay, int &totalMoney, std::vector<Tower> &towers)
 {
     float limit = sizeDisplay / 2.f;
-    float normalizedX = (posMapX + limit);
-    float normalizedY = (posMapY + limit);
-
-    // Convertir les coordonnées normalisées en indices de grille
-    int gridX = static_cast<int>(normalizedX * map.width);
-    int gridY = static_cast<int>(normalizedY * map.height);
+    int gridX = static_cast<int>((posMapX + limit) * map.width);
+    int gridY = static_cast<int>((posMapY + limit) * map.height);
 
     if (posMapX < -limit || posMapX > limit || posMapY < -limit || posMapY > limit)
     {
@@ -65,7 +57,9 @@ Map newTower(float posMapX, float posMapY, int selectedTowerType, Map map, float
         {
             totalMoney -= selectedTower.price;
             map.listCases[index].type = static_cast<typeCase>(selectedTowerType + typeCase::towerA);
-            std::cout << "Tour placée à la position : " << gridX << ", " << gridY << std::endl;
+            selectedTower.x = map.listCases[index].x;
+            selectedTower.y = map.listCases[index].y;
+            towers.push_back(selectedTower);
         }
         else
         {

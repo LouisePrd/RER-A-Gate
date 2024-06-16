@@ -12,8 +12,10 @@ struct Tower
     int scope;
     int speed;
     int price;
+    float x, y;
+
+    bool testRange(float x1, float y1, float x2, float y2);
 };
 
-Map newTower(float x, float y, int selectedTower, Map map, float sizeDisplay, int &totalMoney);
-// --- Méthode Chebyshev : distance en diagonale
+Map newTower(float x, float y, int selectedTower, Map map, float sizeDisplay, int &totalMoney, std::vector<Tower> &towers);
 int chebyshev(int x1, int y1, int x2, int y2);

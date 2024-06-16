@@ -58,9 +58,21 @@ void App::update()
 
     if (started == true)
     {
-        for (int i = 0; i < waveEnemies.enemies.size(); i++)
+        for (unsigned long i = 0; i < waveEnemies.enemies.size(); i++)
         {
             waveEnemies.enemies[i].moveIntoGraph(map.graph, 0, 10, map, elapsedTime * 1.5);
+        }
+    }
+
+    for (unsigned long i = 0; i < towersInMap.size(); i++)
+    {
+        // test if enemy in range
+        for (unsigned long j = 0; j < waveEnemies.enemies.size(); j++)
+        {
+           if (towersInMap[i].testRange(towersInMap[i].x, towersInMap[i].y, waveEnemies.enemies[j].x, waveEnemies.enemies[j].y))
+           {
+               std::cout << "Enemy " << j << " with coordinates " << waveEnemies.enemies[j].x << " " << waveEnemies.enemies[j].y << " is in range of tower " << i << std::endl;
+           }
         }
     }
 
@@ -99,7 +111,6 @@ void App::render()
     }
     else
     {
-
         TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
         TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_32);
         TextRenderer.Label("Press SPACE to start", _width / 2, _height / 7, SimpleText::CENTER);
@@ -138,7 +149,7 @@ void App::mouse_button_callback(int button, int action, int /*mods*/)
         float posMapY = ((sizeDisplay/2.f) - ypos / height) * _viewSize;        
 
         if (started == true)
-            map = newTower(posMapX, posMapY, selectedTowerType, map, sizeDisplay, totalMoney);
+            map = newTower(posMapX, posMapY, selectedTowerType, map, sizeDisplay, totalMoney, towersInMap);
     }
 }
 
