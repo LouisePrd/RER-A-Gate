@@ -9,9 +9,8 @@
 void Enemy::moveIntoGraph(WeightedGraph graph, int start, int end, Map map, double elapsedTime)
 {
     timeAccumulator += elapsedTime;
-    const double movementInterval = speed;
 
-    if (timeAccumulator < movementInterval)
+    if (timeAccumulator < speed)
         return;
 
     timeAccumulator = 0;
@@ -36,7 +35,7 @@ void Enemy::moveIntoGraph(WeightedGraph graph, int start, int end, Map map, doub
         return;
 
     int nextNode = path[currentIndex];
-    for (int i = 0; i < map.listCases.size(); i++)
+    for (unsigned long i = 0; i < map.listCases.size(); i++)
     {
         if (map.listCases[i].node.id == nextNode)
         {
