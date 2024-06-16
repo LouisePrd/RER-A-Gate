@@ -80,7 +80,7 @@ void App::render()
     glPopMatrix();
 
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
-    TextRenderer.Label("RER A GATE", _width / 2, 220, SimpleText::CENTER);
+    TextRenderer.Label("RER A GATE", _width / 2,  _height/8, SimpleText::CENTER);
     displayMap(map);
     displayTowerButtons();
 
@@ -93,7 +93,7 @@ void App::render()
     } else {
         TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
         TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_32);
-        TextRenderer.Label("Press SPACE to start", _width / 2, _height/5, SimpleText::CENTER);
+        TextRenderer.Label("Press SPACE to start", _width / 2, _height/7, SimpleText::CENTER);
     }
 
     TextRenderer.Render();
