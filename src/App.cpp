@@ -37,8 +37,8 @@ void App::setup()
     img::Image baseMap{img::load(make_absolute_path("images/mapRGB-V2.png", true), 3, true)};
     sizex = baseMap.width();
     sizey = baseMap.height();
-    divCasesx = 1 / (float)sizex;
-    divCasesy = 1 / (float)sizey;
+    divCasesx = sizeDisplay / (float)sizex;
+    divCasesy = sizeDisplay / (float)sizey;
 
     std::vector<std::vector<int>> nodes = checkMap();
     map = compareMapItd(getNodes(nodes), checkImage(baseMap));
@@ -112,23 +112,23 @@ void App::mouse_button_callback(int button, int action, int /*mods*/) {
         glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
         glfwGetCursorPos(glfwGetCurrentContext(), &xpos, &ypos);
         const float aspectRatio{width / (float)height};
-        float posMapX = (xpos / width - 0.5f) * _viewSize * aspectRatio;
-        float posMapY = (0.5f - ypos / height) * _viewSize;
+        float posMapX = (xpos / width - (sizeDisplay/2.f)) * _viewSize * aspectRatio;
+        float posMapY = ((sizeDisplay/2.f) - ypos / height) * _viewSize;
 
         // ---- Si sur la map
-        if ((posMapX >= -0.5f && posMapX <= 0.5f) && (posMapY >= -0.5f && posMapY <= 0.5f)) {
-            int clickedCase = map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type;
+        if ((posMapX >= -(sizeDisplay/2.f) && posMapX <= (sizeDisplay/2.f)) && (posMapY >= -(sizeDisplay/2.f) && posMapY <= (sizeDisplay/2.f))) {
+            int clickedCase = map.listCases[(int)((posMapX + (sizeDisplay/2.f)) / divCasesx) + (int)((posMapY + (sizeDisplay/2.f)) / divCasesy) * sizex].type;
 
             if (clickedCase != typeCase::path && clickedCase != typeCase::in && clickedCase != typeCase::out && selectedTowerType != -1) {
                 switch (selectedTowerType) {
                     case 0:
-                        map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type = typeCase::towerA;
+                        map.listCases[(int)((posMapX + (sizeDisplay/2.f)) / divCasesx) + (int)((posMapY + (sizeDisplay/2.f)) / divCasesy) * sizex].type = typeCase::towerA;
                         break;
                     case 1:
-                        map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type = typeCase::towerB;
+                        map.listCases[(int)((posMapX + (sizeDisplay/2.f)) / divCasesx) + (int)((posMapY + (sizeDisplay/2.f)) / divCasesy) * sizex].type = typeCase::towerB;
                         break;
                     case 2:
-                        map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type = typeCase::towerC;
+                        map.listCases[(int)((posMapX + (sizeDisplay/2.f)) / divCasesx) + (int)((posMapY + (sizeDisplay/2.f)) / divCasesy) * sizex].type = typeCase::towerC;
                         break;
                     default:
                         break;
@@ -183,7 +183,7 @@ void App::mappingTexture()
         "images/grass-tiles/grass-tile-2.png",
         "images/grass-tiles/grass-tile-3.png",
         "images/rails-tiles/rails-droit-1.png",
-        "images/in-out/in.png",
+        "images/in-out/spawn.png",
         "images/in-out/out.png",
         "images/enemy.png",
         "images/tower-tiles/tower-A.png",
@@ -245,7 +245,7 @@ void App::displayMap(Map map)
             break;
         }
 
-        displayElement(textureId, -0.5f + (i % sizex) * divCasesx, -0.5f + (i / sizey) * divCasesy, -0.5f + (i % sizex + 1) * divCasesx, -0.5f + (i / sizey) * divCasesy, -0.5f + (i % sizex + 1) * divCasesx, -0.5f + (i / sizey + 1) * divCasesy, -0.5f + (i % sizex) * divCasesx, -0.5f + (i / sizey + 1) * divCasesy);
+        displayElement(textureId, -(sizeDisplay/2.f) + (i % sizex) * divCasesx, -(sizeDisplay/2.f) + (i / sizey) * divCasesy, -(sizeDisplay/2.f) + (i % sizex + 1) * divCasesx, -(sizeDisplay/2.f) + (i / sizey) * divCasesy, -(sizeDisplay/2.f) + (i % sizex + 1) * divCasesx, -(sizeDisplay/2.f) + (i / sizey + 1) * divCasesy, -(sizeDisplay/2.f) + (i % sizex) * divCasesx, -(sizeDisplay/2.f) + (i / sizey + 1) * divCasesy);
     }
 }
 
@@ -276,13 +276,13 @@ void App::displayEnemy(int idTexture, Enemy enemy)
     glColor3ub(255, 255, 255);
     glBegin(GL_QUADS);
     glTexCoord2d(0, 0);
-    glVertex2f(-0.5f + enemy.x * divCasesx, -0.5f + adjustedY * divCasesy);
+    glVertex2f(-(sizeDisplay/2.f) + enemy.x * divCasesx, -(sizeDisplay/2.f) + adjustedY * divCasesy);
     glTexCoord2d(1, 0);
-    glVertex2f(-0.5f + (enemy.x + 1) * divCasesx, -0.5f + adjustedY * divCasesy);
+    glVertex2f(-(sizeDisplay/2.f) + (enemy.x + 1) * divCasesx, -(sizeDisplay/2.f) + adjustedY * divCasesy);
     glTexCoord2d(1, 1);
-    glVertex2f(-0.5f + (enemy.x + 1) * divCasesx, -0.5f + (adjustedY + 1) * divCasesy);
+    glVertex2f(-(sizeDisplay/2.f) + (enemy.x + 1) * divCasesx, -(sizeDisplay/2.f) + (adjustedY + 1) * divCasesy);
     glTexCoord2d(0, 1);
-    glVertex2f(-0.5f + enemy.x * divCasesx, -0.5f + (adjustedY + 1) * divCasesy);
+    glVertex2f(-(sizeDisplay/2.f) + enemy.x * divCasesx, -(sizeDisplay/2.f) + (adjustedY + 1) * divCasesy);
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
