@@ -196,7 +196,7 @@ void App::mappingTexture()
         _texturesMap.push_back(loadTexture(textureImage));
     }
 
-    img::Image enemyImage{img::load(make_absolute_path("images/enemy.png", true), 3, true)};
+    img::Image enemyImage{img::load(make_absolute_path("images/enemies/enemy1.png", true), 3, true)};
     _texturesEnemy.push_back(loadTexture(enemyImage));
 
     if (_texturesMap.size() == 0)
