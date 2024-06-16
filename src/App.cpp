@@ -17,11 +17,9 @@
 #include "simpletext.h"
 #include "utils.hpp"
 #include "GLHelpers.hpp"
-#include "itdReader.hpp"
 #include <stb_image/stb_image.h>
 #include <map>
 
-Enemy enemyTest{0, 0, 10, 1, 1, 0.0};
 
 App::App() : _previousTime(0.0), _viewSize(2.0), map()
 {
@@ -84,6 +82,7 @@ void App::render()
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
     TextRenderer.Label("RER A GATE", _width / 2, 220, SimpleText::CENTER);
     displayMap(map);
+    displayTowerButtons();
 
     if (started == true)
     {
@@ -91,8 +90,11 @@ void App::render()
         {
             displayEnemy(0, waveEnemies.enemies[i]);
         }
+    } else {
+        TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
+        TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_32);
+        TextRenderer.Label("Press SPACE to start", _width / 2, _height/5, SimpleText::CENTER);
     }
-    displayTowerButtons();
 
     TextRenderer.Render();
 }
