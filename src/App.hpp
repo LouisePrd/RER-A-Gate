@@ -28,6 +28,8 @@ public:
     void displayEnemy(int idTexture, Enemy enemy);
     std::pair<int, int> getEndPosition();
 
+    void shootEnemies(Tower &tower, Enemy &enemy, float deltaTime);
+
     // GLFW callbacks binding
     void key_callback(int key, int scancode, int action, int mods);
     void mouse_button_callback(int button, int action, int mods);
@@ -41,6 +43,7 @@ public:
     void displayTowerButtons();
     void displayMoney();
     void displayPrices();
+    void checkState();
 
     // Global variables
     int selectedTowerType = -1;

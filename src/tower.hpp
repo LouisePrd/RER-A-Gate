@@ -4,17 +4,28 @@
 #include <string>
 #include "map.hpp"
 #include "itdReader.hpp"
+#include "enemy.hpp"
+
+struct bullet
+{
+    double xStart, yStart;
+    double xEnd, yEnd;
+    bool isShooting;
+};
 
 struct Tower
 {
     std::string type;
     int power;
     int scope;
-    int speed;
+    int pace;
     int price;
     float x, y;
+    float timeSinceLastShot;
+    std::vector<bullet> bullets;
 
     bool testRange(float x1, float y1, float x2, float y2);
+    void animateShooting(Enemy &enemy, float deltaTime);
 };
 
 Map newTower(float x, float y, int selectedTower, Map map, float sizeDisplay, int &totalMoney, std::vector<Tower> &towers);

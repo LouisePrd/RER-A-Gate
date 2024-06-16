@@ -9,6 +9,8 @@
 
 #include "tower.hpp"
 #include "map.hpp"
+#include "enemy.hpp"
+#include "App.hpp"
 
 int chebyshev(int x1, int y1, int x2, int y2)
 {
@@ -44,10 +46,10 @@ Map newTower(float posMapX, float posMapY, int selectedTowerType, Map map, float
             selectedTower = {"towerA", 10, 3, 1, map.listPrices[0]};
             break;
         case 1:
-            selectedTower = {"towerB", 20, 4, 1, map.listPrices[1]};
+            selectedTower = {"towerB", 20, 4, 2, map.listPrices[1]};
             break;
         case 2:
-            selectedTower = {"towerC", 30, 5, 1, map.listPrices[2]};
+            selectedTower = {"towerC", 30, 5, 3, map.listPrices[2]};
             break;
         default:
             return map;
@@ -68,4 +70,27 @@ Map newTower(float posMapX, float posMapY, int selectedTowerType, Map map, float
     }
 
     return map;
+}
+
+void App::shootEnemies(Tower &tower, Enemy &enemy, float deltaTime)
+{
+    tower.timeSinceLastShot += deltaTime;
+    if (tower.testRange(tower.x, tower.y, enemy.x, enemy.y))
+    {
+        if (tower.timeSinceLastShot >= tower.pace)
+        {
+            if (enemy.health > 0)
+            {
+                enemy.health -= tower.power;
+                bullet newBullet = {tower.x, tower.y, enemy.x, enemy.y, true};
+                tower.bullets.push_back(newBullet);
+                tower.timeSinceLastShot = 0;
+
+                if (enemy.health <= 0){
+                    totalMoney += enemy.loot;
+                    enemy.health = 0;
+                }  
+            }
+        }
+    }
 }

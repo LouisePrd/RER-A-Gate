@@ -65,13 +65,9 @@ void App::update()
 
     for (unsigned long i = 0; i < towersInMap.size(); i++)
     {
-        // test if enemy in range
         for (unsigned long j = 0; j < waveEnemies.enemies.size(); j++)
         {
-            if (towersInMap[i].testRange(towersInMap[i].x, towersInMap[i].y, waveEnemies.enemies[j].x, waveEnemies.enemies[j].y))
-            {
-                std::cout << "Enemy " << j << " with coordinates " << waveEnemies.enemies[j].x << " " << waveEnemies.enemies[j].y << " is in range of tower " << i << std::endl;
-            }
+            shootEnemies(towersInMap[i], waveEnemies.enemies[j], elapsedTime);
         }
     }
 
@@ -89,37 +85,24 @@ void App::render()
     glScalef(0.8f, 0.8f, 0.8f);
     glPopMatrix();
 
-    //displayBackGround();
+    // displayBackGround();
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
     TextRenderer.Label("RER A GATE", _width / 2, _height / 8, SimpleText::CENTER);
     displayMap(map);
     displayTowerButtons();
     displayMoney();
     displayPrices();
+    checkState();
 
-    if (started == true)
+    // on affiche toutes les bullets des tours
+    for (unsigned long i = 0; i < towersInMap.size(); i++)
     {
-        for (unsigned long i = 0; i < waveEnemies.enemies.size(); i++)
+        for (unsigned long j = 0; j < towersInMap[i].bullets.size(); j++)
         {
-            displayEnemy(0, waveEnemies.enemies[i]);
-            std::pair<int, int> endPosition = getEndPosition();
-            if (waveEnemies.enemies[i].x == endPosition.first && waveEnemies.enemies[i].y == endPosition.second)
+            if (towersInMap[i].bullets[j].isShooting)
             {
-                lost = true;
-                started = false;
+                std::cout << "bullet " << j << " from " << towersInMap[i].bullets[j].xStart << " ; " << towersInMap[i].bullets[j].yStart << " to (" << towersInMap[i].bullets[j].xEnd << ", " << towersInMap[i].bullets[j].yEnd << ")" << std::endl;
             }
-        }
-    }
-    else
-    {
-        TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
-        TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_32);
-        TextRenderer.Label("Press SPACE to start", _width / 2, _height / 7, SimpleText::CENTER);
-        if (lost)
-        {
-            TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::RED);
-            TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
-            TextRenderer.Label("Game Over", _width / 2, _height / 2, SimpleText::CENTER);
         }
     }
 
@@ -130,7 +113,7 @@ void App::key_callback(int key, int /*scancode*/, int action, int /*mods*/)
 {
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS && !started && !lost && !won)
     {
-        waveEnemies = createWave(1, 1, 1);
+        waveEnemies = createWave(1, 1, 5);
         started = true;
         lost = false;
         won = false;
@@ -170,7 +153,6 @@ void App::size_callback(GLFWwindow *window, int width, int height)
     int viewport_width{};
     int viewport_height{};
 
-    // make sure the viewport matches the new window dimensions
     glfwGetFramebufferSize(window, &_width, &_height);
     glViewport(0, 0, viewport_width, viewport_height);
 
@@ -219,7 +201,7 @@ void App::mappingTexture()
         std::cerr << "Error: no textures loaded" << std::endl;
     else
         std::cout << "Textures loaded (" << _texturesMap.size() << ")" << std::endl;
-    
+
     backgroundTexture = loadTexture(img::Image{img::load(make_absolute_path("images/RER-A.png", true), 3, true)});
 }
 
@@ -308,7 +290,7 @@ void App::displayEnemy(int idTexture, Enemy enemy)
 
 std::pair<int, int> App::getEndPosition()
 {
-    for (int i = 0; i < map.listCases.size(); i++)
+    for (unsigned long i = 0; i < map.listCases.size(); i++)
     {
         if (map.listCases[i].type == typeCase::out)
         {
@@ -318,7 +300,8 @@ std::pair<int, int> App::getEndPosition()
     return std::make_pair(-1, -1);
 }
 
-void App::displayBackGround(){
+void App::displayBackGround()
+{
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, backgroundTexture);
     glColor3ub(255, 255, 255);
@@ -334,4 +317,50 @@ void App::displayBackGround(){
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
+}
+
+void App::checkState()
+{
+    if (started == true)
+    {
+        for (unsigned long i = 0; i < waveEnemies.enemies.size(); i++)
+        {
+            displayEnemy(0, waveEnemies.enemies[i]);
+            std::pair<int, int> endPosition = getEndPosition();
+            if (waveEnemies.enemies[i].x == endPosition.first && waveEnemies.enemies[i].y == endPosition.second)
+            {
+                lost = true;
+                started = false;
+            }
+            if (waveEnemies.enemies[i].health <= 0)
+            {
+                waveEnemies.enemies.erase(waveEnemies.enemies.begin() + i);
+            }
+        }
+    }
+    else
+    {
+        TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
+        TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_32);
+        TextRenderer.Label("Press SPACE to start", _width / 2, _height / 7, SimpleText::CENTER);
+        if (lost)
+        {
+            TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::RED);
+            TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
+            TextRenderer.Label("Game Over", _width / 2, _height / 2, SimpleText::CENTER);
+        }
+    }
+
+    if (waveEnemies.enemies.size() == 0 && started == true)
+    {
+        won = true;
+        started = false;
+    }
+
+    if (won)
+    {
+        TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::GREEN);
+        TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
+        TextRenderer.Label("You won", _width / 2, _height / 2, SimpleText::CENTER);
+    }
 }
