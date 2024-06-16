@@ -22,17 +22,14 @@ bool App::isHovering(float x, float y, float width, float height) {
     int windowWidth, windowHeight;
     glfwGetWindowSize(glfwGetCurrentContext(), &windowWidth, &windowHeight);
     glfwGetCursorPos(glfwGetCurrentContext(), &xpos, &ypos);
-    const float aspectRatio{windowWidth / (float)windowHeight};
-    float posMapX = (xpos / windowWidth - 0.5f) * _viewSize * aspectRatio;
-    float posMapY = (0.5f - ypos / windowHeight) * _viewSize;
+    
+    const float aspectRatio = static_cast<float>(windowWidth) / windowHeight;
+    float posMapX = (static_cast<float>(xpos) / windowWidth - 0.5f) * _viewSize * aspectRatio;
+    float posMapY = (0.5f - static_cast<float>(ypos) / windowHeight) * _viewSize;
+
     return (posMapX >= x && posMapX <= x + width && posMapY >= y && posMapY <= y + height);
 }
 
-void App::handleButtonInteraction(float buttonX, float buttonY, float buttonWidth, float buttonHeight) {
-    if (isHovering(buttonX, buttonY, buttonWidth, buttonHeight) && glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-        std::cout << "okkkkk" << std::endl;
-    }
-}
 
 // ========== DISPLAYS ==========
 void App::displayTowerButtons() {
@@ -47,24 +44,19 @@ void App::displayTowerButtons() {
 
 void App::displayButton(float buttonX, float buttonY, int idTexture) {
     float buttonSize = 0.1f;
+    float buttonWidth = buttonSize;
+    float buttonHeight = buttonSize;
 
-    double xpos, ypos;
-    int width, height;
-    glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
-    glfwGetCursorPos(glfwGetCurrentContext(), &xpos, &ypos);
-    const float aspectRatio{width / (float)height};
-    float posMapX = (xpos / width - 0.5f) * _viewSize * aspectRatio;
-    float posMapY = (0.5f - ypos / height) * _viewSize;
-    bool isHovering = (posMapX >= buttonX && posMapX <= buttonX + buttonSize && posMapY >= buttonY && posMapY <= buttonY + buttonSize);
-
-    if (isHovering) {
-        glColor3ub(178, 178, 178);
+    if (isHovering(buttonX, buttonY, buttonWidth, buttonHeight)) {
         glfwSetCursor(glfwGetCurrentContext(), glfwCreateStandardCursor(GLFW_HAND_CURSOR));
+
+        if (glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+            selectedTowerType = idTexture - 7;
+        }
     } else {
         glfwSetCursor(glfwGetCurrentContext(), glfwCreateStandardCursor(GLFW_ARROW_CURSOR));
-        glColor3ub(128, 128, 128);
-
     }
+
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, _texturesMap[idTexture]);
     glBegin(GL_QUADS);
@@ -74,8 +66,4 @@ void App::displayButton(float buttonX, float buttonY, int idTexture) {
     glTexCoord2f(0.0f, 1.0f); glVertex2f(buttonX, buttonY + buttonSize);
     glEnd();
     glDisable(GL_TEXTURE_2D);
-
-    float buttonWidth = buttonSize;
-    float buttonHeight = buttonSize;
-    handleButtonInteraction(buttonX, buttonY, buttonWidth, buttonHeight);
 }

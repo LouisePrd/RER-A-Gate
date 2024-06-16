@@ -17,6 +17,8 @@ class App
 public:
     App();
 
+    int selectedTowerType = -1;
+    
     void setup();
     void update();
     void mappingTexture();
@@ -33,10 +35,8 @@ public:
 
     // User Interface
     bool isHovering(float x, float y, float width, float height);
-    void handleButtonInteraction(float buttonX, float buttonY, float buttonWidth, float buttonHeight);
     void displayButton(float buttonX, float buttonY, int idTexture);
     void displayTowerButtons();
-    void displayPopup();
 
 private:
     void render();

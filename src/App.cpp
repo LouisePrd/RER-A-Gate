@@ -105,10 +105,8 @@ void App::key_callback(int key, int /*scancode*/, int action, int /*mods*/)
     }
 }
 
-void App::mouse_button_callback(int button, int action, int /*mods*/)
-{
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-    {
+void App::mouse_button_callback(int button, int action, int /*mods*/) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         double xpos, ypos;
         int width, height;
         glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
@@ -116,18 +114,30 @@ void App::mouse_button_callback(int button, int action, int /*mods*/)
         const float aspectRatio{width / (float)height};
         float posMapX = (xpos / width - 0.5f) * _viewSize * aspectRatio;
         float posMapY = (0.5f - ypos / height) * _viewSize;
-        int clickedCase = map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type;
 
-        // ---- Si dans la map
-        if ((posMapX >= -0.5f && posMapX <= 0.5f) && (posMapY >= -0.5f && posMapY <= 0.5f))
-        {
-            if (clickedCase != typeCase::path && clickedCase != typeCase::in && clickedCase != typeCase::out)
-            {
-                map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type = typeCase::towerB;
+        // ---- Si sur la map
+        if ((posMapX >= -0.5f && posMapX <= 0.5f) && (posMapY >= -0.5f && posMapY <= 0.5f)) {
+            int clickedCase = map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type;
+
+            if (clickedCase != typeCase::path && clickedCase != typeCase::in && clickedCase != typeCase::out && selectedTowerType != -1) {
+                switch (selectedTowerType) {
+                    case 0:
+                        map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type = typeCase::towerA;
+                        break;
+                    case 1:
+                        map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type = typeCase::towerB;
+                        break;
+                    case 2:
+                        map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type = typeCase::towerC;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
 }
+
 
 void App::scroll_callback(double /*xoffset*/, double /*yoffset*/)
 {
