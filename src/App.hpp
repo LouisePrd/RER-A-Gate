@@ -16,8 +16,6 @@ class App
 {
 public:
     App();
-
-    int selectedTowerType = -1;
     
     void setup();
     void update();
@@ -37,6 +35,11 @@ public:
     bool isHovering(float x, float y, float width, float height);
     void displayButton(float buttonX, float buttonY, int idTexture);
     void displayTowerButtons();
+    void displayMoney();
+
+    // Global variables
+    int selectedTowerType = -1;
+    int totalMoney = 1000;
 
 private:
     void render();

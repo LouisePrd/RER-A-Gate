@@ -67,3 +67,28 @@ void App::displayButton(float buttonX, float buttonY, int idTexture) {
     glEnd();
     glDisable(GL_TEXTURE_2D);
 }
+
+void App::displayMoney() {
+    float iconSize = 0.1f;
+    float iconX = 0.6f; 
+    float iconY = 0.55f;
+    
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, _texturesMap[10]);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f); glVertex2f(iconX, iconY);
+    glTexCoord2f(1.0f, 0.0f); glVertex2f(iconX + iconSize, iconY);
+    glTexCoord2f(1.0f, 1.0f); glVertex2f(iconX + iconSize, iconY + iconSize);
+    glTexCoord2f(0.0f, 1.0f); glVertex2f(iconX, iconY + iconSize);
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
+
+    std::string moneyText = std::to_string(totalMoney);
+    const char* moneyTextChar = moneyText.c_str();
+    float textX = 0.71f * _width;
+    float textY = 0.22f * _height;
+    
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
+    TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_48);
+    TextRenderer.Label(moneyTextChar, textX, textY, SimpleText::LEFT);
+}

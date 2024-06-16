@@ -5,6 +5,7 @@
 #include "node.hpp"
 #include "userInterface.hpp"
 #include "waveEnemies.hpp"
+#include "tower.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -41,7 +42,7 @@ void App::setup()
     std::vector<std::vector<int>> nodes = checkMap();
     map = compareMapItd(getNodes(nodes), checkImage(baseMap));
     map.graph = build_from_adjacency_matrix(createGraph(map));
-    waveEnemies = createWave(1, 1, 2);
+    waveEnemies = createWave(1, 1, 5);
 
     glClearColor(0.0f, 0.745f, 0.682f, 1.0f); // #00BEBF
     TextRenderer.ResetFont();
@@ -83,6 +84,7 @@ void App::render()
     TextRenderer.Label("RER A GATE", _width / 2,  _height/8, SimpleText::CENTER);
     displayMap(map);
     displayTowerButtons();
+    displayMoney();
 
     if (started == true)
     {
@@ -96,7 +98,7 @@ void App::render()
         TextRenderer.Label("Press SPACE to start", _width / 2, _height/7, SimpleText::CENTER);
     }
 
-    TextRenderer.Render();
+    TextRenderer.Render(); 
 }
 
 void App::key_callback(int key, int /*scancode*/, int action, int /*mods*/)
@@ -114,31 +116,42 @@ void App::mouse_button_callback(int button, int action, int /*mods*/) {
         glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
         glfwGetCursorPos(glfwGetCurrentContext(), &xpos, &ypos);
         const float aspectRatio{width / (float)height};
-        float posMapX = (xpos / width - (sizeDisplay/2.f)) * _viewSize * aspectRatio;
-        float posMapY = ((sizeDisplay/2.f) - ypos / height) * _viewSize;
+        float posMapX = (xpos / width - 0.5f) * _viewSize * aspectRatio;
+        float posMapY = (0.5f - ypos / height) * _viewSize;
 
         // ---- Si sur la map
-        if ((posMapX >= -(sizeDisplay/2.f) && posMapX <= (sizeDisplay/2.f)) && (posMapY >= -(sizeDisplay/2.f) && posMapY <= (sizeDisplay/2.f))) {
-            int clickedCase = map.listCases[(int)((posMapX + (sizeDisplay/2.f)) / divCasesx) + (int)((posMapY + (sizeDisplay/2.f)) / divCasesy) * sizex].type;
+        if ((posMapX >= -0.5f && posMapX <= 0.5f) && (posMapY >= -0.5f && posMapY <= 0.5f)) {
+            int clickedCase = map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type;
 
             if (clickedCase != typeCase::path && clickedCase != typeCase::in && clickedCase != typeCase::out && selectedTowerType != -1) {
+                Tower selectedTower;
                 switch (selectedTowerType) {
+                    // Les stats sont en WIP
                     case 0:
-                        map.listCases[(int)((posMapX + (sizeDisplay/2.f)) / divCasesx) + (int)((posMapY + (sizeDisplay/2.f)) / divCasesy) * sizex].type = typeCase::towerA;
+                        selectedTower = { "towerA", 10, 3, 1, 100 };
                         break;
                     case 1:
-                        map.listCases[(int)((posMapX + (sizeDisplay/2.f)) / divCasesx) + (int)((posMapY + (sizeDisplay/2.f)) / divCasesy) * sizex].type = typeCase::towerB;
+                        selectedTower = { "towerB", 20, 4, 1, 150 };
                         break;
                     case 2:
-                        map.listCases[(int)((posMapX + (sizeDisplay/2.f)) / divCasesx) + (int)((posMapY + (sizeDisplay/2.f)) / divCasesy) * sizex].type = typeCase::towerC;
+                        selectedTower = { "towerC", 30, 5, 1, 200 };
                         break;
                     default:
-                        break;
+                        return; // Type de tour invalide
+                }
+
+                if (totalMoney >= selectedTower.price) {
+                    totalMoney -= selectedTower.price;
+                    map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type = static_cast<typeCase>(selectedTowerType + typeCase::towerA);
+                    std::cout << "Tour placée : " << selectedTower.type << ". Money restant : " << totalMoney << std::endl;
+                } else {
+                    std::cout << "Pas assez de money" << std::endl;
                 }
             }
         }
     }
 }
+
 
 
 void App::scroll_callback(double /*xoffset*/, double /*yoffset*/)
@@ -190,7 +203,8 @@ void App::mappingTexture()
         "images/enemy.png",
         "images/tower-tiles/tower-A.png",
         "images/tower-tiles/tower-B.png",
-        "images/tower-tiles/tower-C.png"
+        "images/tower-tiles/tower-C.png",
+        "images/money.png"
     };
 
     for (const std::string& path : texturePaths) {

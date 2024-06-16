@@ -14,11 +14,11 @@ int chebyshev(int x1, int y1, int x2, int y2) {
     return std::max(std::abs(y2 - y1), std::abs(x2 - x1));
 }
 
-// ---- Instances des tours
+// ---- Instances provisoire des tours
 // Valeurs temporaires arbitraires en score sur 10
 // ==== équilibrée
-Tower typeA { "TypeA", 7, 7, 7, 10 };
+// Tower typeA { "TypeA", 7, 7, 7, 10 };
 // ==== + puissante - cadence
-Tower typeB { "TypeB", 10, 7, 3, 8 };
+// Tower typeB { "TypeB", 10, 7, 3, 8 };
 // ==== - puissante + cadence
-Tower typeC { "TypeC", 5, 5, 10, 8 };
+// Tower typeC { "TypeC", 5, 5, 10, 8 };
