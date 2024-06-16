@@ -22,6 +22,7 @@ public:
     void setup();
     void update();
     void mappingTexture();
+    void displayBackGround();
     void displayMap(Map map);
     void displayElement(int idTexture, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
     void displayEnemy(int idTexture, Enemy enemy);
@@ -39,6 +40,7 @@ public:
     void displayButton(float buttonX, float buttonY, int idTexture);
     void displayTowerButtons();
     void displayMoney();
+    void displayPrices();
 
     // Global variables
     int selectedTowerType = -1;
@@ -55,6 +57,7 @@ private:
 
     // Add your variables here
     GLuint _texture{};
+    GLuint backgroundTexture;
 
     // Map
     int sizex;

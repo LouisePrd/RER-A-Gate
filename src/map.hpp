@@ -36,6 +36,7 @@ struct Map
     int width;
     std::vector<caseMap> listCases;
     WeightedGraph graph = {};
+    std::vector<int> listPrices = {100, 150, 200};
 };
 
 Map checkImage(img::Image &baseMap);

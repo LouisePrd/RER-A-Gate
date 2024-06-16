@@ -41,13 +41,13 @@ Map newTower(float posMapX, float posMapY, int selectedTowerType, Map map, float
         {
         // Les stats sont en WIP
         case 0:
-            selectedTower = {"towerA", 10, 3, 1, 100};
+            selectedTower = {"towerA", 10, 3, 1, map.listPrices[0]};
             break;
         case 1:
-            selectedTower = {"towerB", 20, 4, 1, 150};
+            selectedTower = {"towerB", 20, 4, 1, map.listPrices[1]};
             break;
         case 2:
-            selectedTower = {"towerC", 30, 5, 1, 200};
+            selectedTower = {"towerC", 30, 5, 1, map.listPrices[2]};
             break;
         default:
             return map;

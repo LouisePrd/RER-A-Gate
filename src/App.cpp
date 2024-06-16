@@ -68,10 +68,10 @@ void App::update()
         // test if enemy in range
         for (unsigned long j = 0; j < waveEnemies.enemies.size(); j++)
         {
-           if (towersInMap[i].testRange(towersInMap[i].x, towersInMap[i].y, waveEnemies.enemies[j].x, waveEnemies.enemies[j].y))
-           {
-               std::cout << "Enemy " << j << " with coordinates " << waveEnemies.enemies[j].x << " " << waveEnemies.enemies[j].y << " is in range of tower " << i << std::endl;
-           }
+            if (towersInMap[i].testRange(towersInMap[i].x, towersInMap[i].y, waveEnemies.enemies[j].x, waveEnemies.enemies[j].y))
+            {
+                std::cout << "Enemy " << j << " with coordinates " << waveEnemies.enemies[j].x << " " << waveEnemies.enemies[j].y << " is in range of tower " << i << std::endl;
+            }
         }
     }
 
@@ -89,11 +89,13 @@ void App::render()
     glScalef(0.8f, 0.8f, 0.8f);
     glPopMatrix();
 
+    //displayBackGround();
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
     TextRenderer.Label("RER A GATE", _width / 2, _height / 8, SimpleText::CENTER);
     displayMap(map);
     displayTowerButtons();
     displayMoney();
+    displayPrices();
 
     if (started == true)
     {
@@ -144,8 +146,8 @@ void App::mouse_button_callback(int button, int action, int /*mods*/)
         glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
         glfwGetCursorPos(glfwGetCurrentContext(), &xpos, &ypos);
         const float aspectRatio = width / static_cast<float>(height);
-        float posMapX = (xpos / width - (sizeDisplay/2.f)) * _viewSize * aspectRatio;
-        float posMapY = ((sizeDisplay/2.f) - ypos / height) * _viewSize;        
+        float posMapX = (xpos / width - (sizeDisplay / 2.f)) * _viewSize * aspectRatio;
+        float posMapY = ((sizeDisplay / 2.f) - ypos / height) * _viewSize;
 
         if (started == true)
             map = newTower(posMapX, posMapY, selectedTowerType, map, sizeDisplay, totalMoney, towersInMap);
@@ -217,6 +219,8 @@ void App::mappingTexture()
         std::cerr << "Error: no textures loaded" << std::endl;
     else
         std::cout << "Textures loaded (" << _texturesMap.size() << ")" << std::endl;
+    
+    backgroundTexture = loadTexture(img::Image{img::load(make_absolute_path("images/RER-A.png", true), 3, true)});
 }
 
 void App::displayMap(Map map)
@@ -311,4 +315,23 @@ std::pair<int, int> App::getEndPosition()
             return std::make_pair(map.listCases[i].x, map.listCases[i].y);
         }
     }
+    return std::make_pair(-1, -1);
+}
+
+void App::displayBackGround(){
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, backgroundTexture);
+    glColor3ub(255, 255, 255);
+    glBegin(GL_QUADS);
+    glTexCoord2d(0, 0);
+    glVertex2f(-1, -1);
+    glTexCoord2d(1, 0);
+    glVertex2f(1, -1);
+    glTexCoord2d(1, 1);
+    glVertex2f(1, 1);
+    glTexCoord2d(0, 1);
+    glVertex2f(-1, 1);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
 }
