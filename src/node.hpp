@@ -17,8 +17,8 @@
 struct Node
 {
     int id;
-    int x;
-    int y;
+    double x;
+    double y;
     std::vector<int> noeudsConnectes;
     std::vector<Node> noeudsConnectesStruct;
 };

@@ -41,7 +41,7 @@ void App::setup()
     std::vector<std::vector<int>> nodes = checkMap();
     map = compareMapItd(getNodes(nodes), checkImage(baseMap));
     map.graph = build_from_adjacency_matrix(createGraph(map));
-    waveEnemies = createWave(1, 1, 5);
+    waveEnemies = createWave(1, 1, 2);
 
     glClearColor(0.0f, 0.745f, 0.682f, 1.0f); // #00BEBF
     TextRenderer.ResetFont();

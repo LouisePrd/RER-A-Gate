@@ -66,7 +66,7 @@ private:
 
     // User Interface
     bool started = false;
-    float sizeDisplay = 1.3;
+    float sizeDisplay = 1;
 
     SimpleText TextRenderer{};
 };

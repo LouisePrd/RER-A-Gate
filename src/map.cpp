@@ -15,8 +15,8 @@ Map checkImage(img::Image &baseMap)
 
     for (int i = 0; i < size; i++)
     {
-        int x = i % width;
-        int y = height - 1 - (i / width);
+        double x = i % width;
+        double y = height - 1 - (i / width);
 
         glm::vec3 color;
         color.r = baseMap.data()[i * 3];

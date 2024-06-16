@@ -12,14 +12,17 @@ struct Enemy
     int health;
     int speed;
     int loot;
-    int x;
-    int y;
+    double x, y;
     double timeAccumulator = 0.0;
-    int currentIndex = 0;
+    unsigned long currentIndex = 0;
     std::vector<int> path;
-    bool newPathNeeded = true;
+    bool newPath = true;
+    
+    double startX, startY;
+    double interpolationTime = 0.0;
+    double interpolationDuration = .2;
 
     void moveIntoGraph(WeightedGraph graph, int start, int end, Map map, double elapsedTime);
-    void moveX(int &x, int xOut);
-    void moveY(int &y, int yOut);
+    void moveX(double &x, double xOut, double elapsedTime);
+    void moveY(double &y, double yOut, double elapsedTime);
 };

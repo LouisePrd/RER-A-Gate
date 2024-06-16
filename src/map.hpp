@@ -9,8 +9,8 @@
 
 struct caseMap
 {
-    int x;
-    int y;
+    double x;
+    double y;
     std::array<float, 3> color;
     typeCase type;
     Node node = {};
