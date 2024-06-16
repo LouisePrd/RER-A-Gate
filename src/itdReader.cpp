@@ -155,4 +155,24 @@ Map compareMapItd(std::vector<Node> nodes, Map map)
     return map;
 }
 
+std::string getNameMap()
+{
+    std::ifstream mapItd(make_absolute_path("data/.itd2", true));
+    std::string line;
+    std::string name;
+
+    while (std::getline(mapItd, line))
+    {
+        if (line.find("map") != std::string::npos)
+        {
+            std::istringstream iss(line);
+            std::string word;
+            iss >> word;
+            iss >> name;
+            return name;
+        }
+    }
+
+    return "";
+}
 

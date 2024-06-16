@@ -12,7 +12,6 @@
 #include <img/img.hpp>
 
 #include <sstream>
-#include <fstream>
 #include <iostream>
 
 #include "simpletext.h"
@@ -32,7 +31,7 @@ void App::setup()
     glViewport(0, 0, _width, _height);
 
     std::cout << "Launching map" << std::endl;
-    img::Image baseMap{img::load(make_absolute_path("images/mapRGB-V2.png", true), 3, true)};
+    img::Image baseMap{img::load(make_absolute_path("images/" + getNameMap(), true), 3, true)};
     sizex = baseMap.width();
     sizey = baseMap.height();
     divCasesx = sizeDisplay / (float)sizex;

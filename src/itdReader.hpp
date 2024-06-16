@@ -25,5 +25,6 @@ struct typeByColor {
 };
 
 std::vector<std::vector<int>> checkMap();
+std::string getNameMap();
 void displayEnum(typeCase type);
 std::array<typeByColor, 3> getItdAllTypes();
