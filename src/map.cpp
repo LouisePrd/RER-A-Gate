@@ -67,12 +67,6 @@ void WeightedGraph::add_directed_edge(int const from, int const to, float const 
     adjacency_list[from].push_back(edge);
 }
 
-void WeightedGraph::add_undirected_edge(int const from, int const to, float const weight)
-{
-    add_directed_edge(from, to, weight);
-    add_directed_edge(to, from, weight);
-}
-
 WeightedGraph build_from_adjacency_matrix(std::vector<std::vector<float>> const &adjacency_matrix)
 {
     WeightedGraph graph;
@@ -116,7 +110,7 @@ std::unordered_map<int, std::pair<float, int>> dijkstra(WeightedGraph const &gra
 
         // Vérification si on a atteint le nœud de destination
         if (current_node == end) {
-            break; // Arrêtez la boucle dès que nous atteignons le nœud de destination
+            break;
         }
 
         for (WeightedGraphEdge edge : graph.adjacency_list.at(current_node))
