@@ -10,7 +10,7 @@
 struct Enemy
 {
     int health;
-    int speed;
+    float speed;
     int loot;
     double x, y;
     double timeAccumulator = 0.0;
@@ -20,7 +20,7 @@ struct Enemy
     
     double startX, startY;
     double interpolationTime = 0.0;
-    double interpolationDuration = .2;
+    double interpolationDuration = 0.6;
 
     void moveIntoGraph(WeightedGraph graph, int start, int end, Map map, double elapsedTime);
     void moveX(double &x, double xOut, double elapsedTime);

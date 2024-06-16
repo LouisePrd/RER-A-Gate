@@ -11,6 +11,7 @@
 #include "enemy.hpp"
 #include "node.hpp"
 #include "waveEnemies.hpp"
+#include <utility>
 
 class App
 {
@@ -23,6 +24,7 @@ public:
     void displayMap(Map map);
     void displayElement(int idTexture, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
     void displayEnemy(int idTexture, Enemy enemy);
+    std::pair<int, int> getEndPosition();
 
     // GLFW callbacks binding
     void key_callback(int key, int scancode, int action, int mods);
@@ -69,6 +71,8 @@ private:
 
     // User Interface
     bool started = false;
+    bool lost = false;
+    bool won = false;
     float sizeDisplay = 1;
 
     SimpleText TextRenderer{};

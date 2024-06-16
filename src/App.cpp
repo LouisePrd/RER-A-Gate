@@ -20,6 +20,7 @@
 #include "GLHelpers.hpp"
 #include <stb_image/stb_image.h>
 #include <map>
+#include <utility>
 
 
 App::App() : _previousTime(0.0), _viewSize(2.0), map()
@@ -42,7 +43,7 @@ void App::setup()
     std::vector<std::vector<int>> nodes = checkMap();
     map = compareMapItd(getNodes(nodes), checkImage(baseMap));
     map.graph = build_from_adjacency_matrix(createGraph(map));
-    waveEnemies = createWave(1, 1, 5);
+    getEndPosition();
 
     glClearColor(0.0f, 0.745f, 0.682f, 1.0f); // #00BEBF
     TextRenderer.ResetFont();
@@ -62,7 +63,7 @@ void App::update()
     {
         for (int i = 0; i < waveEnemies.enemies.size(); i++)
         {
-            waveEnemies.enemies[i].moveIntoGraph(map.graph, 0, 10, map, elapsedTime);
+            waveEnemies.enemies[i].moveIntoGraph(map.graph, 0, 10, map, elapsedTime*1.5);
         }
     }
 
@@ -91,11 +92,24 @@ void App::render()
         for (int i = 0; i < waveEnemies.enemies.size(); i++)
         {
             displayEnemy(0, waveEnemies.enemies[i]);
+            std::pair<int, int> endPosition = getEndPosition();
+            if (waveEnemies.enemies[i].x == endPosition.first && waveEnemies.enemies[i].y == endPosition.second)
+            {
+                lost = true;
+                started = false;
+            }
         }
     } else {
+        
         TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
         TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_32);
         TextRenderer.Label("Press SPACE to start", _width / 2, _height/7, SimpleText::CENTER);
+        if (lost)
+        {
+                TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::RED);
+                TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
+                TextRenderer.Label("Game Over", _width / 2, _height/2, SimpleText::CENTER);
+        }
     }
 
     TextRenderer.Render(); 
@@ -103,9 +117,12 @@ void App::render()
 
 void App::key_callback(int key, int /*scancode*/, int action, int /*mods*/)
 {
-    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS && !started && !lost && !won)
     {
+        waveEnemies = createWave(1, 1, 1);
         started = true;
+        lost = false;
+        won = false;
     }
 }
 
@@ -302,4 +319,15 @@ void App::displayEnemy(int idTexture, Enemy enemy)
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
+}
+
+std::pair<int, int> App::getEndPosition()
+{
+    for (int i = 0; i < map.listCases.size(); i++)
+    {
+        if (map.listCases[i].type == typeCase::out)
+        {
+            return std::make_pair(map.listCases[i].x, map.listCases[i].y);
+        }
+    }
 }
