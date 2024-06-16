@@ -8,12 +8,8 @@
 
 void Enemy::moveIntoGraph(WeightedGraph graph, int start, int end, Map map, double elapsedTime)
 {
-    static int currentIndex = 0;
-    static std::vector<int> chemin;
-    static bool newPathNeeded = true;
-
     timeAccumulator += elapsedTime;
-    const double movementInterval = 8;
+    const double movementInterval = speed;
 
     if (timeAccumulator < movementInterval)
         return;
@@ -22,24 +18,24 @@ void Enemy::moveIntoGraph(WeightedGraph graph, int start, int end, Map map, doub
 
     if (newPathNeeded)
     {
-        chemin.clear();
+        path.clear();
         auto result = dijkstra(graph, start, end);
 
         for (int at = end; at != -1; at = result[at].second)
         {
-            chemin.push_back(at);
+            path.push_back(at);
         }
-        std::reverse(chemin.begin(), chemin.end());
-        chemin.erase(chemin.begin());
+        std::reverse(path.begin(), path.end());
+        path.erase(path.begin());
 
         newPathNeeded = false;
         currentIndex = 0;
     }
 
-    if (currentIndex >= chemin.size())
+    if (currentIndex >= path.size())
         return;
 
-    int nextNode = chemin[currentIndex];
+    int nextNode = path[currentIndex];
     for (int i = 0; i < map.listCases.size(); i++)
     {
         if (map.listCases[i].node.id == nextNode)

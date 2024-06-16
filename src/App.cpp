@@ -4,6 +4,7 @@
 #include "enemy.hpp"
 #include "node.hpp"
 #include "userInterface.hpp"
+#include "waveEnemies.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -19,7 +20,6 @@
 #include "itdReader.hpp"
 #include <stb_image/stb_image.h>
 #include <map>
-
 
 Enemy enemyTest{0, 0, 10, 1, 1, 0.0};
 
@@ -37,10 +37,13 @@ void App::setup()
     img::Image baseMap{img::load(make_absolute_path("images/mapRGB-V2.png", true), 3, true)};
     sizex = baseMap.width();
     sizey = baseMap.height();
-    divCasesx = 1/(float)sizex;
-    divCasesy = 1/(float)sizey;
+    divCasesx = 1 / (float)sizex;
+    divCasesy = 1 / (float)sizey;
+
     std::vector<std::vector<int>> nodes = checkMap();
     map = compareMapItd(getNodes(nodes), checkImage(baseMap));
+    map.graph = build_from_adjacency_matrix(createGraph(map));
+    waveEnemies = createWave(1, 1, 5);
 
     glClearColor(0.0f, 0.745f, 0.682f, 1.0f); // #00BEBF
     TextRenderer.ResetFont();
@@ -55,6 +58,14 @@ void App::update()
     const double elapsedTime{currentTime - _previousTime};
     _previousTime = currentTime;
     static double startTime = -1.0;
+
+    if (started == true)
+    {
+        for (int i = 0; i < waveEnemies.enemies.size(); i++)
+        {
+            waveEnemies.enemies[i].moveIntoGraph(map.graph, 0, 10, map, elapsedTime);
+        }
+    }
 
     render();
 }
@@ -74,19 +85,24 @@ void App::render()
     TextRenderer.Label("RER A GATE", _width / 2, 220, SimpleText::CENTER);
     displayMap(map);
 
-
-    displayEnemy(0, enemyTest); 
-    std::vector<std::vector<float>> matrix = createGraph(map); 
-    WeightedGraph graph = build_from_adjacency_matrix(matrix);
-    enemyTest.moveIntoGraph(graph, 0, 10, map, 0.5);
-
+    if (started == true)
+    {
+        for (int i = 0; i < waveEnemies.enemies.size(); i++)
+        {
+            displayEnemy(0, waveEnemies.enemies[i]);
+        }
+    }
     displayTowerButtons();
 
     TextRenderer.Render();
 }
 
-void App::key_callback(int /*key*/, int /*scancode*/, int /*action*/, int /*mods*/)
+void App::key_callback(int key, int /*scancode*/, int action, int /*mods*/)
 {
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+    {
+        started = true;
+    }
 }
 
 void App::mouse_button_callback(int button, int action, int /*mods*/)
@@ -101,11 +117,12 @@ void App::mouse_button_callback(int button, int action, int /*mods*/)
         float posMapX = (xpos / width - 0.5f) * _viewSize * aspectRatio;
         float posMapY = (0.5f - ypos / height) * _viewSize;
         int clickedCase = map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type;
-        
+
         // ---- Si dans la map
         if ((posMapX >= -0.5f && posMapX <= 0.5f) && (posMapY >= -0.5f && posMapY <= 0.5f))
         {
-            if (clickedCase != typeCase::path && clickedCase != typeCase::in && clickedCase != typeCase::out) {
+            if (clickedCase != typeCase::path && clickedCase != typeCase::in && clickedCase != typeCase::out)
+            {
                 map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type = typeCase::towerB;
             }
         }
@@ -120,13 +137,13 @@ void App::cursor_position_callback(double /*xpos*/, double /*ypos*/)
 {
 }
 
-void App::size_callback(GLFWwindow* window, int width, int height)
+void App::size_callback(GLFWwindow *window, int width, int height)
 {
     _width = width;
     _height = height;
 
-    int viewport_width {};
-    int viewport_height {};
+    int viewport_width{};
+    int viewport_height{};
 
     // make sure the viewport matches the new window dimensions
     glfwGetFramebufferSize(window, &_width, &_height);
@@ -173,7 +190,6 @@ void App::mappingTexture()
     _texturesMap.push_back(loadTexture(towerA));
     _texturesMap.push_back(loadTexture(towerB));
     _texturesMap.push_back(loadTexture(towerC));
-
 
     if (_texturesMap.size() == 0)
         std::cerr << "Error: no textures loaded" << std::endl;
@@ -237,7 +253,7 @@ void App::displayElement(int idTexture, float x1, float y1, float x2, float y2, 
     glVertex2f(x2, y2);
     glTexCoord2d(1, 1);
     glVertex2f(x3, y3);
-    glTexCoord2d(0, 1); 
+    glTexCoord2d(0, 1);
     glVertex2f(x4, y4);
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);

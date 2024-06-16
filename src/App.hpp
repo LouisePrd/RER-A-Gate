@@ -10,6 +10,7 @@
 #include "map.hpp"
 #include "enemy.hpp"
 #include "node.hpp"
+#include "waveEnemies.hpp"
 
 class App
 {
@@ -61,7 +62,10 @@ private:
     std::vector<GLuint> _texturesTower;
 
     // Enemies
-    std::vector<Enemy> enemies;
+    Wave waveEnemies;
+
+    // User Interface
+    bool started = false;
 
     SimpleText TextRenderer{};
 };

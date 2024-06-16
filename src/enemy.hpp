@@ -5,11 +5,7 @@
 #include "itdReader.hpp"
 
 #include <glad/glad.h>
-#include <vector>
-#include "img/img.hpp"
 #include <glm/glm.hpp>
-#include <array>
-#include <unordered_map>
 
 struct Enemy
 {
@@ -19,6 +15,9 @@ struct Enemy
     int x;
     int y;
     double timeAccumulator = 0.0;
+    int currentIndex = 0;
+    std::vector<int> path;
+    bool newPathNeeded = true;
 
     void moveIntoGraph(WeightedGraph graph, int start, int end, Map map, double elapsedTime);
     void moveX(int &x, int xOut);
