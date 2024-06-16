@@ -22,7 +22,6 @@
 #include <map>
 #include <utility>
 
-
 App::App() : _previousTime(0.0), _viewSize(2.0), map()
 {
     mappingTexture();
@@ -30,7 +29,6 @@ App::App() : _previousTime(0.0), _viewSize(2.0), map()
 
 void App::setup()
 {
-    // Initialisation de la fenêtre
     glViewport(0, 0, _width, _height);
 
     std::cout << "Launching map" << std::endl;
@@ -47,7 +45,6 @@ void App::setup()
 
     glClearColor(0.0f, 0.745f, 0.682f, 1.0f); // #00BEBF
     TextRenderer.ResetFont();
-    TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::WHITE);
     TextRenderer.SetColorf(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
     TextRenderer.EnableBlending(true);
 }
@@ -63,7 +60,7 @@ void App::update()
     {
         for (int i = 0; i < waveEnemies.enemies.size(); i++)
         {
-            waveEnemies.enemies[i].moveIntoGraph(map.graph, 0, 10, map, elapsedTime*1.5);
+            waveEnemies.enemies[i].moveIntoGraph(map.graph, 0, 10, map, elapsedTime * 1.5);
         }
     }
 
@@ -82,14 +79,14 @@ void App::render()
     glPopMatrix();
 
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
-    TextRenderer.Label("RER A GATE", _width / 2,  _height/8, SimpleText::CENTER);
+    TextRenderer.Label("RER A GATE", _width / 2, _height / 8, SimpleText::CENTER);
     displayMap(map);
     displayTowerButtons();
     displayMoney();
 
     if (started == true)
     {
-        for (int i = 0; i < waveEnemies.enemies.size(); i++)
+        for (unsigned long i = 0; i < waveEnemies.enemies.size(); i++)
         {
             displayEnemy(0, waveEnemies.enemies[i]);
             std::pair<int, int> endPosition = getEndPosition();
@@ -99,20 +96,22 @@ void App::render()
                 started = false;
             }
         }
-    } else {
-        
+    }
+    else
+    {
+
         TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
         TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_32);
-        TextRenderer.Label("Press SPACE to start", _width / 2, _height/7, SimpleText::CENTER);
+        TextRenderer.Label("Press SPACE to start", _width / 2, _height / 7, SimpleText::CENTER);
         if (lost)
         {
-                TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::RED);
-                TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
-                TextRenderer.Label("Game Over", _width / 2, _height/2, SimpleText::CENTER);
+            TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::RED);
+            TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
+            TextRenderer.Label("Game Over", _width / 2, _height / 2, SimpleText::CENTER);
         }
     }
 
-    TextRenderer.Render(); 
+    TextRenderer.Render();
 }
 
 void App::key_callback(int key, int /*scancode*/, int action, int /*mods*/)
@@ -126,50 +125,22 @@ void App::key_callback(int key, int /*scancode*/, int action, int /*mods*/)
     }
 }
 
-void App::mouse_button_callback(int button, int action, int /*mods*/) {
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+void App::mouse_button_callback(int button, int action, int /*mods*/)
+{
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+    {
         double xpos, ypos;
         int width, height;
         glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
         glfwGetCursorPos(glfwGetCurrentContext(), &xpos, &ypos);
-        const float aspectRatio{width / (float)height};
-        float posMapX = (xpos / width - 0.5f) * _viewSize * aspectRatio;
-        float posMapY = (0.5f - ypos / height) * _viewSize;
+        const float aspectRatio = width / static_cast<float>(height);
+        float posMapX = (xpos / width - (sizeDisplay/2.f)) * _viewSize * aspectRatio;
+        float posMapY = ((sizeDisplay/2.f) - ypos / height) * _viewSize;        
 
-        // ---- Si sur la map
-        if ((posMapX >= -0.5f && posMapX <= 0.5f) && (posMapY >= -0.5f && posMapY <= 0.5f)) {
-            int clickedCase = map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type;
-
-            if (clickedCase != typeCase::path && clickedCase != typeCase::in && clickedCase != typeCase::out && selectedTowerType != -1) {
-                Tower selectedTower;
-                switch (selectedTowerType) {
-                    // Les stats sont en WIP
-                    case 0:
-                        selectedTower = { "towerA", 10, 3, 1, 100 };
-                        break;
-                    case 1:
-                        selectedTower = { "towerB", 20, 4, 1, 150 };
-                        break;
-                    case 2:
-                        selectedTower = { "towerC", 30, 5, 1, 200 };
-                        break;
-                    default:
-                        return; // Type de tour invalide
-                }
-
-                if (totalMoney >= selectedTower.price) {
-                    totalMoney -= selectedTower.price;
-                    map.listCases[(int)((posMapX + 0.5f) / divCasesx) + (int)((posMapY + 0.5f) / divCasesy) * sizex].type = static_cast<typeCase>(selectedTowerType + typeCase::towerA);
-                    std::cout << "Tour placée : " << selectedTower.type << ". Money restant : " << totalMoney << std::endl;
-                } else {
-                    std::cout << "Pas assez de money" << std::endl;
-                }
-            }
-        }
+        if (started == true)
+            map = newTower(posMapX, posMapY, selectedTowerType, map, sizeDisplay, totalMoney);
     }
 }
-
-
 
 void App::scroll_callback(double /*xoffset*/, double /*yoffset*/)
 {
@@ -221,10 +192,10 @@ void App::mappingTexture()
         "images/tower-tiles/tower-A.png",
         "images/tower-tiles/tower-B.png",
         "images/tower-tiles/tower-C.png",
-        "images/money.png"
-    };
+        "images/money.png"};
 
-    for (const std::string& path : texturePaths) {
+    for (const std::string &path : texturePaths)
+    {
         img::Image textureImage{img::load(make_absolute_path(path, true), 3, true)};
         _texturesMap.push_back(loadTexture(textureImage));
     }
@@ -278,7 +249,7 @@ void App::displayMap(Map map)
             break;
         }
 
-        displayElement(textureId, -(sizeDisplay/2.f) + (i % sizex) * divCasesx, -(sizeDisplay/2.f) + (i / sizey) * divCasesy, -(sizeDisplay/2.f) + (i % sizex + 1) * divCasesx, -(sizeDisplay/2.f) + (i / sizey) * divCasesy, -(sizeDisplay/2.f) + (i % sizex + 1) * divCasesx, -(sizeDisplay/2.f) + (i / sizey + 1) * divCasesy, -(sizeDisplay/2.f) + (i % sizex) * divCasesx, -(sizeDisplay/2.f) + (i / sizey + 1) * divCasesy);
+        displayElement(textureId, -(sizeDisplay / 2.f) + (i % sizex) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey) * divCasesy, -(sizeDisplay / 2.f) + (i % sizex + 1) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey) * divCasesy, -(sizeDisplay / 2.f) + (i % sizex + 1) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey + 1) * divCasesy, -(sizeDisplay / 2.f) + (i % sizex) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey + 1) * divCasesy);
     }
 }
 
@@ -309,13 +280,13 @@ void App::displayEnemy(int idTexture, Enemy enemy)
     glColor3ub(255, 255, 255);
     glBegin(GL_QUADS);
     glTexCoord2d(0, 0);
-    glVertex2f(-(sizeDisplay/2.f) + enemy.x * divCasesx, -(sizeDisplay/2.f) + adjustedY * divCasesy);
+    glVertex2f(-(sizeDisplay / 2.f) + enemy.x * divCasesx, -(sizeDisplay / 2.f) + adjustedY * divCasesy);
     glTexCoord2d(1, 0);
-    glVertex2f(-(sizeDisplay/2.f) + (enemy.x + 1) * divCasesx, -(sizeDisplay/2.f) + adjustedY * divCasesy);
+    glVertex2f(-(sizeDisplay / 2.f) + (enemy.x + 1) * divCasesx, -(sizeDisplay / 2.f) + adjustedY * divCasesy);
     glTexCoord2d(1, 1);
-    glVertex2f(-(sizeDisplay/2.f) + (enemy.x + 1) * divCasesx, -(sizeDisplay/2.f) + (adjustedY + 1) * divCasesy);
+    glVertex2f(-(sizeDisplay / 2.f) + (enemy.x + 1) * divCasesx, -(sizeDisplay / 2.f) + (adjustedY + 1) * divCasesy);
     glTexCoord2d(0, 1);
-    glVertex2f(-(sizeDisplay/2.f) + enemy.x * divCasesx, -(sizeDisplay/2.f) + (adjustedY + 1) * divCasesy);
+    glVertex2f(-(sizeDisplay / 2.f) + enemy.x * divCasesx, -(sizeDisplay / 2.f) + (adjustedY + 1) * divCasesy);
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
