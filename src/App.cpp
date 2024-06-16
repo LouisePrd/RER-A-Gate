@@ -175,31 +175,29 @@ void App::size_callback(GLFWwindow *window, int width, int height)
 }
 
 // fonction pour mapper texture et type de case
-// pas implémentée : opti ?
+// nouvelle opti
 void App::mappingTexture()
 {
-    img::Image grassTile1{img::load(make_absolute_path("images/grass-tiles/grass-tile-1.png", true), 3, true)};
-    img::Image grassTile2{img::load(make_absolute_path("images/grass-tiles/grass-tile-2.png", true), 3, true)};
-    img::Image grassTile3{img::load(make_absolute_path("images/grass-tiles/grass-tile-3.png", true), 3, true)};
-    img::Image railsDroits1{img::load(make_absolute_path("images/rails-tiles/rails-droit-1.png", true), 3, true)};
-    img::Image in{img::load(make_absolute_path("images/in-out/in.png", true), 3, true)};
-    img::Image out{img::load(make_absolute_path("images/in-out/out.png", true), 3, true)};
-    img::Image path{img::load(make_absolute_path("images/enemy.png", true), 3, true)};
-    img::Image enemy{img::load(make_absolute_path("images/enemy.png", true), 3, true)};
-    img::Image towerA{img::load(make_absolute_path("images/tower-tiles/tower-A.png", true), 3, true)};
-    img::Image towerB{img::load(make_absolute_path("images/tower-tiles/tower-B.png", true), 3, true)};
-    img::Image towerC{img::load(make_absolute_path("images/tower-tiles/tower-C.png", true), 3, true)};
-    _texturesMap.push_back(loadTexture(grassTile1));
-    _texturesMap.push_back(loadTexture(grassTile2));
-    _texturesMap.push_back(loadTexture(grassTile3));
-    _texturesMap.push_back(loadTexture(railsDroits1));
-    _texturesMap.push_back(loadTexture(in));
-    _texturesMap.push_back(loadTexture(out));
-    _texturesMap.push_back(loadTexture(path));
-    _texturesEnemy.push_back(loadTexture(enemy));
-    _texturesMap.push_back(loadTexture(towerA));
-    _texturesMap.push_back(loadTexture(towerB));
-    _texturesMap.push_back(loadTexture(towerC));
+    std::vector<std::string> texturePaths = {
+        "images/grass-tiles/grass-tile-1.png",
+        "images/grass-tiles/grass-tile-2.png",
+        "images/grass-tiles/grass-tile-3.png",
+        "images/rails-tiles/rails-droit-1.png",
+        "images/in-out/in.png",
+        "images/in-out/out.png",
+        "images/enemy.png",
+        "images/tower-tiles/tower-A.png",
+        "images/tower-tiles/tower-B.png",
+        "images/tower-tiles/tower-C.png"
+    };
+
+    for (const std::string& path : texturePaths) {
+        img::Image textureImage{img::load(make_absolute_path(path, true), 3, true)};
+        _texturesMap.push_back(loadTexture(textureImage));
+    }
+
+    img::Image enemyImage{img::load(make_absolute_path("images/enemy.png", true), 3, true)};
+    _texturesEnemy.push_back(loadTexture(enemyImage));
 
     if (_texturesMap.size() == 0)
         std::cerr << "Error: no textures loaded" << std::endl;
