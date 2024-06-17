@@ -113,6 +113,11 @@ void App::key_callback(int key, int /*scancode*/, int action, int /*mods*/)
     {
         resetGame();
     }
+
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(glfwGetCurrentContext(), GLFW_TRUE);
+    }
 }
 
 void App::mouse_button_callback(int button, int action, int /*mods*/)
