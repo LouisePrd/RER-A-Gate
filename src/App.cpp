@@ -409,7 +409,7 @@ void App::checkState()
     else
     {
         TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
-        TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_32);
+        TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_64);
         TextRenderer.Label("Press SPACE to start", _width / 2, _height / 7, SimpleText::CENTER);
     }
 
