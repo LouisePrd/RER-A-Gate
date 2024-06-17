@@ -32,6 +32,7 @@ bool App::isHovering(float x, float y, float width, float height)
 }
 
 // ========== DISPLAYS ==========
+// ---------- PRE GAME ----------
 void App::displayBackGround()
 {
     glMatrixMode(GL_PROJECTION);
@@ -56,6 +57,31 @@ void App::displayBackGround()
     glDisable(GL_TEXTURE_2D);
 }
 
+void App::displayLoader()
+{
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, loaderTexture);
+    glColor3ub(255, 255, 255);
+    
+    glBegin(GL_QUADS);
+    glTexCoord2d(0, 0);
+    glVertex2f(-1.0f, -1.0f);
+    glTexCoord2d(1, 0);
+    glVertex2f(1.0f, -1.0f);
+    glTexCoord2d(1, 1);
+    glVertex2f(1.0f, 1.0f);
+    glTexCoord2d(0, 1);
+    glVertex2f(-1.0f, 1.0f);
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
+}
+
+// ---------- IN GAME BUTTONS ----------
 void App::displayTowerButtons()
 {
     float buttonX = -(sizeDisplay / 2.f) + 0.1f;
@@ -104,6 +130,7 @@ void App::displayButton(float buttonX, float buttonY, int idTexture)
     glDisable(GL_TEXTURE_2D);
 }
 
+// ---------- IN GAME TEXT ----------
 void App::displayMoney()
 {
     float iconSize = 0.1f;

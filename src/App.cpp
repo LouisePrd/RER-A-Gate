@@ -449,25 +449,4 @@ void App::resetGame()
     }
 }
 
-void App::displayLoader()
-{
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, loaderTexture);
-    glColor3ub(255, 255, 255);
-    glBegin(GL_QUADS);
-    glTexCoord2d(0, 0);
-    glVertex2f(-(sizeDisplay / 2.f), -(sizeDisplay / 2.f));
-    glTexCoord2d(sizeDisplay/ 2.f, 0);
-    glVertex2f(sizeDisplay / 2.f, -(sizeDisplay / 2.f));
-    glTexCoord2d(sizeDisplay/2.f, sizeDisplay/2.f);
-    glVertex2f(sizeDisplay / 2.f, sizeDisplay / 2.f);
-    glTexCoord2d(0, sizeDisplay/2.f);
-    glVertex2f(-(sizeDisplay / 2.f), sizeDisplay / 2.f);
-    glEnd();
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_BLEND);
-}
 
