@@ -2,7 +2,7 @@
 
 #include "glad/glad.h"
 
-GLuint loadTexture(uint8_t const* data, int width, int height) {
+GLuint loadTexture(uint8_t const* data, int width, int height, int channels) {
     GLuint textureId {};
 
     glEnable(GL_TEXTURE_2D);
@@ -15,11 +15,17 @@ GLuint loadTexture(uint8_t const* data, int width, int height) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    GLenum format;
+    if (channels == 4) {
+        format = GL_RGBA;
+    } else {
+        format = GL_RGB;
+    }
+
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
     // Error on MACOS (segmentation fault) when using glGenerateMipmap
     // glGenerateMipmap(GL_TEXTURE_2D);
     glDisable(GL_TEXTURE_2D);
-
     return textureId;
 }
 
