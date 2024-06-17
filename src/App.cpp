@@ -198,7 +198,7 @@ void App::mappingTexture()
         "images/tower-tiles/tower-C.png"};
 
     std::vector<std::string> textureEnemies = {
-        "images/enemies/enemyTest.png",
+        "images/enemies/enemy1.png",
         "images/enemies/enemy2.png"};
 
     for (const std::string &path : texturePaths)
@@ -213,11 +213,9 @@ void App::mappingTexture()
         _texturesTower.push_back(loadTexture(textureTowers));
     }
 
-    img::Image textureEnemiesTest{img::load(make_absolute_path("images/enemies/enemyTest.png", true), 4, true)};
-    _texturesEnemy.push_back(loadTexture(textureEnemiesTest));
     for (const std::string &enemy : textureEnemies)
     {
-        img::Image textureEnemies{img::load(make_absolute_path(enemy, true), 3, true)};
+        img::Image textureEnemies{img::load(make_absolute_path(enemy, true), 4, true)};
         _texturesEnemy.push_back(loadTexture(textureEnemies));
     }
 

@@ -13,6 +13,8 @@ struct Enemy
     float speed;
     int loot;
     double x, y;
+    int type;
+    
     double timeAccumulator = 0.0;
     unsigned long currentIndex = 0;
     std::vector<int> path;
