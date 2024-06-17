@@ -36,7 +36,7 @@ void App::displayTowerButtons()
 {
     float buttonX = -(sizeDisplay / 2.f) + 0.1f;
     float buttonY = -0.7f;
-    int textureId = 7;
+    int textureId = 0;
     for (int i = 0; i < 3; i++)
     {
         displayButton(buttonX, buttonY, textureId);
@@ -57,7 +57,7 @@ void App::displayButton(float buttonX, float buttonY, int idTexture)
 
         if (glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
         {
-            selectedTowerType = idTexture - 7;
+            selectedTowerType = idTexture;
         }
     }
     else
@@ -66,7 +66,7 @@ void App::displayButton(float buttonX, float buttonY, int idTexture)
     }
 
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, _texturesMap[idTexture]);
+    glBindTexture(GL_TEXTURE_2D, _texturesTower[idTexture]);
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.0f);
     glVertex2f(buttonX, buttonY);
@@ -87,7 +87,7 @@ void App::displayMoney()
     float iconY = 0.55f;
 
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, _texturesMap[10]);
+    glBindTexture(GL_TEXTURE_2D, _texturesMap[7]);
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.0f);
     glVertex2f(iconX, iconY);
