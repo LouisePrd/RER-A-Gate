@@ -86,6 +86,9 @@ void App::displayMoney()
     float iconX = 0.6f;
     float iconY = 0.55f;
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, _texturesMap[6]);
     glBegin(GL_QUADS);
@@ -99,6 +102,7 @@ void App::displayMoney()
     glVertex2f(iconX, iconY + iconSize);
     glEnd();
     glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
 
     std::string moneyText = std::to_string(totalMoney);
     const char *moneyTextChar = moneyText.c_str();

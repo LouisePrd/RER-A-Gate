@@ -203,8 +203,16 @@ void App::mappingTexture()
 
     for (const std::string &path : texturePaths)
     {
-        img::Image textureImage{img::load(make_absolute_path(path, true), 3, true)};
-        _texturesMap.push_back(loadTexture(textureImage));
+        if (path == "images/money.png")
+        {
+            img::Image textureImage = img::load(make_absolute_path(path, true), 4, true);
+            _texturesMap.push_back(loadTexture(textureImage));
+        }
+        else
+        {
+            img::Image textureImage{img::load(make_absolute_path(path, true), 3, true)};
+            _texturesMap.push_back(loadTexture(textureImage));
+        }
     }
 
     for (const std::string &tower : textureTowers)
