@@ -95,6 +95,9 @@ void App::render()
     // displayBackGround();
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
     TextRenderer.Label("RER A GATE", _width / 2, _height / 8, SimpleText::CENTER);
+    TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_32);
+    TextRenderer.Label("Press ESC to quit", _width / 2, _height / 1.1, SimpleText::CENTER);
+
     displayMap(map);
     displayTowerButtons();
     displayMoney();
@@ -195,7 +198,7 @@ void App::mappingTexture()
         "images/tower-tiles/tower-C.png"};
 
     std::vector<std::string> textureEnemies = {
-        "images/enemies/enemy1.png",
+        "images/enemies/enemyTest.png",
         "images/enemies/enemy2.png"};
 
     for (const std::string &path : texturePaths)
@@ -210,6 +213,8 @@ void App::mappingTexture()
         _texturesTower.push_back(loadTexture(textureTowers));
     }
 
+    img::Image textureEnemiesTest{img::load(make_absolute_path("images/enemies/enemyTest.png", true), 4, true)};
+    _texturesEnemy.push_back(loadTexture(textureEnemiesTest));
     for (const std::string &enemy : textureEnemies)
     {
         img::Image textureEnemies{img::load(make_absolute_path(enemy, true), 3, true)};
@@ -311,15 +316,17 @@ void App::displayTower(int idTexture, float x1, float y1, float x2, float y2, fl
     glDisable(GL_TEXTURE_2D);
 }
 
-void App::displayEnemy(int idTexture, Enemy enemy)
+void App::displayEnemy(Enemy enemy)
 {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     if (enemy.isShot)
         glColor3ub(255, 0, 0);
     else
         glColor3ub(255, 255, 255);
     float adjustedY = sizey - enemy.y - 1;
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, _texturesEnemy[idTexture]);
+    glBindTexture(GL_TEXTURE_2D, _texturesEnemy[enemy.type]);
     glBegin(GL_QUADS);
     glTexCoord2d(0, 0);
     glVertex2f(-(sizeDisplay / 2.f) + enemy.x * divCasesx, -(sizeDisplay / 2.f) + adjustedY * divCasesy);
@@ -332,6 +339,7 @@ void App::displayEnemy(int idTexture, Enemy enemy)
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
 }
 
 std::pair<int, int> App::getEndPosition()
@@ -386,16 +394,13 @@ void App::checkState()
     {
         for (unsigned long i = 0; i < waveEnemies.enemies.size(); i++)
         {
-            displayEnemy(0, waveEnemies.enemies[i]);
+            displayEnemy(waveEnemies.enemies[i]);
             if (waveEnemies.enemies[i].health <= 0)
                 waveEnemies.enemies.erase(waveEnemies.enemies.begin() + i);
             if (waveEnemies.enemies.size() == 0)
-            {   
-                if (glfwGetTime() - _previousTime >= waveDelay) {
-                    indexWave++;
-                    waveEnemies = createWave(1, 1, 5 * indexWave);
-                    waveDelay = glfwGetTime();
-                }
+            {
+                indexWave++;
+                waveEnemies = createWave(1, 1, 5 * indexWave, indexWave);
             }
         }
     }
@@ -426,12 +431,12 @@ void App::checkState()
 
 void App::resetGame()
 {
+    indexWave = 0;
     waveEnemies.enemies.clear();
     towersInMap.clear();
-    waveEnemies = createWave(1, 1, 5);
+    waveEnemies = createWave(1, 1, 5, indexWave);
     started = true;
     lost = false;
-    indexWave = 0;
     totalMoney = 1000;
     for (auto &mapCase : map.listCases)
     {
