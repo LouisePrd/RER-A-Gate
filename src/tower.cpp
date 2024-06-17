@@ -43,10 +43,10 @@ Map newTower(float posMapX, float posMapY, int selectedTowerType, Map map, float
         {
         // Les stats sont en WIP
         case 0:
-            selectedTower = {"towerA", 10, 3, 1, map.listPrices[0]};
+            selectedTower = {"towerA", 10, 3, 10, map.listPrices[0]};
             break;
         case 1:
-            selectedTower = {"towerB", 20, 4, 2, map.listPrices[1]};
+            selectedTower = {"towerB", 20, 4, 7, map.listPrices[1]};
             break;
         case 2:
             selectedTower = {"towerC", 30, 5, 3, map.listPrices[2]};
@@ -85,6 +85,9 @@ void App::shootEnemies(Tower &tower, Enemy &enemy, float deltaTime)
                 bullet newBullet = {tower.x, tower.y, enemy.x, enemy.y, true};
                 tower.bullets.push_back(newBullet);
                 tower.timeSinceLastShot = 0;
+
+                enemy.isShot = true;
+                enemy.shotTime = glfwGetTime();
 
                 if (enemy.health <= 0){
                     totalMoney += enemy.loot;
