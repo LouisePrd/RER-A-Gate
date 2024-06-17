@@ -55,7 +55,7 @@ void App::update()
     const double elapsedTime{currentTime - _previousTime};
     _previousTime = currentTime;
 
-    if (started == true)
+    if (started == true && !paused)
     {
         for (unsigned long i = 0; i < waveEnemies.enemies.size(); i++)
         {
@@ -75,7 +75,8 @@ void App::update()
     {
         for (unsigned long j = 0; j < waveEnemies.enemies.size(); j++)
         {
-            shootEnemies(towersInMap[i], waveEnemies.enemies[j], elapsedTime);
+            if (!paused)
+                shootEnemies(towersInMap[i], waveEnemies.enemies[j], elapsedTime);
         }
     }
     render();
@@ -106,6 +107,8 @@ void App::render()
     {
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
     TextRenderer.Label("RER A GATE", _width / 2, _height / 8, SimpleText::CENTER);
+    TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_32);
+    TextRenderer.Label("Press P to pause", _width / 2, _height / 1.07, SimpleText::CENTER);
     displayMap(map);
     displayTowerButtons();
     displayMoney();
@@ -113,6 +116,13 @@ void App::render()
     displayScore();
     } else {
         displayLoader();
+    }
+
+    if (paused)
+    {
+        TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::RED);
+        TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
+        TextRenderer.Label("Game Paused", _width / 2, _height / 2, SimpleText::CENTER);
     }
 
     checkState();
@@ -140,6 +150,18 @@ void App::key_callback(int key, int /*scancode*/, int action, int /*mods*/)
     {
         glfwSetWindowShouldClose(glfwGetCurrentContext(), GLFW_TRUE);
     }
+
+    if (key == GLFW_KEY_P && action == GLFW_PRESS)
+    {
+        if (paused)
+        {
+            paused = false;
+        }
+        else
+        {
+            paused = true;
+        }
+    }
 }
 
 void App::mouse_button_callback(int button, int action, int /*mods*/)
@@ -154,7 +176,7 @@ void App::mouse_button_callback(int button, int action, int /*mods*/)
         float posMapX = (xpos / width - (sizeDisplay / 2.f)) * _viewSize * aspectRatio;
         float posMapY = ((sizeDisplay / 2.f) - ypos / height) * _viewSize;
 
-        if (started == true)
+        if (started == true && !paused)
             map = newTower(posMapX, posMapY, selectedTowerType, map, sizeDisplay, totalMoney, towersInMap);
     }
 }
@@ -291,7 +313,6 @@ void App::displayMap(Map map)
             break;
         }
 
-        // si tower
         if (map.listCases[i].type == typeCase::towerA || map.listCases[i].type == typeCase::towerB || map.listCases[i].type == typeCase::towerC)
             displayTower(textureTowerId, -(sizeDisplay / 2.f) + (i % sizex) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey) * divCasesy, -(sizeDisplay / 2.f) + (i % sizex + 1) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey) * divCasesy, -(sizeDisplay / 2.f) + (i % sizex + 1) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey + 1) * divCasesy, -(sizeDisplay / 2.f) + (i % sizex) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey + 1) * divCasesy);
         else

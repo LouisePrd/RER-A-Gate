@@ -95,8 +95,9 @@ private:
     // User Interface
     bool started = false;
     bool lost = false;
-    float sizeDisplay = 1;
+    bool paused = false;
     bool isLaunched = false;
+    float sizeDisplay = 1;
 
     SimpleText TextRenderer{};
 };
