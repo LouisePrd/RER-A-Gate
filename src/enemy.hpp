@@ -14,6 +14,7 @@ struct Enemy
     int loot;
     double x, y;
     int type;
+    int nodeStart;
     
     double timeAccumulator = 0.0;
     unsigned long currentIndex = 0;

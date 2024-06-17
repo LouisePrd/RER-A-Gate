@@ -10,4 +10,4 @@ struct Wave {
     int spawnInterval;
 };
 
-Wave createWave(int xStart, int yStart, int nbEnemies, int waveNumber);
+Wave createWave(int nbEnemies, int waveNumber, std::vector<std::pair<int, int>> startPositions, Map map);

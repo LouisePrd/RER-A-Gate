@@ -1,45 +1,47 @@
 #include "waveEnemies.hpp"
 
 
-Wave createWave(int xStart, int yStart, int nbEnemies, int waveNumber) {
+Wave createWave(int nbEnemies, int waveNumber, std::vector<std::pair<int, int>> startPositions, Map map){
     Wave wave;
-
+    int nbSpawn = startPositions.size();
+    std::cout << "Creating wave " << waveNumber << " with " << nbEnemies << " enemies" << std::endl;
+    if (waveNumber > 5) {
+        nbEnemies += rand() % 10; 
+    }
+    
     for (int i = 0; i < nbEnemies; i++) {
-        // enemy type 1
+        Enemy enemy;
         if (waveNumber < 5) {
-            Enemy enemy;
             enemy.health = 100;
             enemy.speed = rand() % 4 + 1;
-            enemy.loot = rand() % 50 + 50;
-            enemy.x = xStart;
-            enemy.y = yStart;
+            enemy.loot = rand() % 50;
             enemy.type = 0;
-            wave.enemies.push_back(enemy);
-            continue;
         } else {
             if (rand() % 2 == 0) {
-                Enemy enemy;
                 enemy.health = 100;
                 enemy.speed = rand() % 4 + 1;
-                enemy.loot = rand() % 40 + 40;
-                enemy.x = xStart;
-                enemy.y = yStart;
+                enemy.loot = rand() % 30 + 20;
                 enemy.type = 0;
-                wave.enemies.push_back(enemy);
-                continue;
             } else {
-                Enemy enemy;
-                enemy.health = 250;
+                enemy.health = 300;
                 enemy.speed = rand() % 3 + 1;
-                enemy.loot = rand() % 50 + 80;
-                enemy.x = xStart;
-                enemy.y = yStart;
+                enemy.loot = rand() % 50 + 50;
                 enemy.type = 1;
-                wave.enemies.push_back(enemy);
-                continue;
             }
-            continue;
         }
+
+        int randSpawn = rand() % nbSpawn;
+        std::pair<int, int> startPos = startPositions[randSpawn];
+        enemy.x = startPos.first;
+        enemy.y = startPos.second;
+        for (int i = 0; i < map.listCases.size(); i++) {
+            if (map.listCases[i].node.x == startPos.first && map.listCases[i].node.y == startPos.second) {
+                enemy.nodeStart = map.listCases[i].node.id;
+                break;
+            }
+        }
+
+        wave.enemies.push_back(enemy);
     }
 
     return wave;

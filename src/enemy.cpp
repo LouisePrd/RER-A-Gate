@@ -25,6 +25,7 @@ void Enemy::moveIntoGraph(WeightedGraph graph, int start, int end, Map map, doub
         }
         std::reverse(path.begin(), path.end());
         path.erase(path.begin());
+        
 
         newPath = false;
         currentIndex = 0;
