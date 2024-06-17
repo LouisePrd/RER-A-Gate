@@ -1,0 +1,22 @@
+ITD
+# ligne de commentaire
+map mapRGB-V3.png
+# Blanc
+path 255 255 255
+# Bleu
+in 0 0 255
+# Rouge
+out 255 0 0
+graph 12
+node 0 1 1 1
+node 1 6 1 2
+node 2 6 3 3 7
+node 3 4 3 4
+node 4 4 4 5 11
+node 5 1 4 6
+node 6 1 7 11
+node 7 6 4 8
+node 8 7 4 9
+node 9 7 7 11
+node 10 4 7 11
+node 11 6 7
