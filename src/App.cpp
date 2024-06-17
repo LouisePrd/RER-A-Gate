@@ -180,7 +180,6 @@ void App::mappingTexture()
         "images/rails-tiles/rails-droit-1.png",
         "images/in-out/spawn.png",
         "images/in-out/end.png",
-        "images/enemy.png",
         "images/money.png"};
 
     std::vector<std::string> textureTowers = {

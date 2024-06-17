@@ -87,7 +87,7 @@ void App::displayMoney()
     float iconY = 0.55f;
 
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, _texturesMap[7]);
+    glBindTexture(GL_TEXTURE_2D, _texturesMap[6]);
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.0f);
     glVertex2f(iconX, iconY);
