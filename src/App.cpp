@@ -242,7 +242,7 @@ void App::mappingTexture()
     }
 
     backgroundTexture = loadTexture(img::Image{img::load(make_absolute_path("images/rer-a-gate-background.png", true), 3, true)});
-    loaderTexture = loadTexture(img::Image{img::load(make_absolute_path("images/loader.png", true), 3, true)});
+    loaderTexture = loadTexture(img::Image{img::load(make_absolute_path("images/loader.png", true), 4, true)});
 
     if (_texturesMap.size() == 0)
         std::cerr << "Error: no textures loaded" << std::endl;
@@ -451,7 +451,8 @@ void App::resetGame()
 
 void App::displayLoader()
 {
-    
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, loaderTexture);
     glColor3ub(255, 255, 255);
