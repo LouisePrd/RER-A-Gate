@@ -118,7 +118,7 @@ void App::render()
         displayLoader();
     }
 
-    if (paused)
+    if (paused && started)
     {
         TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::RED);
         TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
