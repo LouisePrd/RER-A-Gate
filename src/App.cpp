@@ -98,16 +98,23 @@ void App::render()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
-    TextRenderer.Label("RER A GATE", _width / 2, _height / 8, SimpleText::CENTER);
+
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_32);
     TextRenderer.Label("Press ESC to quit", _width / 2, _height / 1.1, SimpleText::CENTER);
 
+    if (isLaunched)
+    {
+    TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
+    TextRenderer.Label("RER A GATE", _width / 2, _height / 8, SimpleText::CENTER);
     displayMap(map);
     displayTowerButtons();
     displayMoney();
     displayPrices();
     displayScore();
+    } else {
+        displayLoader();
+    }
+
     checkState();
 
     TextRenderer.Render();
@@ -118,6 +125,7 @@ void App::key_callback(int key, int /*scancode*/, int action, int /*mods*/)
 {
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
     {
+        isLaunched = true;
         if (!started)
         {
             resetGame();
@@ -234,6 +242,7 @@ void App::mappingTexture()
     }
 
     backgroundTexture = loadTexture(img::Image{img::load(make_absolute_path("images/rer-a-gate-background.png", true), 3, true)});
+    loaderTexture = loadTexture(img::Image{img::load(make_absolute_path("images/loader.png", true), 3, true)});
 
     if (_texturesMap.size() == 0)
         std::cerr << "Error: no textures loaded" << std::endl;
@@ -439,3 +448,25 @@ void App::resetGame()
         }
     }
 }
+
+void App::displayLoader()
+{
+    
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, loaderTexture);
+    glColor3ub(255, 255, 255);
+    glBegin(GL_QUADS);
+    glTexCoord2d(0, 0);
+    glVertex2f(-(sizeDisplay / 2.f), -(sizeDisplay / 2.f));
+    glTexCoord2d(sizeDisplay/ 2.f, 0);
+    glVertex2f(sizeDisplay / 2.f, -(sizeDisplay / 2.f));
+    glTexCoord2d(sizeDisplay/2.f, sizeDisplay/2.f);
+    glVertex2f(sizeDisplay / 2.f, sizeDisplay / 2.f);
+    glTexCoord2d(0, sizeDisplay/2.f);
+    glVertex2f(-(sizeDisplay / 2.f), sizeDisplay / 2.f);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
+}
+
