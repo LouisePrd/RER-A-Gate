@@ -59,7 +59,17 @@ void App::update()
     {
         for (unsigned long i = 0; i < waveEnemies.enemies.size(); i++)
         {
-            waveEnemies.enemies[i].moveIntoGraph(map.graph, 0, 10, map, elapsedTime * 1.5);
+            if (waveEnemies.enemies[i].isShot)
+            {
+                if (currentTime - waveEnemies.enemies[i].shotTime >= 1.0)
+                {
+                    waveEnemies.enemies[i].isShot = false;
+                }
+            }
+            else
+            {
+                waveEnemies.enemies[i].moveIntoGraph(map.graph, 0, 10, map, elapsedTime * 1.5);
+            }
         }
     }
 
@@ -93,18 +103,6 @@ void App::render()
     displayMoney();
     displayPrices();
     checkState();
-
-    // on affiche toutes les bullets des tours
-    for (unsigned long i = 0; i < towersInMap.size(); i++)
-    {
-        for (unsigned long j = 0; j < towersInMap[i].bullets.size(); j++)
-        {
-            if (towersInMap[i].bullets[j].isShooting)
-            {
-                std::cout << "bullet " << j << " from " << towersInMap[i].bullets[j].xStart << " ; " << towersInMap[i].bullets[j].yStart << " to (" << towersInMap[i].bullets[j].xEnd << ", " << towersInMap[i].bullets[j].yEnd << ")" << std::endl;
-            }
-        }
-    }
 
     TextRenderer.Render();
 }
@@ -181,12 +179,14 @@ void App::mappingTexture()
         "images/grass-tiles/grass-tile-3.png",
         "images/rails-tiles/rails-droit-1.png",
         "images/in-out/spawn.png",
-        "images/in-out/out.png",
+        "images/in-out/end.png",
         "images/enemy.png",
+        "images/money.png"};
+
+    std::vector<std::string> textureTowers = {
         "images/tower-tiles/tower-A.png",
         "images/tower-tiles/tower-B.png",
-        "images/tower-tiles/tower-C.png",
-        "images/money.png"};
+        "images/tower-tiles/tower-C.png"};
 
     for (const std::string &path : texturePaths)
     {
@@ -194,20 +194,27 @@ void App::mappingTexture()
         _texturesMap.push_back(loadTexture(textureImage));
     }
 
+    for (const std::string &tower : textureTowers)
+    {
+        img::Image textureTowers{img::load(make_absolute_path(tower, true), 3, true)};
+        _texturesTower.push_back(loadTexture(textureTowers));
+    }
+
     img::Image enemyImage{img::load(make_absolute_path("images/enemies/enemy1.png", true), 3, true)};
     _texturesEnemy.push_back(loadTexture(enemyImage));
+
+    backgroundTexture = loadTexture(img::Image{img::load(make_absolute_path("images/RER-A.png", true), 3, true)});
 
     if (_texturesMap.size() == 0)
         std::cerr << "Error: no textures loaded" << std::endl;
     else
         std::cout << "Textures loaded (" << _texturesMap.size() << ")" << std::endl;
-
-    backgroundTexture = loadTexture(img::Image{img::load(make_absolute_path("images/RER-A.png", true), 3, true)});
 }
 
 void App::displayMap(Map map)
 {
     int textureId = 0;
+    int textureTowerId = 0;
     for (int i = 0; i < sizex * sizey; i++)
     {
         glEnable(GL_TEXTURE_2D);
@@ -230,22 +237,26 @@ void App::displayMap(Map map)
             textureId = 5;
             break;
         case typeCase::towerA:
-            _texture = _texturesMap[7];
-            textureId = 7;
+            _texture = _texturesTower[0];
+            textureTowerId = 0;
             break;
         case typeCase::towerB:
-            _texture = _texturesMap[8];
-            textureId = 8;
+            _texture = _texturesTower[1];
+            textureTowerId = 1;
             break;
         case typeCase::towerC:
-            _texture = _texturesMap[9];
-            textureId = 9;
+            _texture = _texturesTower[2];
+            textureTowerId = 2;
             break;
         default:
             break;
         }
 
-        displayElement(textureId, -(sizeDisplay / 2.f) + (i % sizex) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey) * divCasesy, -(sizeDisplay / 2.f) + (i % sizex + 1) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey) * divCasesy, -(sizeDisplay / 2.f) + (i % sizex + 1) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey + 1) * divCasesy, -(sizeDisplay / 2.f) + (i % sizex) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey + 1) * divCasesy);
+        // si tower
+        if (map.listCases[i].type == typeCase::towerA || map.listCases[i].type == typeCase::towerB || map.listCases[i].type == typeCase::towerC)
+            displayTower(textureTowerId, -(sizeDisplay / 2.f) + (i % sizex) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey) * divCasesy, -(sizeDisplay / 2.f) + (i % sizex + 1) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey) * divCasesy, -(sizeDisplay / 2.f) + (i % sizex + 1) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey + 1) * divCasesy, -(sizeDisplay / 2.f) + (i % sizex) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey + 1) * divCasesy);
+        else
+            displayElement(textureId, -(sizeDisplay / 2.f) + (i % sizex) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey) * divCasesy, -(sizeDisplay / 2.f) + (i % sizex + 1) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey) * divCasesy, -(sizeDisplay / 2.f) + (i % sizex + 1) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey + 1) * divCasesy, -(sizeDisplay / 2.f) + (i % sizex) * divCasesx, -(sizeDisplay / 2.f) + (i / sizey + 1) * divCasesy);
     }
 }
 
@@ -268,12 +279,34 @@ void App::displayElement(int idTexture, float x1, float y1, float x2, float y2, 
     glDisable(GL_TEXTURE_2D);
 }
 
+void App::displayTower(int idTexture, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
+{
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, _texturesTower[idTexture]);
+    glColor3ub(255, 255, 255);
+    glBegin(GL_QUADS);
+    glTexCoord2d(0, 0);
+    glVertex2f(x1, y1);
+    glTexCoord2d(1, 0);
+    glVertex2f(x2, y2);
+    glTexCoord2d(1, 1);
+    glVertex2f(x3, y3);
+    glTexCoord2d(0, 1);
+    glVertex2f(x4, y4);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
+}
+
 void App::displayEnemy(int idTexture, Enemy enemy)
 {
+    if (enemy.isShot)
+        glColor3ub(255, 0, 0);
+    else
+        glColor3ub(255, 255, 255);
     float adjustedY = sizey - enemy.y - 1;
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, _texturesEnemy[idTexture]);
-    glColor3ub(255, 255, 255);
     glBegin(GL_QUADS);
     glTexCoord2d(0, 0);
     glVertex2f(-(sizeDisplay / 2.f) + enemy.x * divCasesx, -(sizeDisplay / 2.f) + adjustedY * divCasesy);

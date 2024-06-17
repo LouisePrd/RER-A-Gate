@@ -42,7 +42,7 @@ void Enemy::moveIntoGraph(WeightedGraph graph, int start, int end, Map map, doub
     int nextNode = path[currentIndex];
     for (unsigned long i = 0; i < map.listCases.size(); i++)
     {
-        if (map.listCases[i].node.id == nextNode)
+        if (map.listCases[i].node.id == nextNode && isShot == false)
         {
             if (this->x != map.listCases[i].node.x)
             {

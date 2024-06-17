@@ -17,6 +17,8 @@ struct Enemy
     unsigned long currentIndex = 0;
     std::vector<int> path;
     bool newPath = true;
+    bool isShot = false;
+    double shotTime;
     
     double startX, startY;
     double interpolationTime = 0.0;
