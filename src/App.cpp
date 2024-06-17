@@ -21,7 +21,7 @@
 #include <map>
 #include <utility>
 
-App::App() : _previousTime(0.0), _viewSize(2.0), map()
+App::App() : _previousTime(0.0), _viewSize(2.0), waveDelay(5)
 {
     mappingTexture();
 }
@@ -61,7 +61,7 @@ void App::update()
         {
             if (waveEnemies.enemies[i].isShot)
             {
-                if (currentTime - waveEnemies.enemies[i].shotTime >= 1.0)
+                if (currentTime - waveEnemies.enemies[i].shotTime >= 0.7)
                     waveEnemies.enemies[i].isShot = false;
             }
             else
@@ -194,6 +194,10 @@ void App::mappingTexture()
         "images/tower-tiles/tower-B.png",
         "images/tower-tiles/tower-C.png"};
 
+    std::vector<std::string> textureEnemies = {
+        "images/enemies/enemy1.png",
+        "images/enemies/enemy2.png"};
+
     for (const std::string &path : texturePaths)
     {
         img::Image textureImage{img::load(make_absolute_path(path, true), 3, true)};
@@ -206,8 +210,11 @@ void App::mappingTexture()
         _texturesTower.push_back(loadTexture(textureTowers));
     }
 
-    img::Image enemyImage{img::load(make_absolute_path("images/enemies/enemy1.png", true), 3, true)};
-    _texturesEnemy.push_back(loadTexture(enemyImage));
+    for (const std::string &enemy : textureEnemies)
+    {
+        img::Image textureEnemies{img::load(make_absolute_path(enemy, true), 3, true)};
+        _texturesEnemy.push_back(loadTexture(textureEnemies));
+    }
 
     backgroundTexture = loadTexture(img::Image{img::load(make_absolute_path("images/RER-A.png", true), 3, true)});
 
@@ -383,9 +390,12 @@ void App::checkState()
             if (waveEnemies.enemies[i].health <= 0)
                 waveEnemies.enemies.erase(waveEnemies.enemies.begin() + i);
             if (waveEnemies.enemies.size() == 0)
-            {
-                indexWave++;
-                waveEnemies = createWave(1, 1, (indexWave/2) + 5);
+            {   
+                if (glfwGetTime() - _previousTime >= waveDelay) {
+                    indexWave++;
+                    waveEnemies = createWave(1, 1, 5 * indexWave);
+                    waveDelay = glfwGetTime();
+                }
             }
         }
     }
@@ -423,8 +433,10 @@ void App::resetGame()
     lost = false;
     indexWave = 0;
     totalMoney = 1000;
-    for (auto &mapCase : map.listCases) {
-        if (mapCase.type >= typeCase::towerA && mapCase.type <= typeCase::towerC) {
+    for (auto &mapCase : map.listCases)
+    {
+        if (mapCase.type >= typeCase::towerA && mapCase.type <= typeCase::towerC)
+        {
             mapCase.type = typeCase::none;
         }
     }

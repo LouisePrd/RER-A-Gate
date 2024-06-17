@@ -83,10 +83,11 @@ private:
     std::vector<GLuint> _texturesEnemy;
     std::vector<GLuint> _texturesTower;
 
-    // Enemies and Towers
+    // Enemies, Towers and Waves
     Wave waveEnemies;
     int indexWave = 0;
     std::vector<Tower> towersInMap;
+    double waveDelay;
 
     // User Interface
     bool started = false;

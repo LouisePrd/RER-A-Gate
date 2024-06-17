@@ -3,7 +3,6 @@
 
 Wave createWave(int xStart, int yStart, int nbEnemies) {
     Wave wave;
-    wave.spawnInterval = 2;
 
     for (int i = 0; i < nbEnemies; i++) {
         Enemy enemy;
