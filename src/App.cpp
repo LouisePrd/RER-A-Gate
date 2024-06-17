@@ -111,10 +111,7 @@ void App::key_callback(int key, int /*scancode*/, int action, int /*mods*/)
 {
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS && !started && !lost && !won)
     {
-        waveEnemies = createWave(1, 1, 5);
-        started = true;
-        lost = false;
-        won = false;
+        resetGame();
     }
 }
 
@@ -353,21 +350,14 @@ void App::displayBackGround()
 
 void App::checkState()
 {
+    std::pair<int, int> endPosition = getEndPosition();
     if (started == true)
     {
         for (unsigned long i = 0; i < waveEnemies.enemies.size(); i++)
         {
             displayEnemy(0, waveEnemies.enemies[i]);
-            std::pair<int, int> endPosition = getEndPosition();
-            if (waveEnemies.enemies[i].x == endPosition.first && waveEnemies.enemies[i].y == endPosition.second)
-            {
-                lost = true;
-                started = false;
-            }
             if (waveEnemies.enemies[i].health <= 0)
-            {
                 waveEnemies.enemies.erase(waveEnemies.enemies.begin() + i);
-            }
         }
     }
     else
@@ -375,18 +365,20 @@ void App::checkState()
         TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
         TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_32);
         TextRenderer.Label("Press SPACE to start", _width / 2, _height / 7, SimpleText::CENTER);
-        if (lost)
-        {
-            TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::RED);
-            TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
-            TextRenderer.Label("Game Over", _width / 2, _height / 2, SimpleText::CENTER);
-        }
     }
 
     if (waveEnemies.enemies.size() == 0 && started == true)
     {
         won = true;
-        started = false;
+    }
+
+    for (unsigned long i = 0; i < waveEnemies.enemies.size(); i++)
+    {
+        if (waveEnemies.enemies[i].x == endPosition.first && waveEnemies.enemies[i].y == endPosition.second)
+        {
+            lost = true;
+            break;
+        }
     }
 
     if (won)
@@ -394,5 +386,24 @@ void App::checkState()
         TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::GREEN);
         TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
         TextRenderer.Label("You won", _width / 2, _height / 2, SimpleText::CENTER);
+        started = false;
     }
+
+    if (lost)
+    {
+        TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::RED);
+        TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
+        TextRenderer.Label("Game Over", _width / 2, _height / 2, SimpleText::CENTER);
+        started = false;
+    }
+}
+
+void App::resetGame()
+{
+    waveEnemies.enemies.clear();
+    towersInMap.clear();
+    waveEnemies = createWave(1, 1, 5);
+    started = true;
+    lost = false;
+    won = false;
 }
