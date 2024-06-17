@@ -39,9 +39,9 @@ void App::setup()
 
     std::vector<std::vector<int>> nodes = checkMap();
     map = compareMapItd(getNodes(nodes), checkImage(baseMap));
+    map.nbNodes = getNbNodes();
     map.graph = build_from_adjacency_matrix(createGraph(map));
     getEndPosition();
-    getStartPosition();
 
     glClearColor(0.0f, 0.735f, 0.74f, 1.0f); // #00BEBF
     TextRenderer.ResetFont();
@@ -66,7 +66,7 @@ void App::update()
             }
             else
             {
-                waveEnemies.enemies[i].moveIntoGraph(map.graph, 0, 10, map, elapsedTime * 1.5);
+                waveEnemies.enemies[i].moveIntoGraph(map.graph, waveEnemies.enemies[i].nodeStart, map.nodeEnd, map, elapsedTime);
             }
         }
     }
@@ -386,14 +386,35 @@ void App::displayEnemy(Enemy enemy)
 
 std::pair<int, int> App::getEndPosition()
 {
+    std::pair<int, int> endPosition;
+    int yNormalized = 0;
+    int xNormalized = 0;
     for (unsigned long i = 0; i < map.listCases.size(); i++)
     {
         if (map.listCases[i].type == typeCase::out)
         {
-            return std::make_pair(map.listCases[i].x, map.listCases[i].y);
+            yNormalized = sizey - map.listCases[i].y - 1;
+            xNormalized = map.listCases[i].x;
+            endPosition = std::make_pair(map.listCases[i].x, map.listCases[i].y);
         }
     }
-    return std::make_pair(-1, -1);
+    
+    for (unsigned long i = 0; i < map.listCases.size(); i++)
+    {
+        if (map.listCases[i].x == xNormalized && map.listCases[i].y == yNormalized)
+        {
+            map.nodeEnd = map.listCases[i].node.id;
+            break;
+        }
+    }
+    
+    return endPosition;
+}
+
+int getNodeIdAtNormalizedCoord(int n, std::pair<int, int> coord)
+{
+    std::cout << n * coord.second + coord.first << std::endl;
+    return n * coord.second + coord.first;
 }
 
 std::vector<std::pair<int, int>> App::getStartPosition()
@@ -404,6 +425,7 @@ std::vector<std::pair<int, int>> App::getStartPosition()
         if (map.listCases[i].type == typeCase::in)
         {
             startPositions.push_back(std::make_pair(map.listCases[i].x, map.listCases[i].y));
+            
         }
     }
 
@@ -423,15 +445,17 @@ void App::checkState()
             if (waveEnemies.enemies.size() == 0)
             {
                 indexWave++;
-                waveEnemies = createWave(1, 1, 5 * indexWave, indexWave);
+                // on veut que les vagues soient de plus en plus difficiles
+                int nbEnemies = indexWave * 3 + 5;
+                waveEnemies = createWave(indexWave*3 + 1, indexWave, getStartPosition(), map);
             }
         }
     }
     else
     {
-        TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
+        TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLUE);
         TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_64);
-        TextRenderer.Label("Press SPACE to start", _width / 2, _height / 7, SimpleText::CENTER);
+        TextRenderer.Label("Press SPACE to start", _width / 2, _height / 6, SimpleText::CENTER);
     }
 
     for (unsigned long i = 0; i < waveEnemies.enemies.size(); i++)
@@ -457,7 +481,7 @@ void App::resetGame()
     indexWave = 0;
     waveEnemies.enemies.clear();
     towersInMap.clear();
-    waveEnemies = createWave(1, 1, 5, indexWave);
+    waveEnemies = createWave(indexWave*3 + 5, indexWave, getStartPosition(), map);
     started = true;
     lost = false;
     totalMoney = 1000;

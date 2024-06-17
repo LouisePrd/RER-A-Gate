@@ -101,3 +101,5 @@ private:
 
     SimpleText TextRenderer{};
 };
+
+int getNodeIdAtNormalizedCoord(int n, std::pair<int, int> coord);
