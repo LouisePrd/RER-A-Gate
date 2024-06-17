@@ -88,7 +88,6 @@ private:
     // User Interface
     bool started = false;
     bool lost = false;
-    bool won = false;
     float sizeDisplay = 1;
 
     SimpleText TextRenderer{};

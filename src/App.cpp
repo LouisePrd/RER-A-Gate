@@ -80,7 +80,6 @@ void App::update()
             shootEnemies(towersInMap[i], waveEnemies.enemies[j], elapsedTime);
         }
     }
-
     render();
 }
 
@@ -109,9 +108,16 @@ void App::render()
 
 void App::key_callback(int key, int /*scancode*/, int action, int /*mods*/)
 {
-    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS && !started && !lost && !won)
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
     {
-        resetGame();
+        if (!started)
+        {
+            resetGame();
+        }
+        else if (lost)
+        {
+            resetGame();
+        }
     }
 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -372,11 +378,6 @@ void App::checkState()
         TextRenderer.Label("Press SPACE to start", _width / 2, _height / 7, SimpleText::CENTER);
     }
 
-    if (waveEnemies.enemies.size() == 0 && started == true)
-    {
-        won = true;
-    }
-
     for (unsigned long i = 0; i < waveEnemies.enemies.size(); i++)
     {
         if (waveEnemies.enemies[i].x == endPosition.first && waveEnemies.enemies[i].y == endPosition.second)
@@ -384,14 +385,6 @@ void App::checkState()
             lost = true;
             break;
         }
-    }
-
-    if (won)
-    {
-        TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::GREEN);
-        TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
-        TextRenderer.Label("You won", _width / 2, _height / 2, SimpleText::CENTER);
-        started = false;
     }
 
     if (lost)
@@ -410,5 +403,10 @@ void App::resetGame()
     waveEnemies = createWave(1, 1, 5);
     started = true;
     lost = false;
-    won = false;
+    totalMoney = 1000;
+    for (auto &mapCase : map.listCases) {
+        if (mapCase.type >= typeCase::towerA && mapCase.type <= typeCase::towerC) {
+            mapCase.type = typeCase::none;
+        }
+    }
 }
