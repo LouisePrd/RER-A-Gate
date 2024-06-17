@@ -41,6 +41,7 @@ void App::setup()
     map = compareMapItd(getNodes(nodes), checkImage(baseMap));
     map.graph = build_from_adjacency_matrix(createGraph(map));
     getEndPosition();
+    getStartPosition();
 
     glClearColor(0.0f, 0.745f, 0.682f, 1.0f); // #00BEBF
     TextRenderer.ResetFont();
@@ -53,7 +54,6 @@ void App::update()
     const double currentTime{glfwGetTime()};
     const double elapsedTime{currentTime - _previousTime};
     _previousTime = currentTime;
-    static double startTime = -1.0;
 
     if (started == true)
     {
@@ -62,9 +62,7 @@ void App::update()
             if (waveEnemies.enemies[i].isShot)
             {
                 if (currentTime - waveEnemies.enemies[i].shotTime >= 1.0)
-                {
                     waveEnemies.enemies[i].isShot = false;
-                }
             }
             else
             {
@@ -101,6 +99,7 @@ void App::render()
     displayTowerButtons();
     displayMoney();
     displayPrices();
+    displayScore();
     checkState();
 
     TextRenderer.Render();
@@ -340,6 +339,20 @@ std::pair<int, int> App::getEndPosition()
     return std::make_pair(-1, -1);
 }
 
+std::vector<std::pair<int, int>> App::getStartPosition()
+{
+    std::vector<std::pair<int, int>> startPositions;
+    for (unsigned long i = 0; i < map.listCases.size(); i++)
+    {
+        if (map.listCases[i].type == typeCase::in)
+        {
+            startPositions.push_back(std::make_pair(map.listCases[i].x, map.listCases[i].y));
+        }
+    }
+
+    return startPositions;
+}
+
 void App::displayBackGround()
 {
     glEnable(GL_TEXTURE_2D);
@@ -369,6 +382,11 @@ void App::checkState()
             displayEnemy(0, waveEnemies.enemies[i]);
             if (waveEnemies.enemies[i].health <= 0)
                 waveEnemies.enemies.erase(waveEnemies.enemies.begin() + i);
+            if (waveEnemies.enemies.size() == 0)
+            {
+                indexWave++;
+                waveEnemies = createWave(1, 1, (indexWave/2) + 5);
+            }
         }
     }
     else
@@ -403,6 +421,7 @@ void App::resetGame()
     waveEnemies = createWave(1, 1, 5);
     started = true;
     lost = false;
+    indexWave = 0;
     totalMoney = 1000;
     for (auto &mapCase : map.listCases) {
         if (mapCase.type >= typeCase::towerA && mapCase.type <= typeCase::towerC) {

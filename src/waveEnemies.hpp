@@ -8,7 +8,6 @@
 struct Wave {
     std::vector<Enemy> enemies;
     int spawnInterval;
-
 };
 
 Wave createWave(int xStart, int yStart, int nbEnemies);

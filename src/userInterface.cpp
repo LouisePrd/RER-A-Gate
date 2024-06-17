@@ -125,3 +125,14 @@ void App::displayPrices()
         buttonX += 0.045f;
     }
 }
+
+void App::displayScore() {
+    if (started == false) return;
+    std::string scoreText = "Score: " + std::to_string(indexWave);
+    float textX = _width / 2.2f;
+    float textY = 0.2f * _height;
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
+    TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_48);
+    TextRenderer.Label(scoreText.c_str(), textX, textY, SimpleText::LEFT);
+
+}

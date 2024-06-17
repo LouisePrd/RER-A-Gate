@@ -24,18 +24,20 @@ public:
     void update();
     void mappingTexture();
 
-    // Display functions
+    // Display Map elements
     void displayBackGround();
     void displayMap(Map map);
     void displayElement(int idTexture, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
     void displayTower(int idTexture, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
     void displayEnemy(int idTexture, Enemy enemy);
 
-
+    // Position functions
     std::pair<int, int> getEndPosition();
+    std::vector<std::pair<int, int>> getStartPosition();
 
     // Game functions
     void shootEnemies(Tower &tower, Enemy &enemy, float deltaTime);
+    void checkState();
     void resetGame();
 
     // GLFW callbacks binding
@@ -51,7 +53,7 @@ public:
     void displayTowerButtons();
     void displayMoney();
     void displayPrices();
-    void checkState();
+    void displayScore();
 
     // Global variables
     int selectedTowerType = -1;
@@ -83,6 +85,7 @@ private:
 
     // Enemies and Towers
     Wave waveEnemies;
+    int indexWave = 0;
     std::vector<Tower> towersInMap;
 
     // User Interface
