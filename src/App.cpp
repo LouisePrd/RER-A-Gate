@@ -43,7 +43,7 @@ void App::setup()
     getEndPosition();
     getStartPosition();
 
-    glClearColor(0.0f, 0.745f, 0.682f, 1.0f); // #00BEBF
+    glClearColor(0.0f, 0.735f, 0.74f, 1.0f); // #00BEBF
     TextRenderer.ResetFont();
     TextRenderer.SetColorf(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
     TextRenderer.EnableBlending(true);
@@ -83,16 +83,21 @@ void App::update()
 
 void App::render()
 {
-    // Clear the color and depth buffers of the frame buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    displayBackGround();
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    const float aspectRatio = static_cast<float>(_width) / static_cast<float>(_height);
+    if (aspectRatio > 1.0f) {
+        glOrtho(-_viewSize / 2.0f * aspectRatio, _viewSize / 2.0f * aspectRatio, -_viewSize / 2.0f, _viewSize / 2.0f, -1.0f, 1.0f);
+    } else {
+        glOrtho(-_viewSize / 2.0f, _viewSize / 2.0f, -_viewSize / 2.0f / aspectRatio, _viewSize / 2.0f / aspectRatio, -1.0f, 1.0f);
+    }
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glPushMatrix();
-    glScalef(0.8f, 0.8f, 0.8f);
-    glPopMatrix();
-
-    // displayBackGround();
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
     TextRenderer.Label("RER A GATE", _width / 2, _height / 8, SimpleText::CENTER);
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_32);
@@ -107,6 +112,7 @@ void App::render()
 
     TextRenderer.Render();
 }
+
 
 void App::key_callback(int key, int /*scancode*/, int action, int /*mods*/)
 {
@@ -227,7 +233,7 @@ void App::mappingTexture()
         _texturesEnemy.push_back(loadTexture(textureEnemies));
     }
 
-    backgroundTexture = loadTexture(img::Image{img::load(make_absolute_path("images/RER-A.png", true), 3, true)});
+    backgroundTexture = loadTexture(img::Image{img::load(make_absolute_path("images/rer-a-gate-background.png", true), 3, true)});
 
     if (_texturesMap.size() == 0)
         std::cerr << "Error: no textures loaded" << std::endl;
@@ -372,25 +378,6 @@ std::vector<std::pair<int, int>> App::getStartPosition()
     }
 
     return startPositions;
-}
-
-void App::displayBackGround()
-{
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, backgroundTexture);
-    glColor3ub(255, 255, 255);
-    glBegin(GL_QUADS);
-    glTexCoord2d(0, 0);
-    glVertex2f(-1, -1);
-    glTexCoord2d(1, 0);
-    glVertex2f(1, -1);
-    glTexCoord2d(1, 1);
-    glVertex2f(1, 1);
-    glTexCoord2d(0, 1);
-    glVertex2f(-1, 1);
-    glEnd();
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_TEXTURE_2D);
 }
 
 void App::checkState()

@@ -32,6 +32,30 @@ bool App::isHovering(float x, float y, float width, float height)
 }
 
 // ========== DISPLAYS ==========
+void App::displayBackGround()
+{
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, 1280, 0, 720, -1, 1);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, backgroundTexture);
+    glColor3ub(255, 255, 255);
+
+    glBegin(GL_QUADS);
+    glTexCoord2d(0, 0); glVertex2f(0, 0);
+    glTexCoord2d(1, 0); glVertex2f(1280, 0);
+    glTexCoord2d(1, 1); glVertex2f(1280, 720);
+    glTexCoord2d(0, 1); glVertex2f(0, 720);
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
+}
+
 void App::displayTowerButtons()
 {
     float buttonX = -(sizeDisplay / 2.f) + 0.1f;
