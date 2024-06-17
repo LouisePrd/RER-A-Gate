@@ -40,7 +40,7 @@ void displayEnum(typeCase type)
 
 std::vector<std::vector<int>> checkMap()
 {
-    std::ifstream mapItd(make_absolute_path("data/.itd2", true));
+    std::ifstream mapItd(make_absolute_path("data/.itd3", true));
     std::vector<std::string> keyWords = {"ITD", "map", "path", "in", "out", "graph", "node"};
     std::vector<std::vector<int>> nodes;
     std::vector<std::string> lines;
@@ -105,7 +105,7 @@ std::vector<std::vector<int>> checkMap()
 
 std::array<typeByColor, 3> getItdAllTypes()
 {
-    std::ifstream mapItd(make_absolute_path("data/.itd2", true));
+    std::ifstream mapItd(make_absolute_path("data/.itd3", true));
     std::vector<std::string> lines;
     std::string line;
     std::array<typeByColor, 3> typesByColor;
@@ -157,7 +157,7 @@ Map compareMapItd(std::vector<Node> nodes, Map map)
 
 std::string getNameMap()
 {
-    std::ifstream mapItd(make_absolute_path("data/.itd2", true));
+    std::ifstream mapItd(make_absolute_path("data/.itd3", true));
     std::string line;
     std::string name;
 
@@ -174,5 +174,24 @@ std::string getNameMap()
     }
 
     return "";
+}
+
+std::string getNbNodes()
+{
+    std::ifstream mapItd(make_absolute_path("data/.itd3", true));
+    std::string line;
+    int nbNodes = 0;
+
+    while (std::getline(mapItd, line))
+    {
+        if (line.find("graph") != std::string::npos)
+        {
+            std::istringstream iss(line);
+            std::string word;
+            iss >> word;
+            iss >> nbNodes;
+            return std::to_string(nbNodes);
+        }
+    }
 }
 

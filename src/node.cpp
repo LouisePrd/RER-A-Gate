@@ -44,14 +44,14 @@ std::vector<Node> getNodes(std::vector<std::vector<int>>& nodes)
         n.id = node[0];
         n.x = node[1];
         n.y = node[2];
-
+        
         allNodes.push_back(n);
     }
 
     // Ajout des connections
     for (int i = 0; i < nodes.size(); ++i)
     {
-        for (int j = 3; j < nodes[i].size(); ++j)
+        for (int j = 3; j < nodes[i].size(); ++j) 
         {
             int connectedId = nodes[i][j];
             allNodes[i].noeudsConnectes.push_back(connectedId);

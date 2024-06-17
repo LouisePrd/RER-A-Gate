@@ -27,7 +27,7 @@ Map checkImage(img::Image &baseMap)
         std::array<float, 3> colorTab = {color.r, color.g, color.b};
         bool found = false;
 
-        for (int j = 0; j < getItdAllTypes().size(); j++)
+        for (unsigned long j = 0; j < getItdAllTypes().size(); j++)
         {
             if (colorTab == getItdAllTypes()[j].color) // si la couleur correspond à un type de case
             {
@@ -130,22 +130,8 @@ std::unordered_map<int, std::pair<float, int>> dijkstra(WeightedGraph const &gra
 std::vector<std::vector<float>> createGraph(Map map)
 {
     std::vector<std::vector<float>> graph;
-    int nbNodes = 0;
+    int nbNodes = static_cast<int>(std::stoi(map.nbNodes));
 
-    for (int i = 0; i < map.height; i++)
-    {
-        for (int j = 0; j < map.width; j++)
-        {
-            caseMap currentCase = map.listCases[i * map.width + j];
-            if (currentCase.node.noeudsConnectesStruct.size() !=0)
-            {
-                for (unsigned long k = 0; k < currentCase.node.noeudsConnectesStruct.size(); k++)
-                {
-                    nbNodes++;
-                }
-            }
-        }
-    }
 
     for (int i = 0; i < nbNodes; i++)
     {

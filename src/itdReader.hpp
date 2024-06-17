@@ -6,9 +6,6 @@
 #include <array>
 #include <unordered_map>
 
-#include "node.hpp"
-
-
 enum typeCase {
     path,
     in,
@@ -26,5 +23,6 @@ struct typeByColor {
 
 std::vector<std::vector<int>> checkMap();
 std::string getNameMap();
+std::string getNbNodes();
 void displayEnum(typeCase type);
 std::array<typeByColor, 3> getItdAllTypes();
