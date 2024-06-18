@@ -216,7 +216,6 @@ void App::size_callback(GLFWwindow *window, int width, int height)
 }
 
 // fonction pour mapper texture et type de case
-// nouvelle opti
 void App::mappingTexture()
 {
     std::vector<std::string> texturePaths = {
@@ -239,7 +238,7 @@ void App::mappingTexture()
 
     for (const std::string &path : texturePaths)
     {
-        if (path == "images/money.png")
+        if (path == "images/money.png" || path == "images/in-out/spawn.png" || path == "images/in-out/end.png")
         {
             img::Image textureImage = img::load(make_absolute_path(path, true), 4, true);
             _texturesMap.push_back(loadTexture(textureImage));
@@ -320,24 +319,23 @@ void App::displayMap(Map map)
     }
 }
 
-void App::displayElement(int idTexture, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
-{
+void App::displayElement(int idTexture, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, _texturesMap[idTexture]);
     glColor3ub(255, 255, 255);
     glBegin(GL_QUADS);
-    glTexCoord2d(0, 0);
-    glVertex2f(x1, y1);
-    glTexCoord2d(1, 0);
-    glVertex2f(x2, y2);
-    glTexCoord2d(1, 1);
-    glVertex2f(x3, y3);
-    glTexCoord2d(0, 1);
-    glVertex2f(x4, y4);
+    glTexCoord2d(0, 0); glVertex2f(x1, y1);
+    glTexCoord2d(1, 0); glVertex2f(x2, y2);
+    glTexCoord2d(1, 1); glVertex2f(x3, y3);
+    glTexCoord2d(0, 1); glVertex2f(x4, y4);
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
 }
+
 
 void App::displayTower(int idTexture, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
 {
