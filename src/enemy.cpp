@@ -34,6 +34,7 @@ void Enemy::moveIntoGraph(WeightedGraph graph, int start, int end, Map map, doub
         {
             startX = x;
             startY = y;
+            interpolationTime = 0;
         }
     }
 

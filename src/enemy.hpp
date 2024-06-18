@@ -25,7 +25,7 @@ struct Enemy
     
     double startX, startY;
     double interpolationTime = 0.0;
-    double interpolationDuration = 0.6;
+    double interpolationDuration = 0.5;
 
     void moveIntoGraph(WeightedGraph graph, int start, int end, Map map, double elapsedTime);
     void moveX(double &x, double xOut, double elapsedTime);
