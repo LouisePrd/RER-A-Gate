@@ -101,14 +101,26 @@ void App::render()
 
 
     TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_32);
+    if (osType == "macOS")
+        TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_32);
+    else
+        TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_16); 
     TextRenderer.Label("Press ESC to quit", _width / 2, _height / 1.1, SimpleText::CENTER);
 
     if (isLaunched)
     {
-    TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
+    if (osType == "macOS")
+        TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
+    else
+        TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_64); 
     TextRenderer.Label("RER A GATE", _width / 2, _height / 8, SimpleText::CENTER);
-    TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_32);
+    
+    if (osType == "macOS")
+        TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_32);
+    else
+        TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_16); 
     TextRenderer.Label("Press P to pause", _width / 2, _height / 1.07, SimpleText::CENTER);
+
     displayMap(map);
     displayTowerButtons();
     displayMoney();
@@ -121,7 +133,10 @@ void App::render()
     if (paused && started)
     {
         TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::RED);
+    if (osType == "macOS")
         TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_128);
+    else
+        TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_64); 
         TextRenderer.Label("Game Paused", _width / 2, _height / 2, SimpleText::CENTER);
     }
 

@@ -168,7 +168,11 @@ void App::displayMoney()
 void App::displayPrices()
 {
     TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
-    TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_48);
+    if (osType == "macOS")
+        TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_48);
+    else
+        TextRenderer.SetTextSize(SimpleText::FontSize::SIZE_16); 
+    
     float buttonX = sizeDisplay / 2.f - 0.105f;
     float buttonY = sizeDisplay / 2.f + 0.3f;
     for (int i = 0; i < 3; i++)

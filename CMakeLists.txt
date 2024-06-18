@@ -117,3 +117,18 @@ add_library(simpletext INTERFACE)
 target_include_directories(simpletext SYSTEM INTERFACE ${simpletext_SOURCE_DIR}/include)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE simpletext)
+
+project(DetectOS)
+
+if(APPLE)
+    message(STATUS "Building on macOS")
+    add_definitions(-DIS_MACOS)
+elseif(UNIX AND NOT APPLE)
+    message(STATUS "Building on Linux")
+    add_definitions(-DIS_LINUX)
+elseif(WIN32)
+    message(STATUS "Building on Windows")
+    add_definitions(-DIS_WINDOWS)
+else()
+    message(FATAL_ERROR "Unsupported platform")
+endif()

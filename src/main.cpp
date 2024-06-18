@@ -35,6 +35,17 @@ void mouseButtonCallback(GLFWwindow *window, int button, int action)
 
 int main()
 {
+    std::string osTypeTest;
+    #ifdef IS_MACOS
+        osTypeTest = "macOS";
+    #elif IS_LINUX
+        osTypeTest = "Linux";
+    #elif IS_WINDOWS
+        osTypeTest = "Windows";
+    #else
+        osTypeTest = "Unknown";
+    #endif
+
     // Set an error callback to display glfw errors
     glfwSetErrorCallback([](int error, const char *description)
                          { std::cerr << "Error " << error << ": " << description << std::endl; });
@@ -68,6 +79,7 @@ int main()
     }
 
     App app{};
+    app.osType = osTypeTest;
 
     glfwSetWindowUserPointer(window, &app);
 

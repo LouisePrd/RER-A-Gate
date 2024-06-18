@@ -100,6 +100,9 @@ private:
     float sizeDisplay = 1;
 
     SimpleText TextRenderer{};
+
+    public:
+    std::string osType;
 };
 
 int getNodeIdAtNormalizedCoord(int n, std::pair<int, int> coord);
