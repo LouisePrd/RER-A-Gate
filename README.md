@@ -1,4 +1,9 @@
 # RER A GATE
+
+## Subject and report
+[Instructions-2024.pdf](https://github.com/LouisePrd/Tower-Defense/files/15442673/sujet_IMAC1_2024.pdf)<br>
+[Final-report.pdf](https://github.com/user-attachments/files/15896450/RAPPORT-LANNAUD_PERIDY.pdf)
+
 ## Tower-Defense
 The RER A is a Parisian public transport network that we all love, of course, and which is renowned for its punctuality and reliability (again, of course). To celebrate it, we've decided to create a defense tower in its honor. Build your own stations and defend them against the evil ticket inspectors and sneaky grannies who want to expose you to them!
 Don't let them take over our beloved line!
@@ -15,7 +20,3 @@ Waves of enemies get tougher and tougher (in terms of life and speed), and the p
 
 ## How to play
 The player can launch the game with the space bar, pause it with the P key and exit with escape.
-
-
-## Subject
-[Instructions-2024.pdf](https://github.com/LouisePrd/Tower-Defense/files/15442673/sujet_IMAC1_2024.pdf)
